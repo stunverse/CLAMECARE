@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ShieldCheck, FileText, Sparkles, ArrowRight } from "lucide-react";
 import { DisclaimerBanner } from "@/components/disclaimer-banner";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
  * Temporary landing placeholder for ClaimCare AI.
@@ -22,16 +24,10 @@ export default function Home() {
             </span>
           </div>
           <nav className="flex items-center gap-2 text-sm">
-            <Link
-              href="/login"
-              className="rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
+            <Link href="/login" className={buttonVariants({ variant: "ghost", size: "sm" })}>
               Log in
             </Link>
-            <Link
-              href="/signup"
-              className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground transition-opacity hover:opacity-90"
-            >
+            <Link href="/signup" className={buttonVariants({ size: "sm" })}>
               Get started
             </Link>
           </nav>
@@ -57,14 +53,14 @@ export default function Home() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/signup"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-brand px-6 font-semibold text-brand-foreground transition-opacity hover:opacity-90"
+            className={cn(buttonVariants({ variant: "brand", size: "lg" }), "font-semibold")}
           >
             Start your claim review
             <ArrowRight className="size-4" />
           </Link>
           <Link
             href="/pricing"
-            className="inline-flex h-12 items-center justify-center rounded-lg border border-border px-6 font-semibold transition-colors hover:bg-accent"
+            className={cn(buttonVariants({ variant: "outline", size: "lg" }), "font-semibold")}
           >
             View pricing
           </Link>
