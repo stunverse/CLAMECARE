@@ -1,21 +1,24 @@
-import { ScrollText } from "lucide-react";
-import { ComingSoon } from "@/components/claim/coming-soon";
+import { notFound } from "next/navigation";
+import { getClaim } from "@/lib/data/claim";
+import { PolicyReview } from "@/components/claim/policy-review";
 import { DisclaimerBanner } from "@/components/disclaimer-banner";
+import type { PolicyAnalysisResult } from "@/lib/ai/policy";
 
-export default function PolicyTab() {
+export default async function PolicyTab({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const claim = await getClaim(id);
+  if (!claim) notFound();
+
+  const initialResult =
+    (claim.policy_analysis as unknown as PolicyAnalysisResult | null) ?? null;
+
   return (
     <div className="space-y-4">
-      <ComingSoon
-        icon={ScrollText}
-        title="Policy Review"
-        description="Understand what your policy actually covers."
-        bullets={[
-          "Detected coverages, exclusions, deductibles, and limits",
-          "Deadlines and the appeal procedure in your policy",
-          "Comparison against the denial reason",
-          "Useful clauses and risky clauses highlighted",
-        ]}
-      />
+      <PolicyReview claimId={id} initialResult={initialResult} />
       <DisclaimerBanner variant="primary" />
     </div>
   );
