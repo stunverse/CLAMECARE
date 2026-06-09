@@ -8,6 +8,7 @@ const ITEMS = [
   { label: "Overview", href: "/admin" },
   { label: "Users", href: "/admin/users" },
   { label: "Claims", href: "/admin/claims" },
+  { label: "Library", href: "/admin/library" },
   { label: "Knowledge base", href: "/admin/knowledge-base" },
   { label: "Companies", href: "/admin/insurance-companies" },
   { label: "State regulations", href: "/admin/state-regulations" },

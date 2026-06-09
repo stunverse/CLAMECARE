@@ -15,6 +15,7 @@ import type {
   GeneratedDocumentType,
   InsuranceType,
   IssueType,
+  KnowledgeCategory,
   PriorityLevel,
   SubscriptionPlan,
   SupportTicketStatus,
@@ -279,6 +280,17 @@ export const LETTER_DOCUMENT_TYPES: GeneratedDocumentType[] = [
   "negotiation_letter",
   "counteroffer_letter",
 ];
+
+export const KNOWLEDGE_CATEGORY_LABELS: Record<KnowledgeCategory, string> = {
+  state_regulation: "State guide",
+  company_playbook: "Company playbook",
+  insurance_type_guide: "Insurance guide",
+  denial_reason: "Denial reason",
+  evidence_checklist: "Evidence checklist",
+  letter_template: "Letter template",
+  glossary: "Glossary",
+  faq: "FAQ",
+};
 
 export const SUBSCRIPTION_PLAN_LABELS: Record<SubscriptionPlan, string> = {
   starter: "Starter",

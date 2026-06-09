@@ -151,3 +151,26 @@ export async function upsertKnowledgeEntry(values: Record<string, string>) {
 export async function deleteKnowledgeEntry(id: string) {
   return removeRow("knowledge_base_entries", id, "/admin/knowledge-base");
 }
+
+/* ----------------------------- claim library ----------------------------- */
+export async function upsertLibraryItem(values: Record<string, string>) {
+  const supabase = await getAdminSupabase();
+  if (!supabase) return { error: NOT_AUTH };
+  if (!values.title?.trim()) return { error: "Title is required." };
+
+  const res = await upsert(supabase, "claim_library_items", values.id, {
+    title: values.title.trim(),
+    category: orNull(values.category),
+    insurance_type: orNull(values.insurance_type),
+    state: orNull(values.state),
+    company: orNull(values.company),
+    content: orNull(values.content),
+    is_premium: values.is_premium === "true",
+  });
+  if (!res.error) revalidatePath("/admin/library");
+  return res;
+}
+
+export async function deleteLibraryItem(id: string) {
+  return removeRow("claim_library_items", id, "/admin/library");
+}

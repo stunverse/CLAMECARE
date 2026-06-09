@@ -6,6 +6,7 @@ import { env, isSupabaseConfigured } from "@/lib/env";
 const PROTECTED_PREFIXES = [
   "/dashboard",
   "/claims",
+  "/library",
   "/onboarding",
   "/settings",
   "/billing",
