@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { env } from "@/lib/env";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,13 +13,42 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const TITLE = "ClaimCare AI — Fight unfair insurance claim denials with AI";
+const DESCRIPTION =
+  "Upload your denial letter. ClaimCare AI analyzes it, tells you what went wrong, builds your evidence file, and generates the appeal letter for you. Informational assistance only — not legal advice.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(env.APP_URL),
   title: {
-    default: "ClaimCare AI — Fight unfair insurance claim denials with AI",
+    default: TITLE,
     template: "%s · ClaimCare AI",
   },
-  description:
-    "Upload your denial letter. ClaimCare AI analyzes it, tells you what went wrong, builds your evidence file, and generates the appeal letter for you. Informational assistance only — not legal advice.",
+  description: DESCRIPTION,
+  applicationName: "ClaimCare AI",
+  keywords: [
+    "insurance claim",
+    "claim denial appeal",
+    "insurance appeal letter",
+    "denied claim help",
+    "Department of Insurance complaint",
+    "insurance dispute",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "ClaimCare AI",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: env.APP_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
