@@ -12,6 +12,7 @@ const TABS = [
   { label: "Policy", segment: "policy" },
   { label: "Timeline", segment: "timeline" },
   { label: "Letters", segment: "letters" },
+  { label: "Messages", segment: "messages" },
   { label: "Complaint", segment: "complaint" },
   { label: "Negotiation", segment: "negotiation" },
   { label: "AI Coach", segment: "coach" },
