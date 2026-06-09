@@ -48,6 +48,7 @@ function baseClaim(): Omit<Claim, "id" | "claim_title"> {
     risk_score: null,
     ai_analysis: null,
     policy_analysis: null,
+    negotiation_analysis: null,
     created_at: iso(-10),
     updated_at: iso(-1),
   };

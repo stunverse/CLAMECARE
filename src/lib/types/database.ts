@@ -105,6 +105,8 @@ export interface Claim {
   ai_analysis: Json | null;
   /** Full structured analyzePolicy() result (see src/lib/ai/policy.ts). */
   policy_analysis: Json | null;
+  /** Full structured negotiation result (see src/lib/ai/negotiation.ts). */
+  negotiation_analysis: Json | null;
   created_at: string;
   updated_at: string;
 }
