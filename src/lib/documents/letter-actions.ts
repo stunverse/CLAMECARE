@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getClaim } from "@/lib/data/claim";
 import { generateLetter } from "@/lib/ai/generate-letter";
+import { createNotification } from "@/lib/notifications/actions";
 import { GENERATED_DOCUMENT_TYPE_LABELS } from "@/lib/labels";
 import { GENERATED_DOCUMENT_TYPES, DOCUMENT_TONES } from "@/lib/types/enums";
 import type {
@@ -94,6 +95,17 @@ export async function generateLetterAction(input: {
     claim_id: input.claimId,
     event_type: "document_generated",
   });
+
+  if (input.documentType === "appeal_letter") {
+    await createNotification(supabase, {
+      user_id: user.id,
+      claim_id: input.claimId,
+      type: "appeal_letter_ready",
+      title: "Appeal letter ready",
+      message: "Your appeal letter draft is ready to review.",
+      action_url: `/claims/${input.claimId}/letters`,
+    });
+  }
 
   revalidatePath(`/claims/${input.claimId}/letters`);
   return { document: data };

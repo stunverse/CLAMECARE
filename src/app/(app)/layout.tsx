@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getNotifications } from "@/lib/data/notifications";
 import { AppShell } from "@/components/app/app-shell";
 
 export default async function AppLayout({
@@ -25,5 +26,11 @@ export default async function AppLayout({
     }
   }
 
-  return <AppShell user={{ name, email }}>{children}</AppShell>;
+  const { notifications, unread } = await getNotifications();
+
+  return (
+    <AppShell user={{ name, email }} notifications={notifications} unread={unread}>
+      {children}
+    </AppShell>
+  );
 }

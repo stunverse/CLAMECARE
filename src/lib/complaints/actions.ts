@@ -8,6 +8,7 @@ import {
   genericRegulatorName,
 } from "@/lib/data/regulations";
 import { generateComplaint } from "@/lib/ai/complaint";
+import { createNotification } from "@/lib/notifications/actions";
 import { COMPLAINT_STATUSES } from "@/lib/types/enums";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ComplaintStatus } from "@/lib/types/enums";
@@ -66,6 +67,14 @@ export async function generateComplaintAction(
         user_id: user.id,
         claim_id: claimId,
         event_type: "complaint_generated",
+      });
+      await createNotification(supabase, {
+        user_id: user.id,
+        claim_id: claimId,
+        type: "complaint_draft_ready",
+        title: "Complaint draft ready",
+        message: "Your regulator complaint draft is ready to review.",
+        action_url: `/claims/${claimId}/complaint`,
       });
       revalidatePath(`/claims/${claimId}/complaint`);
     }

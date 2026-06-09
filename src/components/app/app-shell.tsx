@@ -21,11 +21,17 @@ function Logo() {
   );
 }
 
+import type { Notification } from "@/lib/types";
+
 export function AppShell({
   user,
+  notifications,
+  unread,
   children,
 }: {
   user: { name: string; email: string };
+  notifications: Notification[];
+  unread: number;
   children: React.ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -105,7 +111,7 @@ export function AppShell({
               <Plus className="size-4" />
               <span className="hidden sm:inline">New claim</span>
             </Link>
-            <NotificationBell />
+            <NotificationBell notifications={notifications} unread={unread} />
           </div>
         </header>
 

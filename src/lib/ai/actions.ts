@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { analyzeClaim, composeAiSummary } from "@/lib/ai/analyze-claim";
+import { createNotification } from "@/lib/notifications/actions";
 import type { ClaimAnalysisInput } from "@/lib/ai/types";
 import type { Claim, ClaimDocument } from "@/lib/types";
 
@@ -97,6 +98,15 @@ export async function runClaimAnalysis(
     user_id: user.id,
     claim_id: claimId,
     event_type: "ai_analysis",
+  });
+
+  await createNotification(supabase, {
+    user_id: user.id,
+    claim_id: claimId,
+    type: "ai_analysis_complete",
+    title: "AI analysis complete",
+    message: `Your analysis for "${claim.claim_title}" is ready to review.`,
+    action_url: `/claims/${claimId}/analysis`,
   });
 
   revalidatePath(`/claims/${claimId}`);
