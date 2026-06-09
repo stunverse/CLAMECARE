@@ -5,6 +5,7 @@ import {
   Sparkles,
   FileText,
   Landmark,
+  Package,
 } from "lucide-react";
 import { ClaimStatusBadge } from "@/components/claim-status-badge";
 import { ScoreCircle } from "@/components/score-circle";
@@ -100,6 +101,14 @@ export function ClaimHeader({ claim }: { claim: Claim }) {
           >
             <Landmark className="size-4" />
             Prepare complaint
+          </Link>
+          <Link
+            href={`/packet/${claim.id}`}
+            target="_blank"
+            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+          >
+            <Package className="size-4" />
+            Export packet
           </Link>
         </div>
       </div>
