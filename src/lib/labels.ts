@@ -16,6 +16,7 @@ import type {
   IssueType,
   PriorityLevel,
   SubscriptionPlan,
+  TimelineEventType,
 } from "@/lib/types/enums";
 
 /** Subset of badge variants used for status coloring. */
@@ -198,6 +199,20 @@ export const GENERATED_DOCUMENT_TYPE_LABELS: Record<
   attorney_summary: "Attorney summary",
   negotiation_brief: "Negotiation brief",
   call_preparation_sheet: "Call preparation sheet",
+};
+
+export const TIMELINE_EVENT_TYPE_LABELS: Record<TimelineEventType, string> = {
+  incident_occurred: "Incident occurred",
+  claim_filed: "Claim filed",
+  documents_submitted: "Documents submitted",
+  info_requested: "Insurer requested information",
+  denial_received: "Denial received",
+  appeal_submitted: "Appeal submitted",
+  follow_up_sent: "Follow-up sent",
+  complaint_prepared: "Complaint prepared",
+  complaint_filed: "Complaint filed",
+  settlement_offer_received: "Settlement offer received",
+  claim_resolved: "Claim resolved",
 };
 
 export const DOCUMENT_TONE_LABELS: Record<DocumentTone, string> = {
