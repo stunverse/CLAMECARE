@@ -25,6 +25,7 @@ export const env = {
 
   // OpenAI (server-only)
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  OPENAI_MODEL: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
 
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,

@@ -101,6 +101,8 @@ export interface Claim {
   consistency_score: number | null;
   negotiation_score: number | null;
   risk_score: number | null;
+  /** Full structured analyzeClaim() result (see src/lib/ai/types.ts). */
+  ai_analysis: Json | null;
   created_at: string;
   updated_at: string;
 }
