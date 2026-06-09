@@ -13,11 +13,13 @@ import type { PolicyAnalysisResult } from "@/lib/ai/policy";
 export function PolicyReview({
   claimId,
   initialResult,
+  prefillText = "",
 }: {
   claimId: string;
   initialResult: PolicyAnalysisResult | null;
+  prefillText?: string;
 }) {
-  const [policyText, setPolicyText] = useState("");
+  const [policyText, setPolicyText] = useState(prefillText);
   const [result, setResult] = useState<PolicyAnalysisResult | null>(
     initialResult,
   );

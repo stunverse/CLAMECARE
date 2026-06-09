@@ -7,6 +7,7 @@ import {
   isAllowedMime,
   DEFAULT_BUCKET,
 } from "@/lib/documents/constants";
+import { extractText, extractEntities } from "@/lib/documents/extract";
 import { DOCUMENT_CATEGORIES } from "@/lib/types/enums";
 import type { ClaimDocument, DocumentCategory } from "@/lib/types";
 
@@ -74,6 +75,36 @@ export async function registerDocument(
     return { error: error?.message ?? "Could not save the document." };
   }
 
+  let document = data;
+
+  // Best-effort server-side text extraction (PDF/DOCX/text).
+  try {
+    const { data: blob } = await supabase.storage
+      .from(BUCKET)
+      .download(input.file_path);
+    if (blob) {
+      const buffer = Buffer.from(await blob.arrayBuffer());
+      const text = await extractText(buffer, input.mime_type);
+      if (text) {
+        const { dates, amounts } = extractEntities(text);
+        const { data: updated } = await supabase
+          .from("claim_documents")
+          .update({
+            extracted_text: text.slice(0, 100_000),
+            extracted_dates: dates,
+            extracted_amounts: amounts,
+            analysis_status: "analyzed",
+          })
+          .eq("id", data.id)
+          .select("*")
+          .single<ClaimDocument>();
+        if (updated) document = updated;
+      }
+    }
+  } catch {
+    // Leave the document as "uploaded" if extraction fails.
+  }
+
   await supabase.from("activity_logs").insert({
     user_id: user.id,
     claim_id: input.claim_id,
@@ -81,7 +112,7 @@ export async function registerDocument(
     action_description: `Uploaded "${input.file_name}".`,
   });
 
-  return { document: data };
+  return { document };
 }
 
 export async function deleteDocument(
