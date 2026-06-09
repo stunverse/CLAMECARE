@@ -17,6 +17,7 @@ import type {
   IssueType,
   PriorityLevel,
   SubscriptionPlan,
+  SupportTicketStatus,
   TimelineEventType,
 } from "@/lib/types/enums";
 
@@ -105,6 +106,26 @@ export const COMPLAINT_STATUS_VARIANT: Record<ComplaintStatus, StatusVariant> = 
   under_review: "warning",
   response_received: "info",
   closed: "success",
+};
+
+export const SUPPORT_TICKET_STATUS_LABELS: Record<SupportTicketStatus, string> =
+  {
+    open: "Open",
+    in_progress: "In progress",
+    waiting_for_user: "Waiting for you",
+    resolved: "Resolved",
+    closed: "Closed",
+  };
+
+export const SUPPORT_TICKET_STATUS_VARIANT: Record<
+  SupportTicketStatus,
+  StatusVariant
+> = {
+  open: "info",
+  in_progress: "warning",
+  waiting_for_user: "warning",
+  resolved: "success",
+  closed: "muted",
 };
 
 export const PRIORITY_LABELS: Record<PriorityLevel, string> = {
