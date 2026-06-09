@@ -1,22 +1,29 @@
-import { FileText } from "lucide-react";
-import { ComingSoon } from "@/components/claim/coming-soon";
+import { notFound } from "next/navigation";
+import { getClaim } from "@/lib/data/claim";
+import { getClaimLetters } from "@/lib/data/letters";
+import { isSupabaseConfigured } from "@/lib/env";
+import { LettersManager } from "@/components/documents/letters-manager";
 import { DisclaimerBanner } from "@/components/disclaimer-banner";
 
-export default function LettersTab() {
+export default async function LettersTab({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const claim = await getClaim(id);
+  if (!claim) notFound();
+
+  const documents = await getClaimLetters(id);
+
   return (
     <div className="space-y-4">
-      <ComingSoon
-        icon={FileText}
-        title="Letters"
-        description="Generate professional, ready-to-review letters in minutes."
-        bullets={[
-          "Appeal letters, reconsideration and demand letters, and more",
-          "Choose a tone: professional, firm, conciliatory, or urgent",
-          "Edit, preview, and export to PDF or DOCX",
-          "Keep a version history of every letter",
-        ]}
-      />
       <DisclaimerBanner variant="letter" />
+      <LettersManager
+        claimId={id}
+        canPersist={isSupabaseConfigured}
+        initialDocuments={documents}
+      />
     </div>
   );
 }

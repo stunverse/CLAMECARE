@@ -8,6 +8,7 @@ import type {
   ClaimStatus,
   DenialReason,
   DocumentCategory,
+  DocumentTone,
   EvidenceImportance,
   EvidenceStatus,
   GeneratedDocumentType,
@@ -198,6 +199,31 @@ export const GENERATED_DOCUMENT_TYPE_LABELS: Record<
   negotiation_brief: "Negotiation brief",
   call_preparation_sheet: "Call preparation sheet",
 };
+
+export const DOCUMENT_TONE_LABELS: Record<DocumentTone, string> = {
+  professional: "Professional",
+  firm: "Firm",
+  conciliatory: "Conciliatory",
+  urgent: "Urgent",
+  legal_accessible: "Legal but accessible",
+};
+
+/** Letter-type generated documents (excludes packets/briefs). */
+export const LETTER_DOCUMENT_TYPES: GeneratedDocumentType[] = [
+  "appeal_letter",
+  "request_reconsideration",
+  "request_explanation",
+  "request_claim_file",
+  "request_reopen_claim",
+  "demand_letter",
+  "follow_up_letter",
+  "letter_to_adjuster",
+  "letter_to_claim_manager",
+  "complaint_letter",
+  "request_independent_review",
+  "negotiation_letter",
+  "counteroffer_letter",
+];
 
 export const SUBSCRIPTION_PLAN_LABELS: Record<SubscriptionPlan, string> = {
   starter: "Starter",
