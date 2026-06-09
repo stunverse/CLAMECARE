@@ -15,6 +15,7 @@ const TABS = [
   { label: "Messages", segment: "messages" },
   { label: "Complaint", segment: "complaint" },
   { label: "Negotiation", segment: "negotiation" },
+  { label: "Call Prep", segment: "call-prep" },
   { label: "AI Coach", segment: "coach" },
   { label: "Activity", segment: "activity" },
 ];

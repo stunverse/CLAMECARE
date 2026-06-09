@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Pencil } from "lucide-react";
 import { getClaim } from "@/lib/data/claim";
+import { isSupabaseConfigured } from "@/lib/env";
 import { getNextAction } from "@/lib/claim-actions";
+import { StatusUpdater } from "@/components/claim/status-updater";
 import {
   Card,
   CardContent,
@@ -33,8 +35,17 @@ export default async function ClaimOverviewPage({
       {/* Main column */}
       <div className="space-y-6 lg:col-span-2">
         <Card>
-          <CardHeader>
+          <CardHeader className="flex-row items-center justify-between">
             <CardTitle className="text-base">Summary</CardTitle>
+            {isSupabaseConfigured && (
+              <Link
+                href={`/claims/${claim.id}/edit`}
+                className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+              >
+                <Pencil className="size-4" />
+                Edit details
+              </Link>
+            )}
           </CardHeader>
           <CardContent className="space-y-4 text-sm">
             <div>
@@ -107,6 +118,21 @@ export default async function ClaimOverviewPage({
 
       {/* Side column */}
       <div className="space-y-6">
+        {isSupabaseConfigured && (
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <StatusUpdater
+                claimId={claim.id}
+                current={claim.current_status}
+                canEdit={isSupabaseConfigured}
+              />
+            </CardContent>
+          </Card>
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Claim strength</CardTitle>

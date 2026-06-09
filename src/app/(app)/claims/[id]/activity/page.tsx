@@ -10,12 +10,18 @@ import {
   Scale,
   Mail,
   History,
+  StickyNote,
+  RefreshCw,
+  Pencil,
+  Phone,
   type LucideIcon,
 } from "lucide-react";
 import { getClaim } from "@/lib/data/claim";
 import { getClaimActivity } from "@/lib/data/activity";
+import { isSupabaseConfigured } from "@/lib/env";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
+import { AddNote } from "@/components/claim/add-note";
 import { DisclaimerBanner } from "@/components/disclaimer-banner";
 import { formatDate } from "@/lib/format";
 
@@ -29,6 +35,10 @@ const ICONS: Record<string, LucideIcon> = {
   complaint_prepared: Landmark,
   negotiation_generated: Scale,
   message_saved: Mail,
+  note: StickyNote,
+  status_changed: RefreshCw,
+  claim_updated: Pencil,
+  call_prep_generated: Phone,
 };
 
 function humanizeType(t: string): string {
@@ -48,6 +58,11 @@ export default async function ActivityTab({
 
   return (
     <div className="space-y-4">
+      {isSupabaseConfigured && (
+        <div className="flex justify-end">
+          <AddNote claimId={id} />
+        </div>
+      )}
       {entries.length === 0 ? (
         <EmptyState
           icon={History}
