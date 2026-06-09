@@ -6,6 +6,7 @@
  */
 import type {
   ClaimStatus,
+  ComplaintStatus,
   DenialReason,
   DocumentCategory,
   DocumentTone,
@@ -86,6 +87,24 @@ export const CLAIM_STATUS_VARIANT: Record<ClaimStatus, StatusVariant> = {
   complaint_filed: "default",
   resolved: "success",
   abandoned: "muted",
+};
+
+export const COMPLAINT_STATUS_LABELS: Record<ComplaintStatus, string> = {
+  not_started: "Not started",
+  draft_prepared: "Draft prepared",
+  submitted: "Submitted",
+  under_review: "Under review",
+  response_received: "Response received",
+  closed: "Closed",
+};
+
+export const COMPLAINT_STATUS_VARIANT: Record<ComplaintStatus, StatusVariant> = {
+  not_started: "muted",
+  draft_prepared: "info",
+  submitted: "default",
+  under_review: "warning",
+  response_received: "info",
+  closed: "success",
 };
 
 export const PRIORITY_LABELS: Record<PriorityLevel, string> = {
