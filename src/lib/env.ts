@@ -27,6 +27,10 @@ export const env = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_MODEL: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
 
+  // OCR (server-only). Off by default — enable once the Tesseract model is
+  // reachable in your environment (it downloads on first use).
+  OCR_ENABLED: process.env.OCR_ENABLED === "true",
+
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
@@ -45,6 +49,9 @@ export const isSupabaseAdminConfigured = Boolean(
 
 /** True when an OpenAI key is present (real AI calls; otherwise mocked). */
 export const isOpenAIConfigured = Boolean(env.OPENAI_API_KEY);
+
+/** True when image OCR is explicitly enabled. */
+export const isOcrEnabled = env.OCR_ENABLED;
 
 /** True when Stripe is configured (billing live; otherwise placeholder). */
 export const isStripeConfigured = Boolean(

@@ -1,7 +1,9 @@
+import { isOcrEnabled } from "@/lib/env";
+
 /**
  * Server-side document text extraction (§11).
- * Supports PDF (pdf-parse), DOCX (mammoth), and plain text. Images and legacy
- * .doc are not extracted here (OCR is a separate future step).
+ * Supports PDF (pdf-parse), DOCX (mammoth), plain text, and — when OCR_ENABLED
+ * is set — images via Tesseract OCR. Legacy .doc is not supported.
  */
 
 const DOCX_MIME =
@@ -35,11 +37,25 @@ export async function extractText(
     if (mime.startsWith("text/")) {
       return buffer.toString("utf8").trim();
     }
+
+    if (mime.startsWith("image/") && isOcrEnabled) {
+      // OCR for scans/photos. Gated behind OCR_ENABLED: needs the tesseract
+      // core + English model (downloaded/cached at runtime). Best-effort —
+      // failures fall through to "".
+      const { createWorker } = await import("tesseract.js");
+      const worker = await createWorker("eng");
+      try {
+        const { data } = await worker.recognize(buffer);
+        return (data.text ?? "").trim();
+      } finally {
+        await worker.terminate().catch(() => {});
+      }
+    }
   } catch {
     return "";
   }
 
-  // Images, legacy .doc, etc. — no text available without OCR.
+  // Legacy .doc and anything unsupported — no text available.
   return "";
 }
 
