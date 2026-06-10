@@ -8,6 +8,7 @@ import {
   DEFAULT_BUCKET,
 } from "@/lib/documents/constants";
 import { extractText, extractEntities } from "@/lib/documents/extract";
+import { analyzeDocument } from "@/lib/ai/document";
 import { DOCUMENT_CATEGORIES } from "@/lib/types/enums";
 import type { ClaimDocument, DocumentCategory } from "@/lib/types";
 
@@ -87,12 +88,20 @@ export async function registerDocument(
       const text = await extractText(buffer, input.mime_type);
       if (text) {
         const { dates, amounts } = extractEntities(text);
+        const ai = await analyzeDocument(text, input.file_name);
+        // AI category only overrides when the user left it as "other".
+        const category =
+          input.document_category === "other"
+            ? ai.category
+            : input.document_category;
         const { data: updated } = await supabase
           .from("claim_documents")
           .update({
             extracted_text: text.slice(0, 100_000),
             extracted_dates: dates,
             extracted_amounts: amounts,
+            ai_summary: ai.summary || null,
+            document_category: category,
             analysis_status: "analyzed",
           })
           .eq("id", data.id)

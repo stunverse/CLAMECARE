@@ -71,6 +71,11 @@ function DocRow({
           <span>· {formatFileSize(doc.file_size)}</span>
           <span>· {formatDate(doc.created_at)}</span>
         </div>
+        {doc.ai_summary && (
+          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+            {doc.ai_summary}
+          </p>
+        )}
       </div>
       <Badge variant={status.variant}>{status.label}</Badge>
       <Button variant="ghost" size="sm" onClick={open} disabled={opening}>

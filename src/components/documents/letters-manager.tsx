@@ -9,7 +9,9 @@ import {
   Copy,
   Trash2,
   Check,
+  FileDown,
 } from "lucide-react";
+import { exportDocx } from "@/lib/docx";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -284,6 +286,13 @@ export function LettersManager({
                 >
                   <Printer className="size-4" />
                   Print / Save as PDF
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => exportDocx(draft.title, draft.content)}
+                >
+                  <FileDown className="size-4" />
+                  DOCX
                 </Button>
                 <Button variant="outline" onClick={copy}>
                   {copied ? (
