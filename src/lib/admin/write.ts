@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { US_STATES } from "@/lib/constants";
+import { reindexEntry } from "@/lib/ai/rag";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Row } from "@/components/admin/admin-resource-manager";
 
@@ -144,7 +145,12 @@ export async function upsertKnowledgeEntry(values: Record<string, string>) {
     tags,
     last_verified_at: new Date().toISOString(),
   });
-  if (!res.error) revalidatePath("/admin/knowledge-base");
+
+  if (!res.error && res.row) {
+    // Re-embed the entry for RAG retrieval (best-effort).
+    await reindexEntry(supabase, res.row.id, orNull(values.content));
+    revalidatePath("/admin/knowledge-base");
+  }
   return res;
 }
 

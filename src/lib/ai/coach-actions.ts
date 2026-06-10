@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getClaim } from "@/lib/data/claim";
 import { answerClaimCoach } from "@/lib/ai/coach";
+import { retrieveContext } from "@/lib/ai/rag";
 import { mockAnalyzeClaim } from "@/lib/ai/mock";
 import type { ChatMessage } from "@/lib/ai/provider";
 import type { EvidenceItem } from "@/lib/types";
@@ -35,11 +36,29 @@ export async function sendCoachMessage(input: {
       .evidence_checklist.map((e) => e.title);
   }
 
+  // Retrieve relevant knowledge base context (RAG) when available.
+  let sources: { title: string; chunk_text: string; source_url: string | null }[] =
+    [];
+  if (supabase) {
+    const chunks = await retrieveContext(
+      supabase,
+      content,
+      { state: claim.state, insuranceType: claim.insurance_type },
+      4,
+    );
+    sources = chunks.map((c) => ({
+      title: c.title,
+      chunk_text: c.chunk_text,
+      source_url: c.source_url,
+    }));
+  }
+
   const reply = await answerClaimCoach({
     claim,
     history: input.history.slice(-10),
     question: content,
     evidenceTitles,
+    sources,
   });
 
   // Persist the exchange when signed in.

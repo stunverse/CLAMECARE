@@ -17,14 +17,25 @@ export const COACH_QUICK_PROMPTS = [
   "Should I consult an attorney?",
 ] as const;
 
+export interface CoachSource {
+  title: string;
+  chunk_text: string;
+  source_url: string | null;
+}
+
 export interface CoachInput {
   claim: Claim;
   history: ChatMessage[];
   question: string;
   evidenceTitles?: string[];
+  sources?: CoachSource[];
 }
 
-function buildSystem(claim: Claim, evidenceTitles?: string[]): string {
+function buildSystem(
+  claim: Claim,
+  evidenceTitles?: string[],
+  sources?: CoachSource[],
+): string {
   const facts = [
     `Title: ${claim.claim_title}`,
     `Insurance type: ${claim.insurance_type ?? "unknown"}`,
@@ -44,12 +55,22 @@ function buildSystem(claim: Claim, evidenceTitles?: string[]): string {
     .filter(Boolean)
     .join("\n");
 
+  const sourcesBlock =
+    sources && sources.length
+      ? `\n\nKNOWLEDGE BASE SOURCES (verified reference material — use these when relevant and cite the source title; if the answer is not in these sources and you are not certain, say you cannot confirm it and recommend verifying with the official source):\n${sources
+          .map(
+            (s, i) =>
+              `[Source ${i + 1}: ${s.title}${s.source_url ? ` — ${s.source_url}` : ""}]\n${s.chunk_text}`,
+          )
+          .join("\n\n")}`
+      : "";
+
   return `${SAFETY_RULES}
 
-You are the ClaimCare AI Claim Coach. You are helping the user with this specific claim. Be concise, supportive, and practical. Give concrete next steps. Explain insurance terms simply. When a question is legal in nature, remind the user you are not a lawyer and suggest consulting a licensed attorney.
+You are the ClaimCare AI Claim Coach. You are helping the user with this specific claim. Be concise, supportive, and practical. Give concrete next steps. Explain insurance terms simply. When a question is legal in nature, remind the user you are not a lawyer and suggest consulting a licensed attorney. Do not invent laws, regulations, or policy clauses — if the knowledge base sources below do not contain the answer, say you cannot confirm it.
 
 CLAIM CONTEXT (trusted):
-${facts}`;
+${facts}${sourcesBlock}`;
 }
 
 function mockCoachReply(input: CoachInput): string {
@@ -97,7 +118,7 @@ export async function answerClaimCoach(input: CoachInput): Promise<string> {
 
   try {
     return await generateText({
-      system: buildSystem(input.claim, input.evidenceTitles),
+      system: buildSystem(input.claim, input.evidenceTitles, input.sources),
       messages: [...input.history, { role: "user", content: input.question }],
     });
   } catch {
