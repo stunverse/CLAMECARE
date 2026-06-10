@@ -34,6 +34,7 @@ const ICONS: Record<string, LucideIcon> = {
   policy_reviewed: ScrollText,
   complaint_prepared: Landmark,
   negotiation_generated: Scale,
+  attorney_summary_generated: Scale,
   message_saved: Mail,
   note: StickyNote,
   status_changed: RefreshCw,
