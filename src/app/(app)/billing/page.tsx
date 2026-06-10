@@ -5,6 +5,8 @@ import { PLAN_BY_ID } from "@/lib/billing/plans";
 import { PricingTable } from "@/components/billing/pricing-table";
 import { UsageLimitBanner } from "@/components/billing/usage-limit-banner";
 import { ManageBillingButton } from "@/components/billing/manage-billing-button";
+import { AddonButton } from "@/components/billing/addon-button";
+import { ADDONS } from "@/lib/billing/addons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DisclaimerBanner } from "@/components/disclaimer-banner";
@@ -16,7 +18,7 @@ export const metadata: Metadata = { title: "Billing" };
 export default async function BillingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string }>;
+  searchParams: Promise<{ success?: string; addon?: string }>;
 }) {
   const sp = await searchParams;
   const billing = await getBillingData();
@@ -33,6 +35,12 @@ export default async function BillingPage({
         <div className="mb-6 flex items-center gap-2 rounded-lg border border-success/40 bg-success/10 px-4 py-3 text-sm">
           <CheckCircle2 className="size-4 text-success" />
           Your subscription is active. Thank you!
+        </div>
+      )}
+      {sp.addon && (
+        <div className="mb-6 flex items-center gap-2 rounded-lg border border-success/40 bg-success/10 px-4 py-3 text-sm">
+          <CheckCircle2 className="size-4 text-success" />
+          Your add-on purchase was successful. Thank you!
         </div>
       )}
 
@@ -93,6 +101,32 @@ export default async function BillingPage({
           currentPlan={billing.plan}
           stripeConfigured={billing.stripeConfigured}
         />
+      </div>
+
+      <div className="mt-8">
+        <h2 className="mb-1 text-lg font-semibold">Add-ons</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          One-time purchases for extra help on a specific claim.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {ADDONS.map((addon) => (
+            <Card key={addon.id}>
+              <CardContent className="flex items-center justify-between gap-3 p-4">
+                <div className="min-w-0">
+                  <p className="font-medium">{addon.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {addon.description}
+                  </p>
+                </div>
+                <AddonButton
+                  addonId={addon.id}
+                  price={addon.price}
+                  disabled={!billing.stripeConfigured}
+                />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       <div className="mt-8">

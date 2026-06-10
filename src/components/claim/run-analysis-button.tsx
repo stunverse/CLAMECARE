@@ -1,10 +1,11 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { runClaimAnalysis } from "@/lib/ai/actions";
+import { UpgradeDialog } from "@/components/billing/upgrade-dialog";
 
 export function RunAnalysisButton({
   claimId,
@@ -15,12 +16,17 @@ export function RunAnalysisButton({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [upgrade, setUpgrade] = useState<string | null>(null);
 
   function run() {
     startTransition(async () => {
-      const { error } = await runClaimAnalysis(claimId);
-      if (error) {
-        window.alert(error);
+      const res = await runClaimAnalysis(claimId);
+      if (res.upgrade) {
+        setUpgrade(res.error ?? "Plan limit reached.");
+        return;
+      }
+      if (res.error) {
+        window.alert(res.error);
         return;
       }
       router.refresh();
@@ -28,13 +34,18 @@ export function RunAnalysisButton({
   }
 
   return (
-    <Button variant="brand" onClick={run} disabled={pending}>
-      {pending ? (
-        <Loader2 className="size-4 animate-spin" />
-      ) : (
-        <Sparkles className="size-4" />
+    <>
+      <Button variant="brand" onClick={run} disabled={pending}>
+        {pending ? (
+          <Loader2 className="size-4 animate-spin" />
+        ) : (
+          <Sparkles className="size-4" />
+        )}
+        {pending ? "Analyzing…" : label}
+      </Button>
+      {upgrade && (
+        <UpgradeDialog message={upgrade} onClose={() => setUpgrade(null)} />
       )}
-      {pending ? "Analyzing…" : label}
-    </Button>
+    </>
   );
 }

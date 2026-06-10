@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getClaim } from "@/lib/data/claim";
 import { generateLetter } from "@/lib/ai/generate-letter";
 import { createNotification } from "@/lib/notifications/actions";
+import { checkQuota, LIMIT_MESSAGE } from "@/lib/billing/quota";
 import { GENERATED_DOCUMENT_TYPE_LABELS } from "@/lib/labels";
 import { GENERATED_DOCUMENT_TYPES, DOCUMENT_TONES } from "@/lib/types/enums";
 import type {
@@ -17,6 +18,7 @@ import type {
 export interface GenerateLetterResult {
   error?: string;
   document?: GeneratedDocument;
+  upgrade?: boolean;
 }
 
 export async function generateLetterAction(input: {
@@ -40,6 +42,14 @@ export async function generateLetterAction(input: {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "You need to be signed in." };
+
+  const quota = await checkQuota(supabase, user.id, "generated_document");
+  if (!quota.allowed) {
+    return {
+      error: `${LIMIT_MESSAGE.generated_document} Upgrade your plan to continue.`,
+      upgrade: true,
+    };
+  }
 
   const { data: claim } = await supabase
     .from("claims")

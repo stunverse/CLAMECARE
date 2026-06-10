@@ -9,6 +9,7 @@ import {
 } from "@/lib/documents/constants";
 import { extractText, extractEntities } from "@/lib/documents/extract";
 import { analyzeDocument } from "@/lib/ai/document";
+import { checkQuota, LIMIT_MESSAGE } from "@/lib/billing/quota";
 import { DOCUMENT_CATEGORIES } from "@/lib/types/enums";
 import type { ClaimDocument, DocumentCategory } from "@/lib/types";
 
@@ -26,6 +27,7 @@ export interface RegisterDocumentInput {
 export interface RegisterDocumentResult {
   error?: string;
   document?: ClaimDocument;
+  upgrade?: boolean;
 }
 
 export async function registerDocument(
@@ -38,6 +40,15 @@ export async function registerDocument(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "You need to be signed in." };
+
+  const quota = await checkQuota(supabase, user.id, "document_upload");
+  if (!quota.allowed) {
+    await supabase.storage.from(BUCKET).remove([input.file_path]);
+    return {
+      error: `${LIMIT_MESSAGE.document_upload} Upgrade your plan to continue.`,
+      upgrade: true,
+    };
+  }
 
   // Server-side validation (never trust the client).
   if (!isAllowedMime(input.mime_type)) {
@@ -119,6 +130,11 @@ export async function registerDocument(
     claim_id: input.claim_id,
     action_type: "document_uploaded",
     action_description: `Uploaded "${input.file_name}".`,
+  });
+  await supabase.from("usage_events").insert({
+    user_id: user.id,
+    claim_id: input.claim_id,
+    event_type: "document_uploaded",
   });
 
   return { document };

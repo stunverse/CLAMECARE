@@ -9,6 +9,7 @@ import {
 } from "@/lib/data/regulations";
 import { generateComplaint } from "@/lib/ai/complaint";
 import { createNotification } from "@/lib/notifications/actions";
+import { checkQuota, LIMIT_MESSAGE } from "@/lib/billing/quota";
 import { COMPLAINT_STATUSES } from "@/lib/types/enums";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ComplaintStatus } from "@/lib/types/enums";
@@ -27,9 +28,21 @@ async function existingComplaintId(
 
 export async function generateComplaintAction(
   claimId: string,
-): Promise<{ error?: string; text?: string }> {
+): Promise<{ error?: string; text?: string; upgrade?: boolean }> {
   const claim = await getClaim(claimId);
   if (!claim) return { error: "Claim not found." };
+
+  const supabase = await createClient();
+  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
+  if (supabase && user) {
+    const quota = await checkQuota(supabase, user.id, "generated_document");
+    if (!quota.allowed) {
+      return {
+        error: `${LIMIT_MESSAGE.generated_document} Upgrade your plan to continue.`,
+        upgrade: true,
+      };
+    }
+  }
 
   const reg = await getStateRegulation(claim.state);
   const regulatorName =
@@ -37,11 +50,7 @@ export async function generateComplaintAction(
 
   const text = await generateComplaint({ claim, regulatorName });
 
-  const supabase = await createClient();
   if (supabase) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
     if (user) {
       const id = await existingComplaintId(supabase, claimId);
       const payload = {

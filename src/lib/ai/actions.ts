@@ -4,12 +4,13 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { analyzeClaim, composeAiSummary } from "@/lib/ai/analyze-claim";
 import { createNotification } from "@/lib/notifications/actions";
+import { checkQuota, LIMIT_MESSAGE } from "@/lib/billing/quota";
 import type { ClaimAnalysisInput } from "@/lib/ai/types";
 import type { Claim, ClaimDocument } from "@/lib/types";
 
 export async function runClaimAnalysis(
   claimId: string,
-): Promise<{ error?: string }> {
+): Promise<{ error?: string; upgrade?: boolean }> {
   const supabase = await createClient();
   if (!supabase) {
     return { error: "Connect Supabase to run and save a full analysis." };
@@ -19,6 +20,14 @@ export async function runClaimAnalysis(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "You need to be signed in." };
+
+  const quota = await checkQuota(supabase, user.id, "ai_analysis");
+  if (!quota.allowed) {
+    return {
+      error: `${LIMIT_MESSAGE.ai_analysis} Upgrade your plan to continue.`,
+      upgrade: true,
+    };
+  }
 
   const { data: claim } = await supabase
     .from("claims")

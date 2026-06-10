@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { stripe } from "@/lib/stripe/client";
 import { env } from "@/lib/env";
 import { PLAN_BY_ID } from "@/lib/billing/plans";
+import { ADDON_BY_ID } from "@/lib/billing/addons";
 import type { SubscriptionPlan } from "@/lib/types/enums";
 
 export async function createCheckoutSession(input: {
@@ -46,6 +47,37 @@ export async function createCheckoutSession(input: {
     metadata: { user_id: user.id, plan: input.plan },
     subscription_data: { metadata: { user_id: user.id, plan: input.plan } },
     allow_promotion_codes: true,
+  });
+
+  if (!session.url) return { error: "Could not start checkout." };
+  redirect(session.url);
+}
+
+export async function createAddonCheckout(
+  addonId: string,
+): Promise<{ error?: string }> {
+  if (!stripe) return { error: "Billing is not connected yet." };
+
+  const supabase = await createClient();
+  if (!supabase) return { error: "Billing is not connected yet." };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login?redirectTo=/billing");
+
+  const addon = ADDON_BY_ID[addonId];
+  if (!addon) return { error: "Unknown add-on." };
+  if (!addon.priceId) return { error: "This add-on isn't available yet." };
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    line_items: [{ price: addon.priceId, quantity: 1 }],
+    success_url: `${env.APP_URL}/billing?addon=success`,
+    cancel_url: `${env.APP_URL}/billing`,
+    client_reference_id: user.id,
+    customer_email: user.email ?? undefined,
+    metadata: { user_id: user.id, addon: addon.id },
   });
 
   if (!session.url) return { error: "Could not start checkout." };

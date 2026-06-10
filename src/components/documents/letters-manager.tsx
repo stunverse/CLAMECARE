@@ -12,6 +12,7 @@ import {
   FileDown,
 } from "lucide-react";
 import { exportDocx } from "@/lib/docx";
+import { UpgradeDialog } from "@/components/billing/upgrade-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,6 +77,7 @@ export function LettersManager({
   const [draft, setDraft] = useState<DraftState | null>(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | undefined>();
+  const [upgrade, setUpgrade] = useState<string | null>(null);
   const [generating, startGenerate] = useTransition();
   const [saving, startSave] = useTransition();
 
@@ -88,6 +90,10 @@ export function LettersManager({
           documentType: docType,
           tone,
         });
+        if (res.upgrade) {
+          setUpgrade(res.error ?? "Plan limit reached.");
+          return;
+        }
         if (res.error || !res.document) {
           setError(res.error ?? "Failed to generate.");
           return;
@@ -323,6 +329,10 @@ export function LettersManager({
           />
         )}
       </div>
+
+      {upgrade && (
+        <UpgradeDialog message={upgrade} onClose={() => setUpgrade(null)} />
+      )}
     </div>
   );
 }
