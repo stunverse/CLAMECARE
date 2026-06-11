@@ -9,7 +9,12 @@ import {
 } from "@/lib/data/regulations";
 import { generateComplaint } from "@/lib/ai/complaint";
 import { createNotification } from "@/lib/notifications/actions";
-import { checkQuota, LIMIT_MESSAGE } from "@/lib/billing/quota";
+import {
+  checkQuota,
+  LIMIT_MESSAGE,
+  checkRateLimit,
+  RATE_LIMIT_MESSAGE,
+} from "@/lib/billing/quota";
 import { COMPLAINT_STATUSES } from "@/lib/types/enums";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ComplaintStatus } from "@/lib/types/enums";
@@ -35,6 +40,9 @@ export async function generateComplaintAction(
   const supabase = await createClient();
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
   if (supabase && user) {
+    if (!(await checkRateLimit(supabase, user.id))) {
+      return { error: RATE_LIMIT_MESSAGE };
+    }
     const quota = await checkQuota(supabase, user.id, "generated_document");
     if (!quota.allowed) {
       return {

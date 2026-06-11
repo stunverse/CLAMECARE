@@ -31,6 +31,10 @@ export const env = {
   // reachable in your environment (it downloads on first use).
   OCR_ENABLED: process.env.OCR_ENABLED === "true",
 
+  // Email (Resend) — notifications
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+  EMAIL_FROM: process.env.EMAIL_FROM ?? "ClaimCare AI <onboarding@resend.dev>",
+
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
@@ -52,6 +56,9 @@ export const isOpenAIConfigured = Boolean(env.OPENAI_API_KEY);
 
 /** True when image OCR is explicitly enabled. */
 export const isOcrEnabled = env.OCR_ENABLED;
+
+/** True when an email provider (Resend) is configured. */
+export const isEmailConfigured = Boolean(env.RESEND_API_KEY);
 
 /** True when Stripe is configured (billing live; otherwise placeholder). */
 export const isStripeConfigured = Boolean(

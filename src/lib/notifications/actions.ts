@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { isEmailConfigured } from "@/lib/env";
+import { sendEmail, notificationEmailHtml } from "@/lib/email/send";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { NotificationType } from "@/lib/types/enums";
 
@@ -29,6 +31,26 @@ export async function createNotification(
       message: input.message ?? null,
       action_url: input.action_url ?? null,
     });
+
+    // Also email the user when an email provider is configured (best-effort).
+    if (isEmailConfigured) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", input.user_id)
+        .maybeSingle<{ email: string | null }>();
+      if (profile?.email) {
+        await sendEmail({
+          to: profile.email,
+          subject: input.title,
+          html: notificationEmailHtml(
+            input.title,
+            input.message ?? input.title,
+            input.action_url,
+          ),
+        });
+      }
+    }
   } catch {
     // ignore
   }

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getClaim } from "@/lib/data/claim";
 import { answerClaimCoach } from "@/lib/ai/coach";
 import { retrieveContext } from "@/lib/ai/rag";
+import { checkRateLimit, RATE_LIMIT_MESSAGE } from "@/lib/billing/quota";
 import { mockAnalyzeClaim } from "@/lib/ai/mock";
 import type { ChatMessage } from "@/lib/ai/provider";
 import type { EvidenceItem } from "@/lib/types";
@@ -20,6 +21,15 @@ export async function sendCoachMessage(input: {
   if (!claim) return { error: "Claim not found." };
 
   const supabase = await createClient();
+
+  if (supabase) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user && !(await checkRateLimit(supabase, user.id))) {
+      return { error: RATE_LIMIT_MESSAGE };
+    }
+  }
 
   // Evidence context for the coach.
   let evidenceTitles: string[] = [];

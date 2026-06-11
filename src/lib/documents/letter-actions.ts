@@ -5,7 +5,12 @@ import { createClient } from "@/lib/supabase/server";
 import { getClaim } from "@/lib/data/claim";
 import { generateLetter } from "@/lib/ai/generate-letter";
 import { createNotification } from "@/lib/notifications/actions";
-import { checkQuota, LIMIT_MESSAGE } from "@/lib/billing/quota";
+import {
+  checkQuota,
+  LIMIT_MESSAGE,
+  checkRateLimit,
+  RATE_LIMIT_MESSAGE,
+} from "@/lib/billing/quota";
 import { GENERATED_DOCUMENT_TYPE_LABELS } from "@/lib/labels";
 import { GENERATED_DOCUMENT_TYPES, DOCUMENT_TONES } from "@/lib/types/enums";
 import type {
@@ -42,6 +47,10 @@ export async function generateLetterAction(input: {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "You need to be signed in." };
+
+  if (!(await checkRateLimit(supabase, user.id))) {
+    return { error: RATE_LIMIT_MESSAGE };
+  }
 
   const quota = await checkQuota(supabase, user.id, "generated_document");
   if (!quota.allowed) {

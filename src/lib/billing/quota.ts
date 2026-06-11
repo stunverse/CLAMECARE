@@ -91,3 +91,28 @@ export async function checkQuota(
   const used = count ?? 0;
   return { allowed: used < limit, used, limit };
 }
+
+/* ----------------------------- rate limiting ----------------------------- */
+
+const RATE_LIMIT = 12; // AI actions
+const RATE_WINDOW_MS = 60_000; // per minute
+
+export const RATE_LIMIT_MESSAGE =
+  "You're doing that a bit too fast. Please wait a moment and try again.";
+
+/**
+ * Simple DB-backed rate limit: caps AI actions per user per minute. Works
+ * across serverless instances since it counts persisted usage_events.
+ */
+export async function checkRateLimit(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<boolean> {
+  const since = new Date(Date.now() - RATE_WINDOW_MS).toISOString();
+  const { count } = await supabase
+    .from("usage_events")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .gte("created_at", since);
+  return (count ?? 0) < RATE_LIMIT;
+}

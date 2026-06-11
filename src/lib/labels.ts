@@ -12,6 +12,8 @@ import type {
   DocumentTone,
   EvidenceImportance,
   EvidenceStatus,
+  ExpertReviewStatus,
+  ExpertReviewType,
   GeneratedDocumentType,
   InsuranceType,
   IssueType,
@@ -280,6 +282,32 @@ export const LETTER_DOCUMENT_TYPES: GeneratedDocumentType[] = [
   "negotiation_letter",
   "counteroffer_letter",
 ];
+
+export const EXPERT_REVIEW_TYPE_LABELS: Record<ExpertReviewType, string> = {
+  appeal_letter: "Appeal letter",
+  evidence_packet: "Evidence packet",
+  claim_strategy: "Claim strategy",
+  complaint: "Complaint",
+};
+
+export const EXPERT_REVIEW_STATUS_LABELS: Record<ExpertReviewStatus, string> = {
+  requested: "Requested",
+  assigned: "Assigned",
+  in_review: "In review",
+  completed: "Completed",
+  needs_user_action: "Needs your action",
+};
+
+export const EXPERT_REVIEW_STATUS_VARIANT: Record<
+  ExpertReviewStatus,
+  StatusVariant
+> = {
+  requested: "info",
+  assigned: "warning",
+  in_review: "warning",
+  completed: "success",
+  needs_user_action: "danger",
+};
 
 export const KNOWLEDGE_CATEGORY_LABELS: Record<KnowledgeCategory, string> = {
   state_regulation: "State guide",

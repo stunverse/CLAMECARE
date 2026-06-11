@@ -2,9 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Sparkles, Pencil } from "lucide-react";
 import { getClaim } from "@/lib/data/claim";
+import { getClaimExpertReviews } from "@/lib/data/expert";
 import { isSupabaseConfigured } from "@/lib/env";
 import { getNextAction } from "@/lib/claim-actions";
 import { StatusUpdater } from "@/components/claim/status-updater";
+import { ExpertReviewCard } from "@/components/claim/expert-review-card";
 import {
   Card,
   CardContent,
@@ -29,6 +31,7 @@ export default async function ClaimOverviewPage({
   if (!claim) notFound();
 
   const nextAction = getNextAction(claim);
+  const expertReviews = await getClaimExpertReviews(id);
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
@@ -168,6 +171,12 @@ export default async function ClaimOverviewPage({
             </Link>
           </CardContent>
         </Card>
+
+        <ExpertReviewCard
+          claimId={claim.id}
+          canRequest={isSupabaseConfigured}
+          initialReviews={expertReviews}
+        />
       </div>
     </div>
   );

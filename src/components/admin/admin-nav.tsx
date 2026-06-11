@@ -12,6 +12,7 @@ const ITEMS = [
   { label: "Knowledge base", href: "/admin/knowledge-base" },
   { label: "Companies", href: "/admin/insurance-companies" },
   { label: "State regulations", href: "/admin/state-regulations" },
+  { label: "Expert reviews", href: "/admin/expert-reviews" },
   { label: "Support", href: "/admin/support" },
 ];
 

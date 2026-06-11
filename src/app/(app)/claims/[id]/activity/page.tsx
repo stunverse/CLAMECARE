@@ -14,6 +14,7 @@ import {
   RefreshCw,
   Pencil,
   Phone,
+  UserCheck,
   type LucideIcon,
 } from "lucide-react";
 import { getClaim } from "@/lib/data/claim";
@@ -40,6 +41,7 @@ const ICONS: Record<string, LucideIcon> = {
   status_changed: RefreshCw,
   claim_updated: Pencil,
   call_prep_generated: Phone,
+  expert_review_requested: UserCheck,
 };
 
 function humanizeType(t: string): string {
