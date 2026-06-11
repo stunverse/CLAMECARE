@@ -9,9 +9,26 @@
  * are safe to read in browser code.
  */
 
+/**
+ * Normalize a site URL: add https:// if a protocol is missing, drop a trailing
+ * slash, and fall back to localhost if the value is empty or invalid. Prevents
+ * build/runtime crashes from a misconfigured NEXT_PUBLIC_APP_URL.
+ */
+function normalizeUrl(raw: string | undefined): string {
+  const fallback = "http://localhost:3000";
+  let value = (raw ?? "").trim().replace(/\/+$/, "");
+  if (!value) return fallback;
+  if (!/^https?:\/\//i.test(value)) value = `https://${value}`;
+  try {
+    return new URL(value).origin;
+  } catch {
+    return fallback;
+  }
+}
+
 export const env = {
   // App
-  APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  APP_URL: normalizeUrl(process.env.NEXT_PUBLIC_APP_URL),
 
   // Supabase (public)
   SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
