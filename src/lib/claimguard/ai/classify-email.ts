@@ -29,7 +29,16 @@ export interface EmailClassification {
 
 const KEYWORDS: { category: EmailCategory; res: RegExp[] }[] = [
   { category: "payment_confirmed", res: [/\bvir(ement)?\s+(effectu|émis|réalis)/i, /\bpay(é|ée|ement)\s+(effectu|réalis)/i, /\bréglé/i, /\bmis en paiement/i] },
-  { category: "payment_date_given", res: [/\bpaiement\s+(le|au|pour le|avant le)\s+\d/i, /\bréglé?\s+(le|au)\s+\d/i, /\béchéance\s+de paiement/i, /\bsera (payé|réglé)/i] },
+  {
+    category: "payment_date_given",
+    res: [
+      /\bpaiement\s+(le|au|pour le|avant le)\s+\d/i,
+      /\béchéance\s+de paiement/i,
+      /\bsera (payé|réglé)/i,
+      // Conjugated payment verbs (réglerons, paierons, verserons…) + a date.
+      /\b(r[ée]gl|pai|vers)\w*\b[^.]*\b(le|au|avant le|pour le|d'ici le)\s+\d{1,2}[/.\-]\d/i,
+    ],
+  },
   { category: "invoice_not_received", res: [/\bpas re[çc]u.*facture/i, /\bfacture\s+non re[çc]ue/i, /\bnous n'avons pas.*facture/i] },
   { category: "invoice_rejected", res: [/\bfacture\s+rejet/i, /\brefus.*facture/i] },
   { category: "wrong_invoice", res: [/\berreur.*facture/i, /\bfacture\s+(erron|incorrect)/i, /\bmontant.*incorrect/i] },
