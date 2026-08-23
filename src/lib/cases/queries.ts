@@ -3,6 +3,7 @@ import type {
   Case,
   CaseDocument,
   CaseTimelineEntry,
+  EmailMessage,
   Organization,
   PaymentPromise,
 } from "@/lib/claimguard/types";
@@ -37,6 +38,7 @@ export interface CaseDetail {
   documents: CaseDocument[];
   timeline: CaseTimelineEntry[];
   promises: PaymentPromise[];
+  messages: EmailMessage[];
   isDemo: boolean;
 }
 
@@ -55,6 +57,7 @@ export async function getCase(id: string): Promise<CaseDetail | null> {
       documents: [],
       timeline: [],
       promises: [],
+      messages: [],
       isDemo: true,
     };
   }
@@ -66,7 +69,8 @@ export async function getCase(id: string): Promise<CaseDetail | null> {
     .maybeSingle<Case>();
   if (!row) return null;
 
-  const [orgRes, docsRes, timelineRes, promisesRes] = await Promise.all([
+  const [orgRes, docsRes, timelineRes, promisesRes, messagesRes] =
+    await Promise.all([
     row.organization_id
       ? supabase
           .from("organizations")
@@ -89,6 +93,11 @@ export async function getCase(id: string): Promise<CaseDetail | null> {
       .select("*")
       .eq("case_id", id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("email_messages")
+      .select("*")
+      .eq("case_id", id)
+      .order("created_at", { ascending: true }),
   ]);
 
   return {
@@ -97,6 +106,7 @@ export async function getCase(id: string): Promise<CaseDetail | null> {
     documents: (docsRes.data as CaseDocument[] | null) ?? [],
     timeline: (timelineRes.data as CaseTimelineEntry[] | null) ?? [],
     promises: (promisesRes.data as PaymentPromise[] | null) ?? [],
+    messages: (messagesRes.data as EmailMessage[] | null) ?? [],
     isDemo: false,
   };
 }

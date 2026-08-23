@@ -51,6 +51,12 @@ export const env = {
   // Email (Resend) — notifications
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   EMAIL_FROM: process.env.EMAIL_FROM ?? "ClaimCare AI <onboarding@resend.dev>",
+  // ClaimGuard case correspondence (outbound "from" + inbound routing domain)
+  CASE_EMAIL_FROM: process.env.CASE_EMAIL_FROM,
+  // Domain used to build per-case reply addresses (case+CG-2026-000042@domain)
+  INBOUND_EMAIL_DOMAIN: process.env.INBOUND_EMAIL_DOMAIN,
+  // Shared secret verifying the inbound-email webhook (Resend/Svix).
+  INBOUND_WEBHOOK_SECRET: process.env.INBOUND_WEBHOOK_SECRET,
 
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
@@ -76,6 +82,9 @@ export const isOcrEnabled = env.OCR_ENABLED;
 
 /** True when an email provider (Resend) is configured. */
 export const isEmailConfigured = Boolean(env.RESEND_API_KEY);
+
+/** True when per-case inbound routing is configured (reply address domain). */
+export const isInboundEmailConfigured = Boolean(env.INBOUND_EMAIL_DOMAIN);
 
 /** True when Stripe is configured (billing live; otherwise placeholder). */
 export const isStripeConfigured = Boolean(

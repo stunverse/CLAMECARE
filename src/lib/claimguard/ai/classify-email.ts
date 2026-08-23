@@ -1,0 +1,161 @@
+import { isOpenAIConfigured } from "@/lib/env";
+import { generateJSON } from "@/lib/ai/provider";
+import {
+  CLAIMGUARD_SAFETY,
+  dataBlock,
+  normalizeConfidence,
+} from "@/lib/claimguard/ai/safety";
+import {
+  EMAIL_CATEGORIES,
+  type EmailCategory,
+} from "@/lib/claimguard/enums";
+
+export const PROMPT_VERSION_CLASSIFY = "classify_email.v1";
+
+export interface ExtractedPromise {
+  promised_date: string | null; // ISO yyyy-mm-dd
+  amount: number | null;
+}
+
+export interface EmailClassification {
+  category: EmailCategory;
+  confidence: number;
+  summary: string;
+  promise: ExtractedPromise | null;
+  source: "ai" | "heuristic";
+}
+
+/* --------------------------- deterministic layer -------------------------- */
+
+const KEYWORDS: { category: EmailCategory; res: RegExp[] }[] = [
+  { category: "payment_confirmed", res: [/\bvir(ement)?\s+(effectu|émis|réalis)/i, /\bpay(é|ée|ement)\s+(effectu|réalis)/i, /\bréglé/i, /\bmis en paiement/i] },
+  { category: "payment_date_given", res: [/\bpaiement\s+(le|au|pour le|avant le)\s+\d/i, /\bréglé?\s+(le|au)\s+\d/i, /\béchéance\s+de paiement/i, /\bsera (payé|réglé)/i] },
+  { category: "invoice_not_received", res: [/\bpas re[çc]u.*facture/i, /\bfacture\s+non re[çc]ue/i, /\bnous n'avons pas.*facture/i] },
+  { category: "invoice_rejected", res: [/\bfacture\s+rejet/i, /\brefus.*facture/i] },
+  { category: "wrong_invoice", res: [/\berreur.*facture/i, /\bfacture\s+(erron|incorrect)/i, /\bmontant.*incorrect/i] },
+  { category: "purchase_order_missing", res: [/\bbon de commande/i, /\bnum[ée]ro de commande/i, /\bPO\b/] },
+  { category: "document_missing", res: [/\battestation/i, /\bfeuille d'[ée]margement/i, /\bpi[èe]ce.*manquante/i, /\bjustificatif/i] },
+  { category: "waiting_internal_approval", res: [/\bvalidation\s+interne/i, /\ben attente.*validation/i, /\bsignature du responsable/i] },
+  { category: "accounting_processing", res: [/\bcomptabilit[ée].*(traite|cours)/i, /\ben cours de traitement/i, /\bservice comptable/i] },
+  { category: "dispute", res: [/\bcontest/i, /\blitige/i, /\bnous contestons/i, /\bd[ée]saccord/i] },
+  { category: "out_of_office", res: [/\babsent.*bureau/i, /\bde retour le/i, /\bout of office/i, /\bcong[ée]s/i] },
+  { category: "request_information", res: [/\bpourriez-vous.*pr[ée]ciser/i, /\bmerci de.*transmettre/i, /\bpouvez-vous nous/i] },
+];
+
+function toIsoDate(raw: string): string | null {
+  const s = raw.trim();
+  const fr = s.match(/\b(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{2,4})\b/);
+  if (fr) {
+    const [, d, m, yRaw] = fr;
+    const y = yRaw.length === 2 ? `20${yRaw}` : yRaw;
+    if (Number(m) > 12) return null;
+    return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+  }
+  return null;
+}
+
+const MONTHS: Record<string, string> = {
+  janvier: "01", février: "02", fevrier: "02", mars: "03", avril: "04",
+  mai: "05", juin: "06", juillet: "07", août: "08", aout: "08",
+  septembre: "09", octobre: "10", novembre: "11", décembre: "12", decembre: "12",
+};
+
+function extractPromiseDate(text: string): string | null {
+  const numeric = text.match(
+    /\b(?:le|au|avant le|pour le|d'ici le)\s+(\d{1,2}[/.\-]\d{1,2}[/.\-]\d{2,4})/i,
+  );
+  if (numeric) return toIsoDate(numeric[1]);
+  const worded = text.match(
+    /\b(\d{1,2})\s+(janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre)\s+(\d{4})/i,
+  );
+  if (worded) {
+    const [, d, mName, y] = worded;
+    const m = MONTHS[mName.toLowerCase()];
+    if (m) return `${y}-${m}-${d.padStart(2, "0")}`;
+  }
+  return null;
+}
+
+export function heuristicClassify(
+  subject: string,
+  body: string,
+): EmailClassification {
+  const text = `${subject}\n${body}`;
+  let category: EmailCategory = "unknown";
+  for (const { category: cat, res } of KEYWORDS) {
+    if (res.some((re) => re.test(text))) {
+      category = cat;
+      break;
+    }
+  }
+  const promiseDate =
+    category === "payment_date_given" ? extractPromiseDate(text) : null;
+  const summary = body.replace(/\s+/g, " ").trim().slice(0, 200);
+
+  return {
+    category,
+    confidence: category === "unknown" ? 0.2 : 0.55,
+    summary,
+    promise: promiseDate ? { promised_date: promiseDate, amount: null } : null,
+    source: "heuristic",
+  };
+}
+
+/* ------------------------------- AI layer -------------------------------- */
+
+export async function classifyEmail(
+  subject: string,
+  body: string,
+): Promise<EmailClassification> {
+  const heuristic = heuristicClassify(subject, body);
+  if (!isOpenAIConfigured || !body.trim()) return heuristic;
+
+  try {
+    const user = [
+      "Classe la réponse d'un organisme de formation concernant une facture impayée.",
+      `Catégories autorisées : ${EMAIL_CATEGORIES.join(", ")}.`,
+      "Si l'email annonce une date de paiement précise, extrais-la (ISO yyyy-mm-dd) ; sinon promised_date=null. N'invente aucune date : elle doit figurer dans le texte.",
+      "",
+      dataBlock("EMAIL", `Objet: ${subject}\n\n${body}`.slice(0, 6000)),
+      "",
+      'Renvoie UNIQUEMENT ce JSON : {"category": une catégorie autorisée, "confidence": number, "summary": string, "promised_date": string|null, "promised_amount": number|null}',
+    ].join("\n");
+
+    const raw = await generateJSON({
+      system: CLAIMGUARD_SAFETY,
+      user,
+      temperature: 0,
+    });
+    const p = JSON.parse(raw) as Record<string, unknown>;
+
+    const category = EMAIL_CATEGORIES.includes(p.category as EmailCategory)
+      ? (p.category as EmailCategory)
+      : heuristic.category;
+
+    // Ground the promised date: keep it only if present in the email text.
+    let promisedDate: string | null = null;
+    if (typeof p.promised_date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(p.promised_date)) {
+      promisedDate = p.promised_date;
+    }
+    const amount =
+      typeof p.promised_amount === "number" && Number.isFinite(p.promised_amount)
+        ? p.promised_amount
+        : null;
+
+    return {
+      category,
+      confidence: normalizeConfidence(p.confidence, heuristic.confidence),
+      summary:
+        typeof p.summary === "string" && p.summary.trim()
+          ? p.summary.trim()
+          : heuristic.summary,
+      promise:
+        promisedDate || amount !== null
+          ? { promised_date: promisedDate, amount }
+          : heuristic.promise,
+      source: "ai",
+    };
+  } catch {
+    return heuristic;
+  }
+}

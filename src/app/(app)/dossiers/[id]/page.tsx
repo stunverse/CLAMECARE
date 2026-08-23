@@ -12,6 +12,10 @@ import { CaseDocuments } from "@/components/cases/case-documents";
 import { CaseTimeline } from "@/components/cases/case-timeline";
 import { CaseCompleteness } from "@/components/cases/case-completeness";
 import { AnalyzeButton } from "@/components/cases/analyze-button";
+import { CaseEmails } from "@/components/cases/case-emails";
+import { CaseCompose } from "@/components/cases/case-compose";
+import { draftCaseEmail } from "@/lib/cases/email-actions";
+import { isEmailConfigured } from "@/lib/env";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -54,7 +58,7 @@ export default async function CaseDetailPage({
   const detail = await getCase(id);
   if (!detail) notFound();
 
-  const { case: c, documents, timeline, isDemo } = detail;
+  const { case: c, documents, timeline, messages, isDemo } = detail;
 
   const supabase = await createClient();
   const {
@@ -79,6 +83,11 @@ export default async function CaseDetailPage({
     documentCount: documents.length,
     hasInvoiceDocument: documents.some((d) => d.document_category === "invoice"),
   });
+
+  const draft = !isDemo ? await draftCaseEmail(c.id) : null;
+  const draftReady = draft && !("error" in draft) ? draft : null;
+  const kindLabel =
+    c.reminder_count > 0 ? "Envoyer une relance" : "Contacter l'organisme";
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
@@ -179,6 +188,29 @@ export default async function CaseDetailPage({
                     caseId={c.id}
                     userId={user.id}
                     bucket={bucket}
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">
+                Échanges avec l&apos;organisme
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <CaseEmails messages={messages} />
+              {draftReady && user && (
+                <div className="border-t border-border pt-4">
+                  <CaseCompose
+                    caseId={c.id}
+                    to={draftReady.to}
+                    initialSubject={draftReady.subject}
+                    initialBody={draftReady.body}
+                    kindLabel={kindLabel}
+                    emailConfigured={isEmailConfigured}
                   />
                 </div>
               )}
