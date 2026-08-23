@@ -12,6 +12,7 @@ import { CaseDocuments } from "@/components/cases/case-documents";
 import { CaseTimeline } from "@/components/cases/case-timeline";
 import { CaseCompleteness } from "@/components/cases/case-completeness";
 import { AnalyzeButton } from "@/components/cases/analyze-button";
+import { CasePayment } from "@/components/cases/case-payment";
 import { CaseEmails } from "@/components/cases/case-emails";
 import { CaseCompose } from "@/components/cases/case-compose";
 import { draftCaseEmail } from "@/lib/cases/email-actions";
@@ -268,6 +269,22 @@ export default async function CaseDetailPage({
               </dl>
             </CardContent>
           </Card>
+
+          {user && !isDemo && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Paiement</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CasePayment
+                  caseId={c.id}
+                  status={c.status}
+                  outstanding={c.remaining_amount ?? c.original_amount}
+                  promisedDate={c.promised_payment_date}
+                />
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader>

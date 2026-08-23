@@ -159,6 +159,15 @@ export async function processInboundEmail(
   }
   await supabase.from("cases").update(patch).eq("id", row.id);
 
+  // Payment confirmed by the organisme → stop all pending automation.
+  if (applied === "paid") {
+    await supabase
+      .from("workflow_jobs")
+      .update({ status: "cancelled", last_error: "case_paid" })
+      .eq("case_id", row.id)
+      .eq("status", "pending");
+  }
+
   // Schedule a deterministic payment-due check the day after the promised date.
   if (applied === "payment_promised" && classification.promise?.promised_date) {
     const dueCheck = new Date(`${classification.promise.promised_date}T12:00:00.000Z`);
