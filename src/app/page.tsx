@@ -6,22 +6,15 @@ import {
   ArrowRight,
   Upload,
   ListChecks,
-  Landmark,
-  Activity,
+  Mail,
+  Bell,
   CheckCircle2,
-  HeartPulse,
-  Car,
-  Home as HomeIcon,
-  Plane,
-  PersonStanding,
-  HeartHandshake,
-  Briefcase,
   Clock,
-  DollarSign,
-  FileQuestion,
-  HelpCircle,
+  CalendarClock,
+  Landmark,
+  UserCheck,
+  Building2,
 } from "lucide-react";
-import { DisclaimerBanner } from "@/components/disclaimer-banner";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PLANS } from "@/lib/billing/plans";
@@ -35,7 +28,7 @@ export default function Home() {
         <Hero />
         <HowItWorks />
         <HelpsWith />
-        <InsuranceTypes />
+        <ForWho />
         <WhyChoose />
         <PricingTeaser />
         <FinalCta />
@@ -54,7 +47,7 @@ function Logo() {
         <ShieldCheck className="size-5" />
       </span>
       <span className="text-lg font-semibold tracking-tight">
-        ClaimCare<span className="text-brand"> AI</span>
+        Claim<span className="text-brand">Guard</span>
       </span>
     </Link>
   );
@@ -70,16 +63,16 @@ function SiteHeader() {
             href="/pricing"
             className="hidden rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
           >
-            Pricing
+            Tarifs
           </Link>
           <Link
             href="/login"
             className={buttonVariants({ variant: "ghost", size: "sm" })}
           >
-            Log in
+            Connexion
           </Link>
           <Link href="/signup" className={buttonVariants({ size: "sm" })}>
-            Get started
+            Commencer
           </Link>
         </nav>
       </div>
@@ -93,20 +86,20 @@ function SiteFooter() {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <Logo />
-          <p>© {new Date().getFullYear()} ClaimCare AI. Not a law firm.</p>
+          <p>
+            © {new Date().getFullYear()} ClaimGuard. ClaimGuard n&apos;encaisse
+            jamais vos paiements.
+          </p>
         </div>
         <nav className="flex flex-wrap gap-4">
           <Link href="/pricing" className="hover:text-foreground">
-            Pricing
-          </Link>
-          <Link href="/disclaimer" className="hover:text-foreground">
-            Disclaimer
+            Tarifs
           </Link>
           <Link href="/privacy" className="hover:text-foreground">
-            Privacy
+            Confidentialité
           </Link>
           <Link href="/terms" className="hover:text-foreground">
-            Terms
+            Conditions
           </Link>
         </nav>
       </div>
@@ -123,14 +116,15 @@ function Hero() {
       <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center px-6 py-20 text-center md:py-28">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-accent-foreground shadow-sm">
           <Sparkles className="size-3.5 text-brand" />
-          The AI assistant for insurance claim denials
+          L&apos;assistant de paiement des formateurs indépendants
         </span>
         <h1 className="mt-6 max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          Fight unfair insurance claim denials with AI.
+          Déposez votre facture impayée. ClaimGuard s&apos;occupe du reste.
         </h1>
         <p className="mt-5 max-w-2xl text-pretty text-lg text-muted-foreground">
-          Upload your denial letter, understand what went wrong, build your
-          evidence file, and generate a professional appeal letter in minutes.
+          ClaimGuard analyse votre dossier, contacte l&apos;organisme de
+          formation, suit les échanges et vous accompagne automatiquement
+          jusqu&apos;à la résolution du paiement.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
@@ -140,7 +134,7 @@ function Hero() {
               "font-semibold",
             )}
           >
-            Start your claim review
+            Confier une facture
             <ArrowRight className="size-4" />
           </Link>
           <Link
@@ -150,11 +144,12 @@ function Hero() {
               "font-semibold",
             )}
           >
-            View pricing
+            Voir les tarifs
           </Link>
         </div>
         <p className="mt-4 text-xs text-muted-foreground">
-          Informational assistance only — not a law firm, not legal advice.
+          Vous n&apos;avez plus à passer vos journées à relancer les services
+          comptables. L&apos;organisme vous règle directement sur votre compte.
         </p>
       </div>
     </section>
@@ -166,29 +161,33 @@ function Hero() {
 const STEPS = [
   {
     icon: Upload,
-    title: "Upload your denial letter",
-    body: "Securely add your documents to a private claim workspace.",
+    title: "Déposez votre facture",
+    body: "Ajoutez la facture impayée et vos justificatifs dans un espace privé et sécurisé.",
   },
   {
     icon: Sparkles,
-    title: "Get an AI claim analysis",
-    body: "Understand the denial reason, your strengths, and your weaknesses.",
+    title: "ClaimGuard analyse",
+    body: "L'IA lit vos documents, vérifie la complétude du dossier et prépare le premier contact.",
   },
   {
-    icon: ListChecks,
-    title: "Build your evidence file",
-    body: "Follow a tailored checklist of the proof that strengthens your claim.",
+    icon: Mail,
+    title: "L'organisme est contacté",
+    body: "ClaimGuard écrit à l'organisme, suit les réponses et relance automatiquement.",
   },
   {
-    icon: FileText,
-    title: "Generate your appeal letter",
-    body: "Produce a professional, ready-to-review appeal letter and export it.",
+    icon: CheckCircle2,
+    title: "Vous êtes payé, on clôture",
+    body: "Dès la promesse de paiement, ClaimGuard suit l'échéance jusqu'au règlement — sur votre compte.",
   },
 ];
 
 function HowItWorks() {
   return (
-    <Section id="how" title="How it works" subtitle="From denial to appeal in four steps.">
+    <Section
+      id="how"
+      title="Comment ça marche"
+      subtitle="Du dépôt à la résolution, en quatre étapes."
+    >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map(({ icon: Icon, title, body }, i) => (
           <div
@@ -213,18 +212,18 @@ function HowItWorks() {
 /* ------------------------------- helps with -------------------------------- */
 
 const HELPS = [
-  { icon: ShieldCheck, label: "Denied claims" },
-  { icon: Clock, label: "Delayed claims" },
-  { icon: DollarSign, label: "Low settlement offers" },
-  { icon: FileQuestion, label: "Missing document requests" },
-  { icon: HelpCircle, label: "Confusing insurance decisions" },
+  { icon: Clock, label: "Factures en retard" },
+  { icon: FileText, label: "Impayés d'organismes" },
+  { icon: Mail, label: "Relances chronophages" },
+  { icon: ListChecks, label: "Justificatifs demandés" },
+  { icon: CalendarClock, label: "Promesses non tenues" },
 ];
 
 function HelpsWith() {
   return (
     <Section
-      title="What ClaimCare AI helps with"
-      subtitle="Whatever went wrong with your claim, we help you respond."
+      title="Ce que ClaimGuard prend en charge"
+      subtitle="Le suivi administratif de vos paiements en attente, de bout en bout."
       muted
     >
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -244,26 +243,22 @@ function HelpsWith() {
   );
 }
 
-/* ----------------------------- insurance types ----------------------------- */
+/* --------------------------------- for who --------------------------------- */
 
-const TYPES = [
-  { icon: HeartPulse, label: "Health" },
-  { icon: Car, label: "Auto" },
-  { icon: HomeIcon, label: "Home" },
-  { icon: Plane, label: "Travel" },
-  { icon: PersonStanding, label: "Disability" },
-  { icon: HeartHandshake, label: "Life" },
-  { icon: Briefcase, label: "Business" },
+const AUDIENCE = [
+  { icon: UserCheck, label: "Formateurs indépendants" },
+  { icon: Building2, label: "Sous-traitants d'organismes" },
+  { icon: Landmark, label: "Organismes de formation" },
 ];
 
-function InsuranceTypes() {
+function ForWho() {
   return (
     <Section
-      title="Supported insurance types"
-      subtitle="Built for the most common US personal insurance claims."
+      title="Pour qui"
+      subtitle="Conçu pour les professionnels de la formation confrontés aux impayés."
     >
       <div className="flex flex-wrap justify-center gap-3">
-        {TYPES.map(({ icon: Icon, label }) => (
+        {AUDIENCE.map(({ icon: Icon, label }) => (
           <div
             key={label}
             className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium"
@@ -282,41 +277,41 @@ function InsuranceTypes() {
 const REASONS = [
   {
     icon: Sparkles,
-    title: "Clear explanations",
-    body: "Plain-language analysis of your denial — no jargon, no guesswork.",
+    title: "Analyse automatique",
+    body: "Extraction des informations clés de votre facture et score de complétude du dossier.",
   },
   {
-    icon: ListChecks,
-    title: "Evidence checklist",
-    body: "Know exactly which documents strengthen your claim and how to get them.",
+    icon: Mail,
+    title: "Contact & relances",
+    body: "Emails professionnels et factuels, relances programmées, sans jamais spammer.",
   },
   {
-    icon: FileText,
-    title: "Appeal letters",
-    body: "Generate professional appeal and demand letters, then export to PDF.",
+    icon: CalendarClock,
+    title: "Suivi des promesses",
+    body: "Une date de paiement annoncée ? ClaimGuard la détecte et vérifie l'échéance.",
   },
   {
-    icon: Landmark,
-    title: "State complaint guidance",
-    body: "Prepare a complaint to your state Department of Insurance when needed.",
+    icon: Bell,
+    title: "Vous restez informé",
+    body: "Notifications aux moments qui comptent : contact, réponse, promesse, règlement.",
   },
   {
-    icon: Activity,
-    title: "Claim tracking",
-    body: "Track status, deadlines, and your next best action from one workspace.",
+    icon: UserCheck,
+    title: "Intervention humaine",
+    body: "En cas de litige ou de situation sensible, un humain reprend la main.",
   },
   {
     icon: ShieldCheck,
-    title: "Secure & private",
-    body: "Your documents are isolated to your account with strict access controls.",
+    title: "Sécurisé & privé",
+    body: "Vos documents sont isolés à votre compte, avec des contrôles d'accès stricts.",
   },
 ];
 
 function WhyChoose() {
   return (
     <Section
-      title="Why users choose ClaimCare AI"
-      subtitle="Everything you need to respond with confidence."
+      title="Pourquoi ClaimGuard"
+      subtitle="Un vrai système automatisé, pas un simple chatbot."
       muted
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -339,8 +334,8 @@ function WhyChoose() {
 function PricingTeaser() {
   return (
     <Section
-      title="Plans for every claim"
-      subtitle="Start small, upgrade when your case gets serious. Cancel anytime."
+      title="Des offres pour chaque volume"
+      subtitle="Commencez petit, montez en puissance quand vos dossiers se multiplient. Sans engagement."
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {PLANS.map((plan) => (
@@ -353,12 +348,12 @@ function PricingTeaser() {
           >
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">{plan.name}</h3>
-              {plan.highlighted && <Badge variant="info">Popular</Badge>}
+              {plan.highlighted && <Badge variant="info">Populaire</Badge>}
             </div>
             <p className="mt-2 text-2xl font-bold">
-              ${plan.priceMonthly}
+              {plan.priceMonthly}€
               <span className="text-sm font-normal text-muted-foreground">
-                /mo
+                /mois
               </span>
             </p>
             <p className="mt-1 text-sm text-muted-foreground">{plan.tagline}</p>
@@ -380,7 +375,7 @@ function PricingTeaser() {
                 "mt-5",
               )}
             >
-              Choose {plan.name}
+              Choisir {plan.name}
             </Link>
           </div>
         ))}
@@ -390,7 +385,7 @@ function PricingTeaser() {
           href="/pricing"
           className="text-sm font-medium text-brand hover:underline"
         >
-          Compare all features →
+          Comparer toutes les fonctionnalités →
         </Link>
       </div>
     </Section>
@@ -404,10 +399,11 @@ function FinalCta() {
     <section className="px-6 py-16">
       <div className="mx-auto max-w-4xl rounded-2xl border border-border bg-primary p-10 text-center text-primary-foreground">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Ready to take on your claim denial?
+          Prêt à confier votre première facture ?
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-primary-foreground/80">
-          Upload your denial letter and get a clear, AI-powered plan in minutes.
+          Déposez votre facture impayée et laissez ClaimGuard gérer le suivi
+          jusqu&apos;au règlement.
         </p>
         <Link
           href="/signup"
@@ -416,15 +412,14 @@ function FinalCta() {
             "mt-6 font-semibold",
           )}
         >
-          Start your claim review
+          Confier une facture
           <ArrowRight className="size-4" />
         </Link>
-        <div className="mx-auto mt-8 max-w-2xl text-left">
-          <DisclaimerBanner
-            variant="primary"
-            className="border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground/90"
-          />
-        </div>
+        <p className="mx-auto mt-6 max-w-2xl text-sm text-primary-foreground/80">
+          ClaimGuard assure le suivi administratif de vos factures. ClaimGuard
+          n&apos;encaisse jamais vos paiements et n&apos;est ni un huissier ni un
+          cabinet juridique.
+        </p>
       </div>
     </section>
   );

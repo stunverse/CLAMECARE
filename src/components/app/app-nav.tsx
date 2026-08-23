@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
-  FolderOpen,
   FileClock,
-  BookOpen,
   CreditCard,
   LifeBuoy,
   Settings,
@@ -21,13 +18,10 @@ interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Mes dossiers", href: "/dossiers", icon: FileClock },
-  { label: "My Claims", href: "/claims", icon: FolderOpen },
-  { label: "Library", href: "/library", icon: BookOpen },
-  { label: "Billing", href: "/billing", icon: CreditCard },
+  { label: "Facturation", href: "/billing", icon: CreditCard },
   { label: "Support", href: "/support", icon: LifeBuoy },
-  { label: "Settings", href: "/settings", icon: Settings },
+  { label: "Paramètres", href: "/settings", icon: Settings },
 ];
 
 export function AppNav({ onNavigate }: { onNavigate?: () => void }) {

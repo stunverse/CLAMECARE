@@ -10,12 +10,12 @@ import { cn } from "@/lib/utils";
 
 function Logo() {
   return (
-    <Link href="/dashboard" className="flex items-center gap-2">
+    <Link href="/dossiers" className="flex items-center gap-2">
       <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
         <ShieldCheck className="size-5" />
       </span>
       <span className="font-semibold tracking-tight">
-        ClaimCare<span className="text-brand"> AI</span>
+        Claim<span className="text-brand">Guard</span>
       </span>
     </Link>
   );

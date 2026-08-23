@@ -8,6 +8,7 @@ const ITEMS = [
   { label: "Overview", href: "/admin" },
   { label: "Dossiers", href: "/admin/cases" },
   { label: "À examiner", href: "/admin/review" },
+  { label: "Analytics", href: "/admin/analytics" },
   { label: "Automatisations", href: "/admin/automations" },
   { label: "Users", href: "/admin/users" },
   { label: "Claims", href: "/admin/claims" },

@@ -14,7 +14,7 @@ export default function AuthLayout({
           <ShieldCheck className="size-5" />
         </span>
         <span className="text-lg font-semibold tracking-tight">
-          ClaimCare<span className="text-brand"> AI</span>
+          Claim<span className="text-brand">Guard</span>
         </span>
       </Link>
 
@@ -30,8 +30,9 @@ export default function AuthLayout({
       </div>
 
       <p className="mt-6 max-w-md text-center text-xs text-muted-foreground">
-        ClaimCare AI provides informational assistance only and is not a law
-        firm. It does not provide legal advice.
+        ClaimGuard assure le suivi administratif de vos factures impayées.
+        ClaimGuard n&apos;encaisse jamais vos paiements : l&apos;organisme vous
+        règle directement.
       </p>
     </div>
   );
