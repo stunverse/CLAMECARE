@@ -1,16 +1,12 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { env } from "@/lib/env";
-import { canTransition } from "@/lib/claimguard/state-machine";
 import {
   renderCaseEmail,
   kindForReminder,
-  TEMPLATE_VERSION,
   type CaseEmailKind,
 } from "@/lib/claimguard/email/templates";
-import { caseReplyAddress } from "@/lib/claimguard/email/addressing";
-import { sendRawEmail } from "@/lib/claimguard/email/send-raw";
+import { performCaseSend } from "@/lib/claimguard/email/core-send";
 import type { Case } from "@/lib/claimguard/types";
 import type { CaseStatus } from "@/lib/claimguard/enums";
 
@@ -79,111 +75,19 @@ export async function sendCaseEmail(
     .maybeSingle<Case>();
   if (!row) return { error: "Dossier introuvable." };
 
-  const to = row.debtor_accounting_email || row.debtor_email;
-  if (!to) {
-    return { error: "Aucune adresse email de l'organisme n'est renseignée." };
-  }
-
   const kind = input.kind ?? kindForReminder(row.reminder_count);
-  const template = renderCaseEmail(kind, row);
-  const subject = input.subject?.trim() || template.subject;
-  const body = input.body?.trim() || template.body;
-
-  // Ensure a thread exists.
-  let threadId: string | null = null;
-  const { data: existingThread } = await supabase
-    .from("email_threads")
-    .select("id")
-    .eq("case_id", row.id)
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle<{ id: string }>();
-  if (existingThread) threadId = existingThread.id;
-  else {
-    const { data: created } = await supabase
-      .from("email_threads")
-      .insert({ case_id: row.id, subject })
-      .select("id")
-      .single<{ id: string }>();
-    threadId = created?.id ?? null;
-  }
-
-  const from = env.CASE_EMAIL_FROM || env.EMAIL_FROM;
-  const replyTo = caseReplyAddress(row.case_reference);
-
-  const send = await sendRawEmail({ from, to, replyTo, subject, text: body });
-
-  const { data: message } = await supabase
-    .from("email_messages")
-    .insert({
-      case_id: row.id,
-      thread_id: threadId,
-      direction: "outbound",
-      from_email: from,
-      to_email: to,
-      subject,
-      body,
-      status: send.sent ? "sent" : "queued",
-      external_id: send.id,
-      ai_generated: !input.body,
-      requires_review: false,
-      sent_at: send.sent ? new Date().toISOString() : null,
-    })
-    .select("id")
-    .single<{ id: string }>();
-
-  // Deterministic status advance.
-  let applied: CaseStatus = row.status;
-  if (kind === "first_contact") {
-    if (canTransition(row.status, "first_contact_sent")) {
-      applied = "first_contact_sent";
-      // Immediately move to the resting "waiting" state.
-      if (canTransition(applied, "waiting_for_organization")) {
-        applied = "waiting_for_organization";
-      }
-    }
-  } else {
-    // reminder loop — stay in waiting_for_organization
-    applied = canTransition(row.status, "waiting_for_organization")
-      ? "waiting_for_organization"
-      : row.status;
-  }
-
-  await supabase
-    .from("cases")
-    .update({
-      status: applied,
-      last_contact_at: new Date().toISOString(),
-      reminder_count: kind === "first_contact" ? 0 : row.reminder_count + 1,
-    })
-    .eq("id", row.id);
-
-  await supabase.from("case_timeline").insert({
-    case_id: row.id,
-    event_type: kind === "first_contact" ? "first_contact_sent" : "reminder_sent",
-    title:
-      kind === "first_contact"
-        ? "Premier contact envoyé"
-        : `Relance envoyée (n° ${row.reminder_count + 1})`,
-    description: send.sent
-      ? `Email envoyé à ${to}.`
-      : `Email préparé pour ${to} (envoi non configuré).`,
-    old_status: row.status,
-    new_status: applied !== row.status ? applied : null,
-    source: "client",
-    metadata: { template_version: TEMPLATE_VERSION, kind },
-  });
-  await supabase.from("audit_logs").insert({
-    user_id: user.id,
-    case_id: row.id,
-    action: kind === "first_contact" ? "first_contact_sent" : "reminder_sent",
-    source: "client",
-    metadata: { to, sent: send.sent },
+  const result = await performCaseSend(supabase, row, {
+    kind,
+    subject: input.subject,
+    body: input.body,
+    actor: "client",
+    actorUserId: user.id,
   });
 
   return {
-    messageId: message?.id,
-    status: applied,
-    notSent: !send.sent,
+    error: result.error,
+    messageId: result.messageId,
+    status: result.status,
+    notSent: result.notSent,
   };
 }

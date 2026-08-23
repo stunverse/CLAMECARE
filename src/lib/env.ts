@@ -57,6 +57,8 @@ export const env = {
   INBOUND_EMAIL_DOMAIN: process.env.INBOUND_EMAIL_DOMAIN,
   // Shared secret verifying the inbound-email webhook (Resend/Svix).
   INBOUND_WEBHOOK_SECRET: process.env.INBOUND_WEBHOOK_SECRET,
+  // Shared secret authorizing the workflow cron endpoint.
+  CRON_SECRET: process.env.CRON_SECRET,
 
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,

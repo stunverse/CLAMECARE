@@ -1,6 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { scheduleFirstContact } from "@/lib/claimguard/workflow/engine";
 import { computeCompleteness } from "@/lib/cases/completeness";
 import { canTransition } from "@/lib/claimguard/state-machine";
 import {
@@ -209,6 +211,21 @@ export async function analyzeCase(caseId: string): Promise<AnalyzeCaseResult> {
     source: "ai",
     metadata: { completeness: completeness.score, status: applyStatus },
   });
+
+  // If the case is now ready to contact and automation is on, schedule the
+  // first outbound contact. Enqueuing writes workflow_jobs, which RLS reserves
+  // to staff/service-role, so this uses the admin client (best-effort — manual
+  // send still works when the service-role key is absent).
+  if (applyStatus === "ready_to_contact" && row.automation_enabled) {
+    const admin = createAdminClient();
+    if (admin) {
+      await scheduleFirstContact(admin, {
+        id: caseId,
+        status: "ready_to_contact",
+        automation_enabled: true,
+      });
+    }
+  }
 
   return { status: applyStatus, completeness: completeness.score };
 }

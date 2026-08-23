@@ -3,6 +3,7 @@ import { classifyEmail } from "@/lib/claimguard/ai/classify-email";
 import { PROMPT_VERSION_CLASSIFY } from "@/lib/claimguard/ai/classify-email";
 import { parseCaseReference } from "@/lib/claimguard/email/addressing";
 import { canTransition } from "@/lib/claimguard/state-machine";
+import { enqueueJob } from "@/lib/claimguard/workflow/engine";
 import { env, isOpenAIConfigured } from "@/lib/env";
 import type { Case } from "@/lib/claimguard/types";
 import type { CaseStatus } from "@/lib/claimguard/enums";
@@ -157,6 +158,18 @@ export async function processInboundEmail(
     patch.promised_payment_date = classification.promise.promised_date;
   }
   await supabase.from("cases").update(patch).eq("id", row.id);
+
+  // Schedule a deterministic payment-due check the day after the promised date.
+  if (applied === "payment_promised" && classification.promise?.promised_date) {
+    const dueCheck = new Date(`${classification.promise.promised_date}T12:00:00.000Z`);
+    dueCheck.setUTCDate(dueCheck.getUTCDate() + 1);
+    await enqueueJob(supabase, {
+      caseId: row.id,
+      jobType: "payment_due_check",
+      runAt: dueCheck,
+      idempotencyKey: `due_check:${row.id}:${classification.promise.promised_date}`,
+    });
+  }
 
   await supabase.from("case_timeline").insert({
     case_id: row.id,
