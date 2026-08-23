@@ -11,6 +11,7 @@ import { CaseDocumentUploader } from "@/components/cases/case-document-uploader"
 import { CaseDocuments } from "@/components/cases/case-documents";
 import { CaseTimeline } from "@/components/cases/case-timeline";
 import { CaseCompleteness } from "@/components/cases/case-completeness";
+import { AnalyzeButton } from "@/components/cases/analyze-button";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -199,8 +200,9 @@ export default async function CaseDetailPage({
             <CardHeader>
               <CardTitle className="text-base">Complétude du dossier</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <CaseCompleteness result={completeness} />
+              {user && !isDemo && <AnalyzeButton caseId={c.id} />}
             </CardContent>
           </Card>
 
