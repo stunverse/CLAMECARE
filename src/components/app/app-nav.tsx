@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   FolderOpen,
+  FileClock,
   BookOpen,
   CreditCard,
   LifeBuoy,
@@ -21,6 +22,7 @@ interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Mes dossiers", href: "/dossiers", icon: FileClock },
   { label: "My Claims", href: "/claims", icon: FolderOpen },
   { label: "Library", href: "/library", icon: BookOpen },
   { label: "Billing", href: "/billing", icon: CreditCard },
