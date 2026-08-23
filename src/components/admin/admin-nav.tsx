@@ -6,6 +6,9 @@ import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { label: "Overview", href: "/admin" },
+  { label: "Dossiers", href: "/admin/cases" },
+  { label: "À examiner", href: "/admin/review" },
+  { label: "Automatisations", href: "/admin/automations" },
   { label: "Users", href: "/admin/users" },
   { label: "Claims", href: "/admin/claims" },
   { label: "Library", href: "/admin/library" },
