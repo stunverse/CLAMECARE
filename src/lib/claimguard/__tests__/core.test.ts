@@ -14,7 +14,9 @@ import {
 import { parseCaseReference, caseReplyAddress } from "@/lib/claimguard/email/addressing";
 import { heuristicClassify } from "@/lib/claimguard/ai/classify-email";
 import { heuristicExtract } from "@/lib/claimguard/ai/extract-invoice";
-import { kindForReminder } from "@/lib/claimguard/email/templates";
+import { kindForReminder, renderCaseEmail } from "@/lib/claimguard/email/templates";
+import { computeDunning, DEFAULT_DUNNING } from "@/lib/claimguard/legal/penalties";
+import { checkOutboundCompliance } from "@/lib/claimguard/email/compliance";
 
 /* --------------------------- state machine (§9) --------------------------- */
 describe("state machine", () => {
@@ -182,5 +184,65 @@ describe("reminder kind", () => {
     expect(kindForReminder(0)).toBe("first_contact");
     expect(kindForReminder(1)).toBe("reminder");
     expect(kindForReminder(3)).toBe("final_notice");
+  });
+});
+
+/* ------------------------- dunning / penalties (§34) ---------------------- */
+describe("dunning arithmetic", () => {
+  it("adds late penalties + €40 indemnity once overdue, separate from principal", () => {
+    const d = computeDunning(3000, "2026-07-15", "2026-09-15", DEFAULT_DUNNING);
+    expect(d.principal).toBe(3000);
+    expect(d.daysOverdue).toBe(62);
+    // 3000 * 0.12 * 62/365 = 61.15
+    expect(d.penalties).toBeCloseTo(61.15, 2);
+    expect(d.fixedIndemnity).toBe(40);
+    expect(d.total).toBeCloseTo(3101.15, 2);
+  });
+
+  it("charges nothing extra before the due date", () => {
+    const d = computeDunning(1000, "2026-12-31", "2026-09-15", DEFAULT_DUNNING);
+    expect(d.daysOverdue).toBe(0);
+    expect(d.penalties).toBe(0);
+    expect(d.fixedIndemnity).toBe(0);
+    expect(d.total).toBe(1000);
+  });
+});
+
+/* ----------------------- outbound compliance guard (§14) ------------------ */
+describe("compliance guard", () => {
+  it("blocks coercive / impersonating wording", () => {
+    expect(checkOutboundCompliance("", "Nous mandatons un huissier.").ok).toBe(false);
+    expect(
+      checkOutboundCompliance("", "Dernier avertissement avant saisie de vos comptes.").ok,
+    ).toBe(false);
+    expect(
+      checkOutboundCompliance("", "Sans règlement, nous engageons une procédure judiciaire.").ok,
+    ).toBe(false);
+    expect(checkOutboundCompliance("Sommation de payer", "…").ok).toBe(false);
+  });
+
+  it("passes a legitimate amicable message", () => {
+    const clean =
+      "Bonjour, sauf erreur la facture demeure impayée. Pourriez-vous m'indiquer la date de règlement prévue ? Cordialement.";
+    expect(checkOutboundCompliance("Relance", clean).ok).toBe(true);
+  });
+
+  it("the amicable formal notice template is itself compliant", () => {
+    const dunning = computeDunning(3000, "2026-07-15", "2026-09-15");
+    const email = renderCaseEmail(
+      "formal_notice",
+      {
+        payee_name: "Camille Freelance",
+        debtor_name: "Studio Nova SAS",
+        invoice_number: "F-2026-0117",
+        remaining_amount: 3000,
+        due_date: "2026-07-15",
+        iban: "FR7612345",
+      },
+      { dunning },
+    );
+    expect(email.body).toContain("mandataire");
+    expect(email.body).toContain("Indemnité forfaitaire");
+    expect(checkOutboundCompliance(email.subject, email.body).ok).toBe(true);
   });
 });

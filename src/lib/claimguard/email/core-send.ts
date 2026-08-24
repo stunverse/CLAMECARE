@@ -8,6 +8,7 @@ import {
 } from "@/lib/claimguard/email/templates";
 import { caseReplyAddress } from "@/lib/claimguard/email/addressing";
 import { sendRawEmail } from "@/lib/claimguard/email/send-raw";
+import { checkOutboundCompliance } from "@/lib/claimguard/email/compliance";
 import type { Case } from "@/lib/claimguard/types";
 import type { CaseStatus, CaseEventSource } from "@/lib/claimguard/enums";
 
@@ -25,6 +26,8 @@ export interface PerformSendResult {
   messageId?: string;
   status?: CaseStatus;
   notSent?: boolean;
+  /** True when the send was held back by the compliance guard (not an error to retry). */
+  blocked?: boolean;
 }
 
 /**
@@ -48,6 +51,41 @@ export async function performCaseSend(
   const template = renderCaseEmail(kind, row);
   const subject = options.subject?.trim() || template.subject;
   const body = options.body?.trim() || template.body;
+
+  // Compliance gate: never let coercive / impersonating wording reach the
+  // debtor, whoever wrote it (template, AI draft, or a human). On a violation
+  // the send is HELD (not sent), the case is flagged for human review, and we
+  // return blocked:true so the workflow does not retry it as an error.
+  const compliance = checkOutboundCompliance(subject, body);
+  if (!compliance.ok) {
+    await supabase
+      .from("cases")
+      .update({ human_review_required: true })
+      .eq("id", row.id);
+    await supabase.from("case_timeline").insert({
+      case_id: row.id,
+      event_type: "email_held_compliance",
+      title: "Email retenu — vérification de conformité",
+      description: `Termes non conformes détectés : ${compliance.violations
+        .map((v) => v.term)
+        .join(", ")}. Envoi bloqué, revue humaine requise.`,
+      source: actor,
+      metadata: { violations: compliance.violations },
+    });
+    await supabase.from("audit_logs").insert({
+      user_id: options.actorUserId ?? row.user_id,
+      case_id: row.id,
+      action: "email_held_compliance",
+      source: actor,
+      metadata: { violations: compliance.violations },
+    });
+    return {
+      blocked: true,
+      error: `Envoi bloqué (conformité) : ${compliance.violations
+        .map((v) => v.term)
+        .join(", ")}.`,
+    };
+  }
 
   // Ensure a thread exists.
   let threadId: string | null = null;

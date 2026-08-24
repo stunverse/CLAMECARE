@@ -122,6 +122,9 @@ async function handleFirstContact(
     kind: "first_contact",
     actor: "automation",
   });
+  // A compliance hold is a terminal, non-retryable outcome (case is now in
+  // human review) — do not throw, or the job would retry indefinitely.
+  if (res.blocked) return;
   if (res.error) throw new Error(res.error);
 
   // Schedule the first reminder from now.
@@ -175,6 +178,7 @@ async function handleReminder(
     kind: "reminder",
     actor: "automation",
   });
+  if (res.blocked) return;
   if (res.error) throw new Error(res.error);
 
   // Schedule the next reminder if any remain.
