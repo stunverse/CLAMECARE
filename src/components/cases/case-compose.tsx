@@ -54,7 +54,7 @@ export function CaseCompose({
   if (!to) {
     return (
       <p className="text-sm text-muted-foreground">
-        Renseignez l&apos;email de l&apos;organisme pour pouvoir le contacter.
+        Renseignez l&apos;email du client pour pouvoir le contacter.
       </p>
     );
   }

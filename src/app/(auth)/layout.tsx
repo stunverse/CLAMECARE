@@ -31,7 +31,7 @@ export default function AuthLayout({
 
       <p className="mt-6 max-w-md text-center text-xs text-muted-foreground">
         ClaimGuard assure le suivi administratif de vos factures impayées.
-        ClaimGuard n&apos;encaisse jamais vos paiements : l&apos;organisme vous
+        ClaimGuard n&apos;encaisse jamais vos paiements : votre client vous
         règle directement.
       </p>
     </div>

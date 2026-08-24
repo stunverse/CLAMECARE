@@ -166,7 +166,7 @@ export async function extractInvoiceFields(
       "Extrais les informations d'une facture à partir du texte ci-dessous.",
       "N'extrais que ce qui est explicitement écrit. Si un champ est absent, renvoie null.",
       "Les dates doivent être au format ISO yyyy-mm-dd. Les montants sont des nombres (point décimal, sans symbole ni séparateur de milliers).",
-      "Le débiteur est l'organisme de formation destinataire de la facture (le client), pas l'émetteur.",
+      "Le débiteur est le client destinataire de la facture (l'entreprise qui doit payer), pas l'émetteur.",
       "",
       dataBlock("FACTURE", clean.slice(0, 8000)),
       "",

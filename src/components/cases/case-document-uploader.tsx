@@ -154,7 +154,7 @@ export function CaseDocumentUploader({
           Glissez-déposez vos fichiers, ou cliquez pour parcourir
         </span>
         <span className="text-xs text-muted-foreground">
-          Facture, convention, feuille d&apos;émargement… · PDF, JPG, PNG, DOCX ·
+          Facture, devis, contrat, bon de commande… · PDF, JPG, PNG, DOCX ·
           25 Mo max
         </span>
       </button>

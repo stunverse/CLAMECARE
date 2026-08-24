@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const TITLE = "ClaimGuard — L'assistant de paiement des formateurs indépendants";
+const TITLE = "ClaimGuard — L'assistant de paiement des indépendants";
 const DESCRIPTION =
-  "Déposez votre facture impayée. ClaimGuard analyse votre dossier, contacte l'organisme de formation, suit les échanges et vous accompagne automatiquement jusqu'à la résolution du paiement.";
+  "Freelance, consultant, artisan ou prestataire : déposez votre facture impayée. ClaimGuard analyse votre dossier, contacte votre client, suit les échanges et vous accompagne automatiquement jusqu'à la résolution du paiement.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.APP_URL),
@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   applicationName: "ClaimGuard",
   keywords: [
     "facture impayée",
-    "relance organisme de formation",
-    "formateur indépendant",
-    "recouvrement amiable formation",
+    "relance client",
+    "freelance indépendant",
+    "recouvrement amiable",
     "suivi de paiement",
-    "sous-traitance formation",
+    "relance facture freelance",
   ],
   openGraph: {
     type: "website",

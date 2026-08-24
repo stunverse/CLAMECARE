@@ -121,7 +121,7 @@ export async function classifyEmail(
 
   try {
     const user = [
-      "Classe la réponse d'un organisme de formation concernant une facture impayée.",
+      "Classe la réponse d'un client (entreprise donneuse d'ordre) concernant une facture impayée.",
       `Catégories autorisées : ${EMAIL_CATEGORIES.join(", ")}.`,
       "Si l'email annonce une date de paiement précise, extrais-la (ISO yyyy-mm-dd) ; sinon promised_date=null. N'invente aucune date : elle doit figurer dans le texte.",
       "",

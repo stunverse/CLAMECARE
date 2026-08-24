@@ -97,7 +97,7 @@ export async function confirmPayment(
     event_type: fullyPaid ? "payment_confirmed" : "partial_payment",
     title: fullyPaid ? "Paiement confirmé" : "Paiement partiel enregistré",
     description: fullyPaid
-      ? "Le formateur a confirmé la réception du paiement complet."
+      ? "Le prestataire a confirmé la réception du paiement complet."
       : `Paiement partiel reçu. Reste à percevoir : ${remainingAfter} €.`,
     old_status: row.status,
     new_status: applied !== row.status ? applied : null,
@@ -165,7 +165,7 @@ export async function reportPaymentNotReceived(
     case_id: caseId,
     event_type: "payment_overdue",
     title: "Paiement non reçu",
-    description: "Le formateur indique ne pas avoir reçu le paiement annoncé.",
+    description: "Le prestataire indique ne pas avoir reçu le paiement annoncé.",
     old_status: row.status,
     new_status: applied !== row.status ? applied : null,
     source: "client",

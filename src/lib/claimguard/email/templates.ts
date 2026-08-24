@@ -43,7 +43,7 @@ function greeting(c: Partial<Case>): string {
 }
 
 function signature(c: Partial<Case>): string {
-  const who = c.payee_name ?? "Le formateur";
+  const who = c.payee_name ?? "Le prestataire";
   return `Cordialement,\n${who}\n\n— Message envoyé via ClaimGuard pour le compte de ${who}.`;
 }
 

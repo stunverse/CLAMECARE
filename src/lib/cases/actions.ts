@@ -150,7 +150,7 @@ export async function createCaseAction(
 ): Promise<CaseFormState> {
   const input = parseCaseForm(formData);
   if (!input.debtor_name) {
-    return { error: "Indiquez au moins le nom de l'organisme de formation." };
+    return { error: "Indiquez au moins le nom du client / de l'entreprise." };
   }
   return createCase(input);
 }
@@ -163,7 +163,7 @@ export async function updateCaseAction(
 ): Promise<CaseFormState> {
   const input = parseCaseForm(formData);
   if (!input.debtor_name) {
-    return { error: "Indiquez au moins le nom de l'organisme de formation." };
+    return { error: "Indiquez au moins le nom du client / de l'entreprise." };
   }
   return updateCase(caseId, input);
 }

@@ -116,15 +116,15 @@ function Hero() {
       <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center px-6 py-20 text-center md:py-28">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-accent-foreground shadow-sm">
           <Sparkles className="size-3.5 text-brand" />
-          L&apos;assistant de paiement des formateurs indépendants
+          L&apos;assistant de paiement des indépendants
         </span>
         <h1 className="mt-6 max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
           Déposez votre facture impayée. ClaimGuard s&apos;occupe du reste.
         </h1>
         <p className="mt-5 max-w-2xl text-pretty text-lg text-muted-foreground">
-          ClaimGuard analyse votre dossier, contacte l&apos;organisme de
-          formation, suit les échanges et vous accompagne automatiquement
-          jusqu&apos;à la résolution du paiement.
+          Freelance, consultant, artisan ou prestataire : ClaimGuard analyse
+          votre dossier, contacte votre client, suit les échanges et vous
+          accompagne automatiquement jusqu&apos;à la résolution du paiement.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
@@ -149,7 +149,7 @@ function Hero() {
         </div>
         <p className="mt-4 text-xs text-muted-foreground">
           Vous n&apos;avez plus à passer vos journées à relancer les services
-          comptables. L&apos;organisme vous règle directement sur votre compte.
+          comptables. Votre client vous règle directement sur votre compte.
         </p>
       </div>
     </section>
@@ -171,8 +171,8 @@ const STEPS = [
   },
   {
     icon: Mail,
-    title: "L'organisme est contacté",
-    body: "ClaimGuard écrit à l'organisme, suit les réponses et relance automatiquement.",
+    title: "Votre client est contacté",
+    body: "ClaimGuard écrit à votre client, suit les réponses et relance automatiquement.",
   },
   {
     icon: CheckCircle2,
@@ -213,7 +213,7 @@ function HowItWorks() {
 
 const HELPS = [
   { icon: Clock, label: "Factures en retard" },
-  { icon: FileText, label: "Impayés d'organismes" },
+  { icon: FileText, label: "Impayés clients" },
   { icon: Mail, label: "Relances chronophages" },
   { icon: ListChecks, label: "Justificatifs demandés" },
   { icon: CalendarClock, label: "Promesses non tenues" },
@@ -246,16 +246,18 @@ function HelpsWith() {
 /* --------------------------------- for who --------------------------------- */
 
 const AUDIENCE = [
-  { icon: UserCheck, label: "Formateurs indépendants" },
-  { icon: Building2, label: "Sous-traitants d'organismes" },
-  { icon: Landmark, label: "Organismes de formation" },
+  { icon: Sparkles, label: "Développeurs & designers" },
+  { icon: UserCheck, label: "Consultants & coachs" },
+  { icon: FileText, label: "Rédacteurs & créatifs" },
+  { icon: Building2, label: "Artisans & prestataires" },
+  { icon: Landmark, label: "Sous-traitants & freelances" },
 ];
 
 function ForWho() {
   return (
     <Section
       title="Pour qui"
-      subtitle="Conçu pour les professionnels de la formation confrontés aux impayés."
+      subtitle="Conçu pour tous les indépendants confrontés à des factures impayées, quel que soit leur métier."
     >
       <div className="flex flex-wrap justify-center gap-3">
         {AUDIENCE.map(({ icon: Icon, label }) => (

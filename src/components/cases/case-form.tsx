@@ -65,15 +65,15 @@ export function CaseForm() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Building2 className="size-4 text-brand" />
-            Organisme de formation (le débiteur)
+            Client / donneur d&apos;ordre (le débiteur)
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <Field
               name="debtor_name"
-              label="Nom de l'organisme"
-              placeholder="Ex. OF Horizon Compétences"
+              label="Nom du client / de l'entreprise"
+              placeholder="Ex. Studio Nova SAS"
               required
             />
           </div>
@@ -81,13 +81,13 @@ export function CaseForm() {
             name="debtor_email"
             label="Email de contact"
             type="email"
-            placeholder="contact@organisme.fr"
+            placeholder="contact@client.fr"
           />
           <Field
             name="debtor_accounting_email"
             label="Email comptabilité"
             type="email"
-            placeholder="compta@organisme.fr"
+            placeholder="compta@client.fr"
             hint="Utilisé en priorité pour les relances."
           />
           <div className="sm:col-span-2">
@@ -135,7 +135,7 @@ export function CaseForm() {
               id="service_description"
               name="service_description"
               rows={2}
-              placeholder="Ex. Formation « Management d'équipe » — 3 jours, juin 2026"
+              placeholder="Ex. Refonte du site vitrine — mission de 12 jours, juin 2026"
             />
           </div>
         </CardContent>
@@ -150,7 +150,7 @@ export function CaseForm() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="rounded-lg bg-accent/50 px-3 py-2 text-xs text-muted-foreground">
-            L&apos;organisme vous règle <strong>directement</strong> sur votre
+            Votre client vous règle <strong>directement</strong> sur votre
             compte. ClaimGuard ne perçoit jamais votre argent et ne communique
             jamais d&apos;autre compte que le vôtre.
           </p>
@@ -166,7 +166,7 @@ export function CaseForm() {
                 name="iban"
                 label="IBAN"
                 placeholder="FR76 ...."
-                hint="Communiqué à l'organisme dans les relances, jamais publié."
+                hint="Communiqué à votre client dans les relances, jamais publié."
               />
             </div>
           </div>

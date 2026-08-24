@@ -88,7 +88,7 @@ export default async function CaseDetailPage({
   const draft = !isDemo ? await draftCaseEmail(c.id) : null;
   const draftReady = draft && !("error" in draft) ? draft : null;
   const kindLabel =
-    c.reminder_count > 0 ? "Envoyer une relance" : "Contacter l'organisme";
+    c.reminder_count > 0 ? "Envoyer une relance" : "Contacter le client";
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
@@ -104,7 +104,7 @@ export default async function CaseDetailPage({
         <div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Building2 className="size-4" />
-            {c.debtor_name ?? "Organisme à renseigner"}
+            {c.debtor_name ?? "Client à renseigner"}
           </div>
           <h1 className="mt-1 flex items-center gap-3 text-2xl font-bold tracking-tight">
             {formatEuro(c.remaining_amount ?? c.original_amount)}
@@ -198,7 +198,7 @@ export default async function CaseDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="text-base">
-                Échanges avec l&apos;organisme
+                Échanges avec le client
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -241,7 +241,7 @@ export default async function CaseDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Organisme</CardTitle>
+              <CardTitle className="text-base">Client</CardTitle>
             </CardHeader>
             <CardContent>
               <dl className="divide-y divide-border">
@@ -298,7 +298,7 @@ export default async function CaseDetailPage({
               </dl>
               <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
                 <CalendarClock className="size-3" />
-                L&apos;organisme règle directement sur ce compte.
+                Votre client règle directement sur ce compte.
               </p>
             </CardContent>
           </Card>

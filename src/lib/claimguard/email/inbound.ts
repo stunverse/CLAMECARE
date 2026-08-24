@@ -183,7 +183,7 @@ export async function processInboundEmail(
   await supabase.from("case_timeline").insert({
     case_id: row.id,
     event_type: "email_received",
-    title: "Réponse de l'organisme reçue",
+    title: "Réponse du client reçue",
     description: classification.summary || null,
     old_status: row.status,
     new_status: applied !== row.status ? applied : null,

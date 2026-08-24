@@ -153,7 +153,7 @@ export function AdminCaseActions({
 
       {/* Manual email */}
       <div className="space-y-2">
-        <Label htmlFor="admin-email-subject">Email manuel à l&apos;organisme</Label>
+        <Label htmlFor="admin-email-subject">Email manuel au client</Label>
         <Input
           id="admin-email-subject"
           value={subject}

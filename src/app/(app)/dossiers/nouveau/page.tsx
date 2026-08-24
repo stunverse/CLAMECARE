@@ -20,7 +20,7 @@ export default function NewCasePage() {
         <h1 className="text-2xl font-bold tracking-tight">Nouveau dossier</h1>
         <p className="text-sm text-muted-foreground">
           Renseignez la facture impayée. ClaimGuard analyse, contacte
-          l&apos;organisme et gère les relances jusqu&apos;au paiement — sur
+          votre client et gère les relances jusqu&apos;au paiement — sur
           votre compte.
         </p>
       </div>

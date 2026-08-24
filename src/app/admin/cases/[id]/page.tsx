@@ -45,7 +45,7 @@ export default async function AdminCaseDetailPage({
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="flex items-center gap-3 text-2xl font-bold tracking-tight">
-            {c.debtor_name ?? "Organisme"} —{" "}
+            {c.debtor_name ?? "Client"} —{" "}
             {formatEuro(c.remaining_amount ?? c.original_amount)}
             <Badge variant={CASE_STATUS_VARIANT[c.status]}>
               {CASE_STATUS_LABELS[c.status]}

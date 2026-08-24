@@ -37,7 +37,7 @@ export async function summarizeCase(c: Partial<Case>): Promise<string> {
   try {
     const facts = JSON.stringify(
       {
-        organisme: c.debtor_name,
+        client: c.debtor_name,
         numero_facture: c.invoice_number,
         montant_du: c.remaining_amount ?? c.original_amount,
         date_facture: c.invoice_date,

@@ -41,7 +41,7 @@ export async function performCaseSend(
 ): Promise<PerformSendResult> {
   const to = row.debtor_accounting_email || row.debtor_email;
   if (!to) {
-    return { error: "Aucune adresse email de l'organisme n'est renseignée." };
+    return { error: "Aucune adresse email du client n'est renseignée." };
   }
 
   const { kind, actor } = options;

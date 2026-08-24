@@ -34,12 +34,12 @@ export function CaseEmails({ messages }: { messages: EmailMessage[] }) {
                 {inbound ? (
                   <>
                     <ArrowDownLeft className="size-3.5 text-info" />
-                    {m.from_email ?? "Organisme"}
+                    {m.from_email ?? "Client"}
                   </>
                 ) : (
                   <>
                     <ArrowUpRight className="size-3.5 text-brand" />
-                    Vous → {m.to_email ?? "Organisme"}
+                    Vous → {m.to_email ?? "Client"}
                   </>
                 )}
               </span>

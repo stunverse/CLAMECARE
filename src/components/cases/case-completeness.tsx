@@ -22,7 +22,7 @@ export function CaseCompleteness({ result }: { result: CompletenessResult }) {
         <div className="flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-warning">
           <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
           <span>
-            Éléments indispensables avant de contacter l&apos;organisme :{" "}
+            Éléments indispensables avant de contacter le client :{" "}
             {result.blockers.map((b) => b.label).join(", ")}.
           </span>
         </div>

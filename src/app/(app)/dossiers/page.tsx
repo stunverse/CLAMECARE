@@ -87,7 +87,7 @@ export default async function DossiersPage() {
                 >
                   <span>
                     <span className="font-medium">
-                      {c.debtor_name ?? "Organisme"}
+                      {c.debtor_name ?? "Client"}
                     </span>{" "}
                     — {CASE_STATUS_LABELS[c.status]}
                   </span>

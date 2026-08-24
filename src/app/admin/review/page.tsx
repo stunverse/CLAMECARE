@@ -60,7 +60,7 @@ export default async function AdminReviewPage() {
                     <span className="font-medium">{reason.label}</span>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {c.debtor_name ?? "Organisme"} ·{" "}
+                    {c.debtor_name ?? "Client"} ·{" "}
                     <span className="font-mono text-xs">{c.case_reference}</span>{" "}
                     · {formatEuro(c.remaining_amount ?? c.original_amount)}
                   </p>

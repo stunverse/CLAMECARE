@@ -195,7 +195,7 @@ export async function analyzeCase(caseId: string): Promise<AnalyzeCaseResult> {
     title: "Analyse terminée",
     description:
       applyStatus === "ready_to_contact"
-        ? "Dossier complet, prêt à contacter l'organisme."
+        ? "Dossier complet, prêt à contacter le client."
         : `Dossier analysé — éléments manquants : ${completeness.blockers
             .map((b) => b.label)
             .join(", ")}.`,

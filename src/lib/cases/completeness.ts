@@ -60,7 +60,7 @@ export function computeCompleteness(input: CasePartial): CompletenessResult {
   const fields: CompletenessField[] = [
     {
       key: "debtor",
-      label: "Organisme débiteur",
+      label: "Client / donneur d'ordre",
       weight: 15,
       blocking: true,
       present: filled(input.debtor_name),

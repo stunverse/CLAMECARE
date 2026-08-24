@@ -22,7 +22,7 @@ export function AdminCaseTable({ cases }: { cases: Case[] }) {
         <thead className="border-b border-border bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
           <tr>
             <th className="px-4 py-3 font-medium">Référence</th>
-            <th className="px-4 py-3 font-medium">Organisme</th>
+            <th className="px-4 py-3 font-medium">Client</th>
             <th className="px-4 py-3 font-medium">Facture</th>
             <th className="px-4 py-3 font-medium">Montant</th>
             <th className="px-4 py-3 font-medium">Échéance</th>

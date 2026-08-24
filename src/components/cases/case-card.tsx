@@ -33,7 +33,7 @@ export function CaseCard({ case: c }: { case: Case }) {
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Building2 className="size-3.5 shrink-0" />
             <span className="truncate">
-              {c.debtor_name ?? "Organisme à renseigner"}
+              {c.debtor_name ?? "Client à renseigner"}
             </span>
           </div>
           <p className="mt-0.5 font-mono text-xs text-muted-foreground">
