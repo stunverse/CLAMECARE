@@ -1,69 +1,112 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Terms of Service" };
+export const metadata: Metadata = { title: "Conditions d'utilisation" };
+
+function H2({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="pt-2 text-lg font-semibold text-foreground">{children}</h2>
+  );
+}
 
 export default function TermsPage() {
   return (
     <article className="space-y-5">
-      <h1 className="text-3xl font-bold tracking-tight">Terms of Service</h1>
+      <h1 className="text-3xl font-bold tracking-tight">
+        Conditions d&apos;utilisation
+      </h1>
       <p className="text-sm text-muted-foreground">
-        Last updated: {new Date().getFullYear()}
+        Dernière mise à jour : {new Date().getFullYear()}
       </p>
 
       <section className="space-y-3 text-sm leading-relaxed text-foreground/90">
-        <h2 className="pt-2 text-lg font-semibold text-foreground">
-          1. Acceptance of terms
-        </h2>
+        <H2>1. Acceptation</H2>
         <p>
-          By creating an account or using ClaimCare AI, you agree to these Terms
-          of Service and acknowledge our Privacy Policy and Legal Disclaimer.
+          En créant un compte ou en utilisant ClaimGuard, vous acceptez les
+          présentes Conditions d&apos;utilisation, la Politique de
+          confidentialité et les Mentions &amp; avertissement.
         </p>
 
-        <h2 className="pt-2 text-lg font-semibold text-foreground">
-          2. Nature of the service
-        </h2>
+        <H2>2. Nature du service</H2>
         <p>
-          ClaimCare AI provides informational, documentary, and administrative
-          assistance for insurance claims. It is not a law firm and does not
-          provide legal advice. You are responsible for reviewing all generated
-          documents before using them.
+          ClaimGuard est un assistant de <strong>suivi administratif amiable</strong>{" "}
+          des factures impayées, destiné aux travailleurs indépendants
+          (freelances, consultants, prestataires, sous-traitants, etc.).
+          ClaimGuard agit <strong>au nom et pour le compte</strong> de
+          l&apos;utilisateur, dans le cadre du mandat d&apos;intervention qu&apos;il
+          accepte.
+        </p>
+        <p>
+          ClaimGuard <strong>n&apos;est ni un huissier / commissaire de justice,
+          ni une société de recouvrement judiciaire, ni un cabinet
+          d&apos;avocats</strong>, et ne fournit pas de conseil juridique.
+          ClaimGuard n&apos;accomplit aucun acte d&apos;exécution forcée et
+          n&apos;engage aucune procédure judiciaire : ces décisions
+          appartiennent exclusivement à l&apos;utilisateur.
         </p>
 
-        <h2 className="pt-2 text-lg font-semibold text-foreground">
-          3. Accounts
-        </h2>
+        <H2>3. ClaimGuard n&apos;encaisse jamais vos paiements</H2>
         <p>
-          You are responsible for maintaining the confidentiality of your
-          account credentials and for all activity under your account.
+          Les sommes dues par votre client vous sont réglées{" "}
+          <strong>directement, sur votre propre compte bancaire</strong>.
+          ClaimGuard ne perçoit, ne détient et ne fait jamais transiter les
+          montants de vos factures, et ne communique jamais d&apos;autre compte
+          que le vôtre.
         </p>
 
-        <h2 className="pt-2 text-lg font-semibold text-foreground">
-          4. Subscriptions and billing
-        </h2>
+        <H2>4. Mandat d&apos;intervention</H2>
         <p>
-          Paid plans are billed through our payment processor. Quotas, upgrades,
-          downgrades, and cancellations are governed by the plan you select.
+          Vous autorisez ClaimGuard à effectuer, à l&apos;amiable et en votre
+          nom, le suivi et la relance de vos factures auprès de vos clients
+          (envoi d&apos;emails, relances, transmission de justificatifs). Vous
+          pouvez suspendre ou retirer ce mandat à tout moment depuis votre
+          espace.
         </p>
 
-        <h2 className="pt-2 text-lg font-semibold text-foreground">
-          5. Acceptable use
-        </h2>
+        <H2>5. Vos responsabilités</H2>
         <p>
-          You agree not to misuse the service, submit fraudulent information, or
-          use the platform to falsify documents or evidence.
+          Vous êtes responsable de l&apos;exactitude des informations et
+          documents que vous déposez (factures, montants, coordonnées,
+          justificatifs). ClaimGuard s&apos;appuie sur ces éléments et ne les
+          invente jamais. Vous restez responsable de la relation commerciale
+          avec vos clients et des suites que vous décidez de donner à un dossier.
         </p>
 
-        <h2 className="pt-2 text-lg font-semibold text-foreground">
-          6. No guarantee of outcome
-        </h2>
+        <H2>6. Comptes et sécurité</H2>
         <p>
-          ClaimCare AI does not guarantee that any appeal, complaint, or
-          negotiation will succeed.
+          Vous êtes responsable de la confidentialité de vos identifiants et de
+          toute activité réalisée depuis votre compte. Prévenez-nous sans délai
+          en cas d&apos;utilisation non autorisée.
         </p>
 
-        <p className="rounded-lg border border-warning/40 bg-warning/10 p-3 text-foreground">
-          This page is a template and should be reviewed by qualified legal
-          counsel before launch.
+        <H2>7. Abonnement</H2>
+        <p>
+          L&apos;accès à ClaimGuard peut être payant selon la formule choisie.
+          Les paiements de l&apos;abonnement sont <strong>strictement distincts</strong>{" "}
+          des montants des factures que vous cherchez à recouvrer : ils ne se
+          confondent jamais. Les conditions tarifaires sont présentées lors de
+          la souscription.
+        </p>
+
+        <H2>8. Limitation de responsabilité</H2>
+        <p>
+          ClaimGuard fournit un outil d&apos;assistance et ne garantit aucun
+          résultat, notamment pas le paiement effectif d&apos;une facture. Dans
+          les limites permises par la loi, ClaimGuard ne saurait être tenu
+          responsable des décisions de vos clients ni des suites judiciaires que
+          vous engageriez.
+        </p>
+
+        <H2>9. Modification et résiliation</H2>
+        <p>
+          Vous pouvez fermer votre compte à tout moment. Nous pouvons faire
+          évoluer ces conditions ; les changements substantiels vous seront
+          signalés.
+        </p>
+
+        <H2>10. Contact</H2>
+        <p>
+          Pour toute question relative à ces conditions, contactez-nous depuis
+          la page Support de votre espace.
         </p>
       </section>
     </article>

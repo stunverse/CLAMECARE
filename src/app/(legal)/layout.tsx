@@ -15,14 +15,14 @@ export default function LegalLayout({
               <ShieldCheck className="size-4" />
             </span>
             <span className="font-semibold tracking-tight">
-              ClaimCare<span className="text-brand"> AI</span>
+              Claim<span className="text-brand">Guard</span>
             </span>
           </Link>
           <Link
             href="/"
             className="text-sm text-muted-foreground hover:text-foreground"
           >
-            Back to home
+            Retour à l&apos;accueil
           </Link>
         </div>
       </header>
@@ -33,16 +33,19 @@ export default function LegalLayout({
 
       <footer className="border-t border-border">
         <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-2 px-6 py-6 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} ClaimCare AI. Not a law firm.</p>
+          <p>
+            © {new Date().getFullYear()} ClaimGuard. Suivi amiable, jamais
+            d&apos;encaissement.
+          </p>
           <nav className="flex gap-4">
             <Link href="/disclaimer" className="hover:text-foreground">
-              Disclaimer
+              Mentions
             </Link>
             <Link href="/privacy" className="hover:text-foreground">
-              Privacy
+              Confidentialité
             </Link>
             <Link href="/terms" className="hover:text-foreground">
-              Terms
+              Conditions
             </Link>
           </nav>
         </div>
