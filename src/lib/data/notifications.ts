@@ -45,6 +45,60 @@ export interface NotificationData {
   unread: number;
 }
 
+const DEMO_CG_NOTIFICATIONS: Notification[] = [
+  {
+    id: "cg1",
+    user_id: "demo",
+    claim_id: null,
+    type: "claim_status_updated",
+    title: "Réponse de votre client reçue",
+    message: "Studio Nova SAS annonce un paiement pour bientôt.",
+    is_read: false,
+    action_url: "/dossiers/demo-1",
+    created_at: iso(0),
+  },
+  {
+    id: "cg2",
+    user_id: "demo",
+    claim_id: null,
+    type: "claim_status_updated",
+    title: "Paiement confirmé",
+    message: "Agence Lumen a réglé la facture 2026-88. Dossier clôturé.",
+    is_read: true,
+    action_url: "/dossiers/demo-2",
+    created_at: iso(-2),
+  },
+];
+
+/** Full notifications list for the dedicated centre (up to 50). */
+export async function getAllNotifications(): Promise<NotificationData> {
+  const supabase = await createClient();
+  if (!supabase) {
+    return {
+      notifications: DEMO_CG_NOTIFICATIONS,
+      unread: DEMO_CG_NOTIFICATIONS.filter((n) => !n.is_read).length,
+    };
+  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { notifications: [], unread: 0 };
+
+  const [{ data }, { count }] = await Promise.all([
+    supabase
+      .from("notifications")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .returns<Notification[]>(),
+    supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("is_read", false),
+  ]);
+  return { notifications: data ?? [], unread: count ?? 0 };
+}
+
 export async function getNotifications(): Promise<NotificationData> {
   const supabase = await createClient();
   if (!supabase) {

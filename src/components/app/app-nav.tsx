@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  LayoutDashboard,
   FileClock,
+  Building2,
+  Bell,
   CreditCard,
   LifeBuoy,
   Settings,
@@ -18,7 +21,10 @@ interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
+  { label: "Tableau de bord", href: "/tableau-de-bord", icon: LayoutDashboard },
   { label: "Mes dossiers", href: "/dossiers", icon: FileClock },
+  { label: "Mes clients", href: "/clients", icon: Building2 },
+  { label: "Notifications", href: "/notifications", icon: Bell },
   { label: "Facturation", href: "/billing", icon: CreditCard },
   { label: "Support", href: "/support", icon: LifeBuoy },
   { label: "Paramètres", href: "/settings", icon: Settings },

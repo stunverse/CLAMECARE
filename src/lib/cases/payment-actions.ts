@@ -3,6 +3,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { canTransition } from "@/lib/claimguard/state-machine";
+import { createNotification } from "@/lib/notifications/actions";
+import { formatEuro } from "@/lib/cases/format";
 import type { Case } from "@/lib/claimguard/types";
 import type { CaseStatus, PaymentType } from "@/lib/claimguard/enums";
 
@@ -133,6 +135,16 @@ export async function confirmPayment(
       applied = "closed";
     }
   }
+
+  await createNotification(supabase, {
+    user_id: user.id,
+    type: "claim_status_updated",
+    title: fullyPaid ? "Paiement confirmé — dossier clôturé" : "Paiement partiel enregistré",
+    message: fullyPaid
+      ? `Vous avez confirmé le règlement de ${row.debtor_name ?? "votre client"}.`
+      : `Reste à percevoir : ${formatEuro(remainingAfter)}.`,
+    action_url: `/dossiers/${row.id}`,
+  });
 
   return { status: applied, remaining: remainingAfter };
 }

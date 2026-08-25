@@ -4,6 +4,8 @@ import { PROMPT_VERSION_CLASSIFY } from "@/lib/claimguard/ai/classify-email";
 import { parseCaseReference } from "@/lib/claimguard/email/addressing";
 import { canTransition } from "@/lib/claimguard/state-machine";
 import { enqueueJob } from "@/lib/claimguard/workflow/engine";
+import { createNotification } from "@/lib/notifications/actions";
+import { formatDateFr } from "@/lib/cases/format";
 import { env, isOpenAIConfigured } from "@/lib/env";
 import type { Case } from "@/lib/claimguard/types";
 import type { CaseStatus } from "@/lib/claimguard/enums";
@@ -200,6 +202,27 @@ export async function processInboundEmail(
     action: "email_received",
     source: "ai",
     metadata: { category: classification.category, status: applied },
+  });
+
+  // Notify the freelancer at the moments that matter (§21).
+  let notifTitle = "Réponse de votre client reçue";
+  let notifMessage = classification.summary || undefined;
+  if (applied === "paid") {
+    notifTitle = "Paiement confirmé par votre client";
+  } else if (applied === "payment_promised" && classification.promise?.promised_date) {
+    notifTitle = "Paiement annoncé";
+    notifMessage = `${row.debtor_name ?? "Votre client"} annonce un paiement pour le ${formatDateFr(classification.promise.promised_date)}.`;
+  } else if (applied === "disputed") {
+    notifTitle = "Litige signalé sur un dossier";
+  } else if (["document_requested", "client_action_required"].includes(applied)) {
+    notifTitle = "Action requise sur un dossier";
+  }
+  await createNotification(supabase, {
+    user_id: row.user_id,
+    type: "claim_status_updated",
+    title: notifTitle,
+    message: notifMessage,
+    action_url: `/dossiers/${row.id}`,
   });
 
   return {

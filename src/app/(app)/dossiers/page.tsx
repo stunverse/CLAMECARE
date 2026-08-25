@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus, FolderOpen, AlertCircle } from "lucide-react";
 import { getCases } from "@/lib/cases/queries";
-import { CaseCard } from "@/components/cases/case-card";
+import { CaseList } from "@/components/cases/case-list";
 import { KpiCard } from "@/components/admin/kpi-card";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,12 @@ const ACTION_STATUSES = [
   "document_requested",
 ];
 
-export default async function DossiersPage() {
+export default async function DossiersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ client?: string }>;
+}) {
+  const { client } = await searchParams;
   const { cases, isDemo } = await getCases();
 
   const active = cases.filter((c) => ACTIVE_CASE_STATUSES.includes(c.status));
@@ -117,16 +122,7 @@ export default async function DossiersPage() {
           </Link>
         </div>
       ) : (
-        <>
-          <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
-            {active.length} dossier{active.length === 1 ? "" : "s"} en cours
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {cases.map((c) => (
-              <CaseCard key={c.id} case={c} />
-            ))}
-          </div>
-        </>
+        <CaseList cases={cases} initialQuery={client ?? ""} />
       )}
     </div>
   );
