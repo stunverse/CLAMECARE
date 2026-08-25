@@ -59,7 +59,7 @@ export const PLANS: Plan[] = [
     priceMonthly: 79,
     priceYearly: 790,
     features: [
-      "3 dossiers actifs",
+      "5 dossiers actifs",
       "Analyse IA complète",
       "Relances & suivi automatiques",
       "Détection des promesses de paiement",
@@ -68,7 +68,7 @@ export const PLANS: Plan[] = [
       "Exports PDF",
     ],
     quota: {
-      active_claims_limit: 3,
+      active_claims_limit: 5,
       documents_limit: 50,
       ai_analysis_limit: 50,
       generated_documents_limit: 20,
