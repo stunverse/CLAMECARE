@@ -38,9 +38,9 @@ export function PricingTable({
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
-            {i === "monthly" ? "Monthly" : "Yearly"}
+            {i === "monthly" ? "Mensuel" : "Annuel"}
             {i === "yearly" && (
-              <span className="ml-1 text-xs text-success">2 months free</span>
+              <span className="ml-1 text-xs text-success">2 mois offerts</span>
             )}
           </button>
         ))}
@@ -62,19 +62,19 @@ export function PricingTable({
                   "w-full",
                 )}
               >
-                Get started
+                Commencer
               </Link>
             );
           } else if (!stripeConfigured) {
             cta = (
               <Button variant="outline" className="w-full" disabled>
-                Billing not connected
+                Facturation non connectée
               </Button>
             );
           } else if (isCurrent) {
             cta = (
               <Button variant="outline" className="w-full" disabled>
-                Current plan
+                Formule actuelle
               </Button>
             );
           } else {
@@ -83,7 +83,7 @@ export function PricingTable({
                 plan={plan.id}
                 interval={interval}
                 variant={plan.highlighted ? "brand" : "default"}
-                label="Choose plan"
+                label="Choisir cette formule"
               />
             );
           }
@@ -93,7 +93,7 @@ export function PricingTable({
               key={plan.id}
               plan={plan}
               interval={interval}
-              badge={isCurrent ? "Current" : undefined}
+              badge={isCurrent ? "Actuelle" : undefined}
               cta={cta}
             />
           );

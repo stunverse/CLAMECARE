@@ -29,7 +29,7 @@ export function AddonButton({
       }
     >
       {pending && <Loader2 className="size-4 animate-spin" />}
-      {disabled ? "Not connected" : `Buy · $${price}`}
+      {disabled ? "Non connectée" : `Acheter · ${price} €`}
     </Button>
   );
 }

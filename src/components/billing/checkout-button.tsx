@@ -9,7 +9,7 @@ import type { SubscriptionPlan } from "@/lib/types/enums";
 export function CheckoutButton({
   plan,
   interval,
-  label = "Choose plan",
+  label = "Choisir cette formule",
   variant = "default",
   disabled,
 }: {

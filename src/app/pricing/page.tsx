@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { PricingTable } from "@/components/billing/pricing-table";
-import { DisclaimerBanner } from "@/components/disclaimer-banner";
 import { buttonVariants } from "@/components/ui/button";
 import { isStripeConfigured } from "@/lib/env";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Pricing" };
+export const metadata: Metadata = { title: "Tarifs" };
 
 export default function PricingPage() {
   return (
@@ -19,14 +18,14 @@ export default function PricingPage() {
               <ShieldCheck className="size-5" />
             </span>
             <span className="text-lg font-semibold tracking-tight">
-              ClaimCare<span className="text-brand"> AI</span>
+              Claim<span className="text-brand">Guard</span>
             </span>
           </Link>
           <Link
             href="/login"
             className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
           >
-            Log in
+            Connexion
           </Link>
         </div>
       </header>
@@ -34,24 +33,27 @@ export default function PricingPage() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold tracking-tight">
-            Simple, transparent pricing
+            Des tarifs simples et transparents
           </h1>
           <p className="mx-auto mt-2 max-w-xl text-muted-foreground">
-            Choose the plan that fits your claim. Upgrade, downgrade, or cancel
-            anytime.
+            Choisissez la formule adaptée à votre volume de dossiers. Changez ou
+            résiliez à tout moment.
           </p>
         </div>
 
         <PricingTable mode="marketing" stripeConfigured={isStripeConfigured} />
 
-        <div className="mx-auto mt-10 max-w-3xl">
-          <DisclaimerBanner variant="primary" />
-        </div>
+        <p className="mx-auto mt-10 max-w-3xl rounded-lg border border-border bg-muted/40 px-4 py-3 text-center text-xs text-muted-foreground">
+          L&apos;abonnement ClaimGuard rémunère le service de suivi. Il est
+          distinct des montants de vos factures : ClaimGuard n&apos;encaisse
+          jamais les sommes que vos clients vous doivent.
+        </p>
       </main>
 
       <footer className="border-t border-border">
         <div className="mx-auto w-full max-w-6xl px-6 py-6 text-sm text-muted-foreground">
-          © {new Date().getFullYear()} ClaimCare AI. Not a law firm.
+          © {new Date().getFullYear()} ClaimGuard. Suivi amiable, jamais
+          d&apos;encaissement.
         </div>
       </footer>
     </div>

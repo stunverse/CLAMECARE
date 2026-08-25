@@ -9,11 +9,10 @@ import { AddonButton } from "@/components/billing/addon-button";
 import { ADDONS } from "@/lib/billing/addons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { DisclaimerBanner } from "@/components/disclaimer-banner";
 import { SUBSCRIPTION_PLAN_LABELS } from "@/lib/labels";
-import { formatDate } from "@/lib/format";
+import { formatDateFr } from "@/lib/cases/format";
 
-export const metadata: Metadata = { title: "Billing" };
+export const metadata: Metadata = { title: "Facturation" };
 
 export default async function BillingPage({
   searchParams,
@@ -26,21 +25,21 @@ export default async function BillingPage({
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Billing</h1>
+      <h1 className="mb-1 text-2xl font-bold tracking-tight">Facturation</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Manage your plan and usage.
+        Gérez votre formule et votre consommation ClaimGuard.
       </p>
 
       {sp.success && (
         <div className="mb-6 flex items-center gap-2 rounded-lg border border-success/40 bg-success/10 px-4 py-3 text-sm">
           <CheckCircle2 className="size-4 text-success" />
-          Your subscription is active. Thank you!
+          Votre abonnement est actif. Merci !
         </div>
       )}
       {sp.addon && (
         <div className="mb-6 flex items-center gap-2 rounded-lg border border-success/40 bg-success/10 px-4 py-3 text-sm">
           <CheckCircle2 className="size-4 text-success" />
-          Your add-on purchase was successful. Thank you!
+          Votre achat a bien été pris en compte. Merci !
         </div>
       )}
 
@@ -48,27 +47,27 @@ export default async function BillingPage({
         {/* Current plan */}
         <Card>
           <CardHeader className="flex-row items-center justify-between">
-            <CardTitle className="text-base">Current plan</CardTitle>
+            <CardTitle className="text-base">Formule actuelle</CardTitle>
             <Badge variant="info">{SUBSCRIPTION_PLAN_LABELS[billing.plan]}</Badge>
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground">{plan.tagline}</p>
             {billing.subscription?.current_period_end && (
               <p className="text-sm">
-                Renews on{" "}
+                Renouvellement le{" "}
                 <span className="font-medium">
-                  {formatDate(billing.subscription.current_period_end)}
+                  {formatDateFr(billing.subscription.current_period_end)}
                 </span>
                 {billing.subscription.cancel_at_period_end &&
-                  " · cancels at period end"}
+                  " · résiliation en fin de période"}
               </p>
             )}
             {billing.subscription ? (
               <ManageBillingButton />
             ) : (
               <p className="text-sm text-muted-foreground">
-                You&apos;re on the free baseline. Choose a plan below to unlock
-                more.
+                Vous êtes sur la formule gratuite. Choisissez une formule
+                ci-dessous pour débloquer plus de dossiers.
               </p>
             )}
           </CardContent>
@@ -77,16 +76,16 @@ export default async function BillingPage({
         {/* Usage */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Usage</CardTitle>
+            <CardTitle className="text-base">Consommation</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <UsageLimitBanner
-              label="Active claims"
+              label="Dossiers actifs"
               used={billing.usage.activeClaims}
               limit={billing.quota.active_claims_limit}
             />
             <UsageLimitBanner
-              label="Generated documents"
+              label="Documents générés"
               used={billing.usage.generatedDocuments}
               limit={billing.quota.generated_documents_limit}
             />
@@ -95,7 +94,7 @@ export default async function BillingPage({
       </div>
 
       <div className="mt-8">
-        <h2 className="mb-4 text-lg font-semibold">Plans</h2>
+        <h2 className="mb-4 text-lg font-semibold">Formules</h2>
         <PricingTable
           mode="manage"
           currentPlan={billing.plan}
@@ -104,9 +103,9 @@ export default async function BillingPage({
       </div>
 
       <div className="mt-8">
-        <h2 className="mb-1 text-lg font-semibold">Add-ons</h2>
+        <h2 className="mb-1 text-lg font-semibold">Options</h2>
         <p className="mb-4 text-sm text-muted-foreground">
-          One-time purchases for extra help on a specific claim.
+          Achats ponctuels pour un accompagnement supplémentaire sur un dossier.
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           {ADDONS.map((addon) => (
@@ -129,9 +128,11 @@ export default async function BillingPage({
         </div>
       </div>
 
-      <div className="mt-8">
-        <DisclaimerBanner variant="primary" />
-      </div>
+      <p className="mt-8 rounded-lg border border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
+        Votre abonnement ClaimGuard rémunère le service de suivi. Il est
+        totalement distinct des montants de vos factures : ClaimGuard n&apos;encaisse
+        jamais les sommes que vos clients vous doivent.
+      </p>
     </div>
   );
 }

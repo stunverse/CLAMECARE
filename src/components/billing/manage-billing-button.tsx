@@ -22,7 +22,7 @@ export function ManageBillingButton() {
       ) : (
         <CreditCard className="size-4" />
       )}
-      Manage billing
+      Gérer la facturation
     </Button>
   );
 }

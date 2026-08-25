@@ -16,7 +16,7 @@ export function BillingPlanCard({
   cta: React.ReactNode;
 }) {
   const price = interval === "yearly" ? plan.priceYearly : plan.priceMonthly;
-  const suffix = interval === "yearly" ? "/year" : "/month";
+  const suffix = interval === "yearly" ? "/an" : "/mois";
 
   return (
     <Card
@@ -37,7 +37,7 @@ export function BillingPlanCard({
         <p className="mt-1 text-sm text-muted-foreground">{plan.tagline}</p>
 
         <div className="mt-4 flex items-baseline gap-1">
-          <span className="text-3xl font-bold">${price}</span>
+          <span className="text-3xl font-bold">{price} €</span>
           <span className="text-sm text-muted-foreground">{suffix}</span>
         </div>
 
