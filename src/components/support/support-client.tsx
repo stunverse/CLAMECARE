@@ -19,7 +19,7 @@ import {
   PRIORITY_LABELS,
 } from "@/lib/labels";
 import { PRIORITY_LEVELS } from "@/lib/types/enums";
-import { formatDate } from "@/lib/format";
+import { formatDateFr } from "@/lib/cases/format";
 import type { PriorityLevel, SupportTicket } from "@/lib/types";
 
 export function SupportClient({
@@ -43,13 +43,13 @@ export function SupportClient({
     startTransition(async () => {
       const res = await createSupportTicket({ subject, message, priority });
       if (res.error || !res.ticket) {
-        setError(res.error ?? "Could not submit.");
+        setError(res.error ?? "Envoi impossible.");
         return;
       }
       setTickets((t) => [res.ticket!, ...t]);
       setSubject("");
       setMessage("");
-      setSuccess("Your ticket was submitted. We'll get back to you by email.");
+      setSuccess("Votre demande a été envoyée. Nous vous répondrons par email.");
     });
   }
 
@@ -57,16 +57,16 @@ export function SupportClient({
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Contact support</CardTitle>
+          <CardTitle className="text-base">Contacter le support</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="space-y-2">
-            <Label htmlFor="subject">Subject</Label>
+            <Label htmlFor="subject">Sujet</Label>
             <Input
               id="subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              placeholder="How can we help?"
+              placeholder="Comment pouvons-nous vous aider ?"
             />
           </div>
           <div className="space-y-2">
@@ -75,12 +75,12 @@ export function SupportClient({
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Describe your question or issue…"
+              placeholder="Décrivez votre question ou votre problème…"
               className="min-h-32"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="priority">Priority</Label>
+            <Label htmlFor="priority">Priorité</Label>
             <Select
               id="priority"
               value={priority}
@@ -101,23 +101,23 @@ export function SupportClient({
             ) : (
               <Send className="size-4" />
             )}
-            Submit ticket
+            Envoyer la demande
           </Button>
           {!canSubmit && (
             <p className="text-xs text-muted-foreground">
-              Connect Supabase to submit and track support tickets.
+              Connectez Supabase pour envoyer et suivre vos demandes.
             </p>
           )}
         </CardContent>
       </Card>
 
       <div>
-        <h2 className="mb-3 text-sm font-semibold">Your tickets</h2>
+        <h2 className="mb-3 text-sm font-semibold">Vos demandes</h2>
         {tickets.length === 0 ? (
           <EmptyState
             icon={LifeBuoy}
-            title="No tickets yet"
-            description="When you contact support, your tickets and their status appear here."
+            title="Aucune demande"
+            description="Vos demandes de support et leur statut apparaîtront ici."
           />
         ) : (
           <div className="space-y-2">
@@ -136,8 +136,7 @@ export function SupportClient({
                     </p>
                   )}
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {formatDate(t.created_at)} · {PRIORITY_LABELS[t.priority]}{" "}
-                    priority
+                    {formatDateFr(t.created_at)} · priorité {PRIORITY_LABELS[t.priority]}
                   </p>
                 </CardContent>
               </Card>

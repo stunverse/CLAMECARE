@@ -10,7 +10,7 @@ export function DeleteAccountButton() {
       onSubmit={(e) => {
         if (
           !window.confirm(
-            "This permanently deletes your account, claims, and documents. This cannot be undone. Continue?",
+            "Ceci supprime définitivement votre compte, vos dossiers et vos documents. Cette action est irréversible. Continuer ?",
           )
         ) {
           e.preventDefault();
@@ -18,7 +18,7 @@ export function DeleteAccountButton() {
       }}
     >
       <Button variant="destructive" type="submit">
-        Delete my account
+        Supprimer mon compte
       </Button>
     </form>
   );

@@ -61,6 +61,15 @@ export interface Profile {
   legal_disclaimer_accepted_at: string | null;
   terms_accepted_at: string | null;
   privacy_accepted_at: string | null;
+  // ClaimGuard professional profile (migration 0009)
+  business_name: string | null;
+  siret: string | null;
+  address: string | null;
+  professional_status: string | null;
+  payee_name: string | null;
+  iban: string | null;
+  bic: string | null;
+  mandate_accepted_at: string | null;
   created_at: string;
   updated_at: string;
 }

@@ -13,10 +13,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { DeleteAccountButton } from "@/components/settings/delete-account-button";
-import { DisclaimerBanner } from "@/components/disclaimer-banner";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Profile } from "@/lib/types";
 
-export const metadata: Metadata = { title: "Settings" };
+export const metadata: Metadata = { title: "Paramètres" };
+
+function maskIban(iban: string | null): string {
+  if (!iban) return "—";
+  const clean = iban.replace(/\s/g, "");
+  if (clean.length <= 8) return clean;
+  return `${clean.slice(0, 4)} •••• ${clean.slice(-4)}`;
+}
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -27,9 +35,9 @@ export default async function SettingsPage() {
       <SettingsShell>
         <Card>
           <CardHeader>
-            <CardTitle>Account</CardTitle>
+            <CardTitle>Compte</CardTitle>
             <CardDescription>
-              Connect Supabase to manage your account.
+              Connectez Supabase pour gérer votre compte.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -49,41 +57,70 @@ export default async function SettingsPage() {
     .single<Profile>();
 
   const fullName =
-    [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
-    "—";
+    [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "—";
 
   return (
     <SettingsShell>
       <Card>
         <CardHeader className="flex-row items-center justify-between">
           <div>
-            <CardTitle>Profile</CardTitle>
-            <CardDescription>Your account information.</CardDescription>
+            <CardTitle>Profil professionnel</CardTitle>
+            <CardDescription>Vos informations de compte.</CardDescription>
           </div>
           <SignOutButton />
         </CardHeader>
         <CardContent className="space-y-4">
-          <Field label="Name" value={fullName} />
+          <Field label="Nom" value={fullName} />
           <Field label="Email" value={profile?.email ?? user.email ?? "—"} />
-          <Field label="State" value={profile?.state ?? "—"} />
-          <Field label="Country" value={profile?.country ?? "USA"} />
+          <Field label="Nom commercial" value={profile?.business_name ?? "—"} />
+          <Field label="SIREN / SIRET" value={profile?.siret ?? "—"} />
+          <Field
+            label="Statut professionnel"
+            value={profile?.professional_status ?? "—"}
+          />
+          <Field label="Adresse" value={profile?.address ?? "—"} />
+          <div className="pt-1">
+            <Link
+              href="/onboarding"
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+            >
+              Modifier mon profil
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Coordonnées de paiement</CardTitle>
+          <CardDescription>
+            Communiquées à vos clients. ClaimGuard n&apos;encaisse jamais vos
+            paiements.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Field label="Titulaire" value={profile?.payee_name ?? "—"} />
+          <Field label="IBAN" value={maskIban(profile?.iban ?? null)} />
+          <Field label="BIC" value={profile?.bic ?? "—"} />
+          <Field
+            label="Mandat d'intervention"
+            value={profile?.mandate_accepted_at ? "Accepté" : "Non accepté"}
+          />
         </CardContent>
       </Card>
 
       <Card className="border-danger/40">
         <CardHeader>
-          <CardTitle className="text-danger">Danger zone</CardTitle>
+          <CardTitle className="text-danger">Zone sensible</CardTitle>
           <CardDescription>
-            Permanently delete your account and all associated claims and
-            documents. This action cannot be undone.
+            Supprimez définitivement votre compte et l&apos;ensemble de vos
+            dossiers et documents. Cette action est irréversible.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <DeleteAccountButton />
         </CardContent>
       </Card>
-
-      <DisclaimerBanner variant="primary" />
     </SettingsShell>
   );
 }
@@ -97,17 +134,17 @@ function SettingsShell({ children }: { children: React.ReactNode }) {
             <ShieldCheck className="size-4" />
           </span>
           <span className="font-semibold tracking-tight">
-            ClaimCare<span className="text-brand"> AI</span>
+            Claim<span className="text-brand">Guard</span>
           </span>
         </Link>
         <Link
-          href="/dashboard"
+          href="/dossiers"
           className="text-sm text-muted-foreground hover:text-foreground"
         >
-          Back to dashboard
+          Retour aux dossiers
         </Link>
       </header>
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Settings</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Paramètres</h1>
       <div className="space-y-6">{children}</div>
     </div>
   );

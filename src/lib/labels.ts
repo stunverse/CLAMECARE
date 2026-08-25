@@ -113,11 +113,11 @@ export const COMPLAINT_STATUS_VARIANT: Record<ComplaintStatus, StatusVariant> = 
 
 export const SUPPORT_TICKET_STATUS_LABELS: Record<SupportTicketStatus, string> =
   {
-    open: "Open",
-    in_progress: "In progress",
-    waiting_for_user: "Waiting for you",
-    resolved: "Resolved",
-    closed: "Closed",
+    open: "Ouverte",
+    in_progress: "En cours",
+    waiting_for_user: "En attente de votre réponse",
+    resolved: "Résolue",
+    closed: "Clôturée",
   };
 
 export const SUPPORT_TICKET_STATUS_VARIANT: Record<
@@ -132,10 +132,10 @@ export const SUPPORT_TICKET_STATUS_VARIANT: Record<
 };
 
 export const PRIORITY_LABELS: Record<PriorityLevel, string> = {
-  low: "Low",
-  medium: "Medium",
-  high: "High",
-  urgent: "Urgent",
+  low: "Faible",
+  medium: "Moyenne",
+  high: "Haute",
+  urgent: "Urgente",
 };
 
 export const PRIORITY_VARIANT: Record<PriorityLevel, StatusVariant> = {

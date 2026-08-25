@@ -9,7 +9,7 @@ export function SignOutButton() {
     <form action={signOut}>
       <Button variant="outline" type="submit">
         <LogOut />
-        Sign out
+        Se déconnecter
       </Button>
     </form>
   );

@@ -2,30 +2,33 @@ import type { Metadata } from "next";
 import { getUserTickets } from "@/lib/data/support";
 import { SupportClient } from "@/components/support/support-client";
 import { Card, CardContent } from "@/components/ui/card";
-import { DisclaimerBanner } from "@/components/disclaimer-banner";
 
 export const metadata: Metadata = { title: "Support" };
 
 const FAQ = [
   {
-    q: "Is ClaimCare AI a law firm?",
-    a: "No. ClaimCare AI provides informational, documentary, and administrative assistance only. It is not a law firm and does not provide legal advice. For legal advice, consult a licensed attorney.",
+    q: "ClaimGuard est-il un huissier ou un cabinet d'avocats ?",
+    a: "Non. ClaimGuard assure un suivi administratif amiable de vos factures, en votre nom. Il n'encaisse jamais vos paiements et n'est ni huissier / commissaire de justice, ni cabinet d'avocats. Pour un conseil juridique, consultez un professionnel du droit.",
   },
   {
-    q: "How does the AI analysis work?",
-    a: "It reviews the claim details and documents you provide to detect the likely denial reason, surface strengths and weaknesses, score your file, and suggest next steps. It never guarantees an outcome.",
+    q: "Comment fonctionne l'analyse IA ?",
+    a: "Elle lit vos documents pour en extraire les informations clés (numéro, montant, échéance), classe les réponses de vos clients et prépare des brouillons. L'IA n'invente jamais une donnée et ne décide jamais seule d'une action.",
   },
   {
-    q: "How do I export a letter as a PDF?",
-    a: "Generate a letter in the Letters tab, then click ‘Print / Save as PDF’ and choose ‘Save as PDF’ in your browser's print dialog.",
+    q: "Comment ClaimGuard contacte-t-il mes clients ?",
+    a: "Sur la base du mandat que vous acceptez, ClaimGuard envoie des relances amiables en votre nom et suit les réponses. Vous pouvez suspendre l'automatisation d'un dossier à tout moment.",
   },
   {
-    q: "Will my documents stay private?",
-    a: "Your documents are stored securely and isolated to your account, with access restricted by row-level security and short-lived signed URLs.",
+    q: "Comment suis-je payé ?",
+    a: "Votre client vous règle directement sur votre propre compte bancaire. ClaimGuard ne perçoit et ne fait jamais transiter les sommes qui vous sont dues.",
   },
   {
-    q: "Can I cancel my subscription?",
-    a: "Yes. Go to Billing and open ‘Manage billing’ to upgrade, downgrade, or cancel at any time.",
+    q: "Mes documents restent-ils confidentiels ?",
+    a: "Oui. Vos documents sont stockés de manière privée, cloisonnés à votre compte, avec des accès par liens signés à durée limitée.",
+  },
+  {
+    q: "Puis-je résilier mon abonnement ?",
+    a: "Oui. Rendez-vous dans Facturation puis « Gérer la facturation » pour changer de formule ou résilier à tout moment.",
   },
 ];
 
@@ -34,13 +37,13 @@ export default async function SupportPage() {
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Help &amp; support</h1>
+      <h1 className="mb-1 text-2xl font-bold tracking-tight">Aide &amp; support</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Find answers or contact our team.
+        Trouvez une réponse ou contactez notre équipe.
       </p>
 
       <div className="mb-8">
-        <h2 className="mb-3 text-sm font-semibold">Frequently asked questions</h2>
+        <h2 className="mb-3 text-sm font-semibold">Questions fréquentes</h2>
         <div className="grid gap-3 md:grid-cols-2">
           {FAQ.map((item) => (
             <Card key={item.q}>
@@ -54,10 +57,6 @@ export default async function SupportPage() {
       </div>
 
       <SupportClient initialTickets={tickets} canSubmit={!isDemo} />
-
-      <div className="mt-8">
-        <DisclaimerBanner variant="primary" />
-      </div>
     </div>
   );
 }
