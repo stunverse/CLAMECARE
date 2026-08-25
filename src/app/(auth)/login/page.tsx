@@ -12,14 +12,14 @@ import { LoginForm } from "@/components/auth/login-form";
 import { OrDivider } from "@/components/auth/or-divider";
 import { FormMessage } from "@/components/auth/form-message";
 
-export const metadata: Metadata = { title: "Sign in" };
+export const metadata: Metadata = { title: "Connexion" };
 
 const ERROR_MESSAGES: Record<string, string> = {
-  not_configured: "Google sign-in isn't connected yet.",
-  oauth: "We couldn't start Google sign-in. Please try again.",
-  auth_callback: "We couldn't complete sign-in. Please try again.",
+  not_configured: "La connexion Google n'est pas encore activée.",
+  oauth: "Impossible de démarrer la connexion Google. Réessayez.",
+  auth_callback: "Impossible de finaliser la connexion. Réessayez.",
   delete_unavailable:
-    "You've been signed out. Account deletion needs admin configuration — please contact support to finish.",
+    "Vous avez été déconnecté. La suppression de compte nécessite une configuration admin — contactez le support pour terminer.",
 };
 
 export default async function LoginPage({
@@ -35,18 +35,18 @@ export default async function LoginPage({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Welcome back</CardTitle>
-        <CardDescription>Sign in to your ClaimCare AI account.</CardDescription>
+        <CardTitle className="text-xl">Bon retour</CardTitle>
+        <CardDescription>Connectez-vous à votre espace ClaimGuard.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && <FormMessage error={error} />}
-        <GoogleButton label="Sign in with Google" />
+        <GoogleButton label="Se connecter avec Google" />
         <OrDivider />
         <LoginForm redirectTo={redirectTo} />
         <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
+          Pas encore de compte ?{" "}
           <Link href="/signup" className="font-medium text-brand hover:underline">
-            Sign up
+            Créer un compte
           </Link>
         </p>
       </CardContent>

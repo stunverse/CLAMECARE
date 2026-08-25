@@ -38,11 +38,11 @@ export function SignupForm() {
     <form action={action} className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-2">
-          <Label htmlFor="first_name">First name</Label>
+          <Label htmlFor="first_name">Prénom</Label>
           <Input id="first_name" name="first_name" autoComplete="given-name" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="last_name">Last name</Label>
+          <Label htmlFor="last_name">Nom</Label>
           <Input id="last_name" name="last_name" autoComplete="family-name" />
         </div>
       </div>
@@ -54,52 +54,53 @@ export function SignupForm() {
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder="vous@exemple.fr"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">Mot de passe</Label>
         <Input
           id="password"
           name="password"
           type="password"
           autoComplete="new-password"
           minLength={8}
-          placeholder="At least 8 characters"
+          placeholder="8 caractères minimum"
           required
         />
       </div>
 
       <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3">
         <ConsentCheckbox name="accept_terms">
-          I agree to the{" "}
+          J&apos;accepte les{" "}
           <Link href="/terms" className="text-brand hover:underline">
-            Terms of Service
+            Conditions d&apos;utilisation
           </Link>
           .
         </ConsentCheckbox>
         <ConsentCheckbox name="accept_privacy">
-          I agree to the{" "}
+          J&apos;accepte la{" "}
           <Link href="/privacy" className="text-brand hover:underline">
-            Privacy Policy
+            Politique de confidentialité
           </Link>{" "}
-          and to ClaimCare AI processing my uploaded documents.
+          et le traitement par ClaimGuard des documents que je dépose.
         </ConsentCheckbox>
         <ConsentCheckbox name="accept_disclaimer">
-          I understand ClaimCare AI provides{" "}
+          Je comprends que ClaimGuard assure un{" "}
           <Link href="/disclaimer" className="text-brand hover:underline">
-            informational assistance only
-          </Link>{" "}
-          and is not a law firm.
+            suivi administratif amiable
+          </Link>
+          , n&apos;encaisse jamais mes paiements et n&apos;est ni huissier ni
+          cabinet juridique.
         </ConsentCheckbox>
       </div>
 
       <FormMessage error={state.error} success={state.success} />
 
       <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Creating account…" : "Create account"}
+        {pending ? "Création du compte…" : "Créer mon compte"}
       </Button>
     </form>
   );

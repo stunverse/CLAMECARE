@@ -5,12 +5,11 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
-import { DISCLAIMERS } from "@/lib/legal";
 
 export type AuthState = { error?: string; success?: string };
 
 const NOT_CONFIGURED =
-  "Authentication is not connected yet. Add your Supabase keys to enable sign in.";
+  "L'authentification n'est pas encore connectée. Ajoutez vos clés Supabase pour activer la connexion.";
 
 async function getOrigin(): Promise<string> {
   const h = await headers();
@@ -35,26 +34,27 @@ async function recordSignupConsents(userId: string) {
     {
       user_id: userId,
       consent_type: "terms_of_service" as const,
-      consent_text: "Accepted the ClaimCare AI Terms of Service.",
+      consent_text: "Acceptation des Conditions d'utilisation de ClaimGuard.",
       accepted_at: now,
     },
     {
       user_id: userId,
       consent_type: "privacy_policy" as const,
-      consent_text: "Accepted the ClaimCare AI Privacy Policy.",
+      consent_text: "Acceptation de la Politique de confidentialité de ClaimGuard.",
       accepted_at: now,
     },
     {
       user_id: userId,
       consent_type: "legal_disclaimer" as const,
-      consent_text: DISCLAIMERS.signup,
+      consent_text:
+        "A compris que ClaimGuard assure un suivi administratif amiable, n'encaisse jamais les paiements et n'est ni huissier ni cabinet juridique.",
       accepted_at: now,
     },
     {
       user_id: userId,
       consent_type: "sensitive_document_processing" as const,
       consent_text:
-        "Consented to ClaimCare AI processing uploaded insurance documents to provide informational assistance.",
+        "Consentement au traitement par ClaimGuard des documents déposés (factures, justificatifs) pour le suivi amiable des paiements.",
       accepted_at: now,
     },
   ];
@@ -80,7 +80,7 @@ export async function signIn(
   const email = str(formData, "email");
   const password = String(formData.get("password") ?? "");
   if (!email || !password) {
-    return { error: "Email and password are required." };
+    return { error: "L'email et le mot de passe sont requis." };
   }
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -103,10 +103,10 @@ export async function signUp(
   const password = String(formData.get("password") ?? "");
 
   if (!email || !password) {
-    return { error: "Email and password are required." };
+    return { error: "L'email et le mot de passe sont requis." };
   }
   if (password.length < 8) {
-    return { error: "Password must be at least 8 characters." };
+    return { error: "Le mot de passe doit contenir au moins 8 caractères." };
   }
 
   const acceptedAll =
@@ -116,7 +116,7 @@ export async function signUp(
   if (!acceptedAll) {
     return {
       error:
-        "You must accept the Terms, Privacy Policy, and Disclaimer to continue.",
+        "Vous devez accepter les Conditions, la Politique de confidentialité et les mentions pour continuer.",
     };
   }
 
@@ -139,7 +139,7 @@ export async function signUp(
   if (!data.session) {
     return {
       success:
-        "Account created. Please check your email to confirm your address, then sign in.",
+        "Compte créé. Vérifiez votre email pour confirmer votre adresse, puis connectez-vous.",
     };
   }
 
@@ -154,7 +154,7 @@ export async function requestPasswordReset(
   if (!supabase) return { error: NOT_CONFIGURED };
 
   const email = str(formData, "email");
-  if (!email) return { error: "Email is required." };
+  if (!email) return { error: "L'email est requis." };
 
   const origin = await getOrigin();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -164,7 +164,7 @@ export async function requestPasswordReset(
 
   return {
     success:
-      "If an account exists for that email, a password reset link is on its way.",
+      "Si un compte existe pour cet email, un lien de réinitialisation vient de partir.",
   };
 }
 

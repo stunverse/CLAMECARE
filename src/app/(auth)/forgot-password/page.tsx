@@ -9,23 +9,23 @@ import {
 } from "@/components/ui/card";
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 
-export const metadata: Metadata = { title: "Reset your password" };
+export const metadata: Metadata = { title: "Réinitialiser le mot de passe" };
 
 export default function ForgotPasswordPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Reset your password</CardTitle>
+        <CardTitle className="text-xl">Réinitialiser le mot de passe</CardTitle>
         <CardDescription>
-          Enter your email and we&apos;ll send you a reset link.
+          Saisissez votre email, nous vous enverrons un lien de réinitialisation.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <ForgotPasswordForm />
         <p className="text-center text-sm text-muted-foreground">
-          Remembered it?{" "}
+          Vous vous en souvenez ?{" "}
           <Link href="/login" className="font-medium text-brand hover:underline">
-            Back to sign in
+            Retour à la connexion
           </Link>
         </p>
       </CardContent>

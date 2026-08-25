@@ -21,9 +21,10 @@ export default function AuthLayout({
       <div className="w-full max-w-md space-y-4">
         {!isSupabaseConfigured && (
           <div className="rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-foreground">
-            Authentication isn&apos;t connected yet. Add your Supabase keys to{" "}
-            <code className="rounded bg-muted px-1">.env.local</code> to enable
-            sign in.
+            L&apos;authentification n&apos;est pas encore connectée. Ajoutez vos
+            clés Supabase dans{" "}
+            <code className="rounded bg-muted px-1">.env.local</code> pour
+            activer la connexion.
           </div>
         )}
         {children}

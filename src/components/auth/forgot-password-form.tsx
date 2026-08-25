@@ -22,7 +22,7 @@ export function ForgotPasswordForm() {
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder="vous@exemple.fr"
           required
         />
       </div>
@@ -30,7 +30,7 @@ export function ForgotPasswordForm() {
       <FormMessage error={state.error} success={state.success} />
 
       <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Sending…" : "Send reset link"}
+        {pending ? "Envoi…" : "Envoyer le lien"}
       </Button>
     </form>
   );

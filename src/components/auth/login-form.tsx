@@ -27,19 +27,19 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder="vous@exemple.fr"
           required
         />
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">Mot de passe</Label>
           <Link
             href="/forgot-password"
             className="text-sm text-brand hover:underline"
           >
-            Forgot password?
+            Mot de passe oublié ?
           </Link>
         </div>
         <Input
@@ -54,7 +54,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
       <FormMessage error={state.error} success={state.success} />
 
       <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Signing in…" : "Sign in"}
+        {pending ? "Connexion…" : "Se connecter"}
       </Button>
     </form>
   );
