@@ -105,11 +105,11 @@ export function AppShell({
 
           <div className="flex items-center gap-2">
             <Link
-              href="/claims/new"
+              href="/dossiers/nouveau"
               className={cn(buttonVariants({ variant: "brand", size: "sm" }))}
             >
               <Plus className="size-4" />
-              <span className="hidden sm:inline">New claim</span>
+              <span className="hidden sm:inline">Nouveau dossier</span>
             </Link>
             <NotificationBell notifications={notifications} unread={unread} />
           </div>
