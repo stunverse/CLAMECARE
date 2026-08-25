@@ -65,6 +65,7 @@ export const PLANS: Plan[] = [
       "Détection des promesses de paiement",
       "Historique & échanges centralisés",
       "Emails générés & personnalisables",
+      "Intervention humaine sur demande",
       "Exports PDF",
     ],
     quota: {
