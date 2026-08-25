@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 function Logo() {
   return (
-    <Link href="/tableau-de-bord" className="flex items-center gap-2">
+    <Link href="/dossiers" className="flex items-center gap-2">
       <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
         <ShieldCheck className="size-5" />
       </span>

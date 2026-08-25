@@ -5,7 +5,6 @@ import { env, isSupabaseConfigured } from "@/lib/env";
 /** Route prefixes that require an authenticated session. */
 const PROTECTED_PREFIXES = [
   "/dashboard",
-  "/tableau-de-bord",
   "/dossiers",
   "/clients",
   "/notifications",

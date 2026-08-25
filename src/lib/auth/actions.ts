@@ -86,7 +86,7 @@ export async function signIn(
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: error.message };
 
-  const redirectTo = str(formData, "redirectTo") || "/tableau-de-bord";
+  const redirectTo = str(formData, "redirectTo") || "/dossiers";
   redirect(redirectTo);
 }
 
@@ -175,7 +175,7 @@ export async function signInWithGoogle() {
   const origin = await getOrigin();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo: `${origin}/auth/callback?next=/tableau-de-bord` },
+    options: { redirectTo: `${origin}/auth/callback?next=/dossiers` },
   });
 
   if (error || !data?.url) redirect("/login?error=oauth");

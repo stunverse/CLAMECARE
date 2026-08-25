@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Plus, FolderOpen, AlertCircle } from "lucide-react";
+import { Plus, FolderOpen, AlertCircle, Sparkles, ArrowRight } from "lucide-react";
 import { getCases } from "@/lib/cases/queries";
+import { getNextAction } from "@/lib/cases/dashboard";
 import { CaseList } from "@/components/cases/case-list";
 import { KpiCard } from "@/components/admin/kpi-card";
 import { buttonVariants } from "@/components/ui/button";
@@ -27,7 +28,10 @@ export default async function DossiersPage({
   searchParams: Promise<{ client?: string }>;
 }) {
   const { client } = await searchParams;
-  const { cases, isDemo } = await getCases();
+  const [{ cases, isDemo }, nextAction] = await Promise.all([
+    getCases(),
+    getNextAction(),
+  ]);
 
   const active = cases.filter((c) => ACTIVE_CASE_STATUSES.includes(c.status));
   const sum = (list: typeof cases) =>
@@ -69,6 +73,41 @@ export default async function DossiersPage({
           Confier une facture à ClaimGuard
         </Link>
       </div>
+
+      {cases.length > 0 && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand/20 bg-brand/5 p-4">
+          <div className="flex items-start gap-3">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
+              <Sparkles className="size-5" />
+            </span>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-brand">
+                Prochaine action ClaimGuard
+              </p>
+              {nextAction ? (
+                <>
+                  <p className="text-sm font-semibold">{nextAction.label}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {nextAction.detail}
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Aucune action planifiée pour l&apos;instant.
+                </p>
+              )}
+            </div>
+          </div>
+          {nextAction && (
+            <Link
+              href={`/dossiers/${nextAction.caseId}`}
+              className="flex items-center gap-1 text-sm font-medium text-brand hover:underline"
+            >
+              Voir le dossier <ArrowRight className="size-3.5" />
+            </Link>
+          )}
+        </div>
+      )}
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard label="Total suivi" value={formatEuro(totalTracked)} />
