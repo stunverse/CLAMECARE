@@ -89,7 +89,7 @@ export const PLANS: Plan[] = [
     priceMonthly: 199,
     priceYearly: 1990,
     features: [
-      "10 dossiers actifs",
+      "20 dossiers actifs",
       "Tout de la formule Plus",
       "Mise en demeure amiable",
       "Annuaire clients & analytics",
@@ -97,7 +97,7 @@ export const PLANS: Plan[] = [
       "Intervention humaine sur demande",
     ],
     quota: {
-      active_claims_limit: 10,
+      active_claims_limit: 20,
       documents_limit: 200,
       ai_analysis_limit: 200,
       generated_documents_limit: 100,
