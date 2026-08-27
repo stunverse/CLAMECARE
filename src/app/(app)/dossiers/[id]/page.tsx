@@ -65,76 +65,57 @@ export default async function CaseDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const detail = await getCase(id);
+  if (!detail) notFound();
 
-  // TEMP DIAGNOSTIC: surface the real error on screen (prod otherwise redacts).
-  try {
-    const detail = await getCase(id);
-    if (!detail) notFound();
+  const { case: c, documents, timeline, messages, isDemo } = detail;
 
-    const { case: c, documents, timeline, messages, isDemo } = detail;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+  const bucket = env.STORAGE_BUCKET_CLAIM_DOCUMENTS || DEFAULT_BUCKET;
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
-    const bucket = env.STORAGE_BUCKET_CLAIM_DOCUMENTS || DEFAULT_BUCKET;
+  const completeness = computeCompleteness({
+    debtor_name: c.debtor_name,
+    debtor_email: c.debtor_email,
+    debtor_accounting_email: c.debtor_accounting_email,
+    invoice_number: c.invoice_number,
+    invoice_date: c.invoice_date,
+    due_date: c.due_date,
+    original_amount: c.original_amount,
+    amount_ht: c.amount_ht,
+    service_description: c.service_description,
+    payee_name: c.payee_name,
+    iban: c.iban,
+    documentCount: documents.length,
+    hasInvoiceDocument: documents.some((d) => d.document_category === "invoice"),
+  });
 
-    const completeness = computeCompleteness({
-      debtor_name: c.debtor_name,
-      debtor_email: c.debtor_email,
-      debtor_accounting_email: c.debtor_accounting_email,
-      invoice_number: c.invoice_number,
-      invoice_date: c.invoice_date,
-      due_date: c.due_date,
-      original_amount: c.original_amount,
-      amount_ht: c.amount_ht,
-      service_description: c.service_description,
-      payee_name: c.payee_name,
-      iban: c.iban,
-      documentCount: documents.length,
-      hasInvoiceDocument: documents.some(
-        (d) => d.document_category === "invoice",
-      ),
-    });
+  const draftKind = kindForReminder(c.reminder_count);
+  const rendered = renderCaseEmail(draftKind, c);
+  const draftReady = !isDemo
+    ? {
+        subject: rendered.subject,
+        body: rendered.body,
+        to: c.debtor_accounting_email || c.debtor_email || null,
+      }
+    : null;
+  const kindLabel =
+    c.reminder_count > 0 ? "Envoyer une relance" : "Contacter le client";
 
-    const draftKind = kindForReminder(c.reminder_count);
-    const rendered = renderCaseEmail(draftKind, c);
-    const draftReady = !isDemo
-      ? {
-          subject: rendered.subject,
-          body: rendered.body,
-          to: c.debtor_accounting_email || c.debtor_email || null,
-        }
-      : null;
-    const kindLabel =
-      c.reminder_count > 0 ? "Envoyer une relance" : "Contacter le client";
-
-    return renderPage({
-      c,
-      documents,
-      timeline,
-      messages,
-      isDemo,
-      user,
-      bucket,
-      completeness,
-      draftReady,
-      kindLabel,
-    });
-  } catch (err) {
-    const e = err as { digest?: string; message?: string; stack?: string };
-    if (typeof e?.digest === "string" && e.digest.startsWith("NEXT")) throw err;
-    return (
-      <div className="mx-auto w-full max-w-3xl px-4 py-8">
-        <h1 className="mb-2 text-lg font-bold text-danger">
-          Diagnostic — erreur de rendu du dossier
-        </h1>
-        <pre className="overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-muted/40 p-3 text-xs">
-          {String(e?.stack || e?.message || err)}
-        </pre>
-      </div>
-    );
-  }
+  return renderPage({
+    c,
+    documents,
+    timeline,
+    messages,
+    isDemo,
+    user,
+    bucket,
+    completeness,
+    draftReady,
+    kindLabel,
+  });
 }
 
 function renderPage({
@@ -162,9 +143,6 @@ function renderPage({
 }) {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
-      <p className="mb-4 rounded bg-amber-500/20 px-3 py-1 text-xs">
-        DIAG v2 — enfants clients désactivés
-      </p>
       <Link
         href="/dossiers"
         className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -256,11 +234,11 @@ function renderPage({
             </CardHeader>
             <CardContent className="space-y-4">
               <CaseDocuments documents={documents} />
-              {false && user && (
+              {user && (
                 <div className="border-t border-border pt-4">
                   <CaseDocumentUploader
                     caseId={c.id}
-                    userId={user?.id ?? ""}
+                    userId={user.id}
                     bucket={bucket}
                   />
                 </div>
@@ -276,13 +254,13 @@ function renderPage({
             </CardHeader>
             <CardContent className="space-y-4">
               <CaseEmails messages={messages} />
-              {false && draftReady && user && (
+              {draftReady && user && (
                 <div className="border-t border-border pt-4">
                   <CaseCompose
                     caseId={c.id}
-                    to={draftReady?.to ?? null}
-                    initialSubject={draftReady?.subject ?? ""}
-                    initialBody={draftReady?.body ?? ""}
+                    to={draftReady.to}
+                    initialSubject={draftReady.subject}
+                    initialBody={draftReady.body}
                     kindLabel={kindLabel}
                     emailConfigured={isEmailConfigured}
                   />
@@ -308,7 +286,7 @@ function renderPage({
             </CardHeader>
             <CardContent className="space-y-4">
               <CaseCompleteness result={completeness} />
-              {false && user && !isDemo && <AnalyzeButton caseId={c.id} />}
+              {user && !isDemo && <AnalyzeButton caseId={c.id} />}
             </CardContent>
           </Card>
 
@@ -343,7 +321,7 @@ function renderPage({
             </CardContent>
           </Card>
 
-          {false && user && !isDemo && (
+          {user && !isDemo && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Paiement</CardTitle>

@@ -141,24 +141,16 @@ export interface CaseFormState {
   isDemo?: boolean;
 }
 
-/** `useActionState`-compatible wrapper around createCase. */
+/** `useActionState`-compatible wrapper around createCase (kept for reuse). */
 export async function createCaseAction(
   _prev: CaseFormState,
   formData: FormData,
 ): Promise<CaseFormState> {
-  try {
-    const input = parseCaseForm(formData);
-    if (!input.debtor_name) {
-      return { error: "Indiquez au moins le nom du client / de l'entreprise." };
-    }
-    return await createCase(input);
-  } catch (e) {
-    // TEMP DIAGNOSTIC: surface any thrown error inline instead of a 500.
-    const err = e as Error;
-    return {
-      error: `DIAG: ${err?.message ?? String(e)} :: ${(err?.stack ?? "").slice(0, 400)}`,
-    };
+  const input = parseCaseForm(formData);
+  if (!input.debtor_name) {
+    return { error: "Indiquez au moins le nom du client / de l'entreprise." };
   }
+  return createCase(input);
 }
 
 /** `useActionState`-compatible wrapper around updateCase. */
