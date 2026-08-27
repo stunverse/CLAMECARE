@@ -1,12 +1,8 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Building2, FileText, Landmark } from "lucide-react";
-import {
-  createCaseAction,
-  type CaseFormState,
-} from "@/lib/cases/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,19 +44,43 @@ function Field({
 
 export function CaseForm() {
   const router = useRouter();
-  const [state, action, pending] = useActionState<CaseFormState, FormData>(
-    createCaseAction,
-    {},
-  );
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isDemo, setIsDemo] = useState(false);
 
-  useEffect(() => {
-    if (state.caseId) {
-      router.push(`/dossiers/${state.caseId}`);
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setIsDemo(false);
+    setPending(true);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const res = await fetch("/api/cases/create", {
+        method: "POST",
+        body: formData,
+      });
+      const data = (await res.json()) as {
+        caseId?: string;
+        error?: string;
+        isDemo?: boolean;
+      };
+      if (data.caseId && !data.isDemo) {
+        router.push(`/dossiers/${data.caseId}`);
+        return;
+      }
+      if (data.isDemo) setIsDemo(true);
+      if (data.error) setError(data.error);
+    } catch {
+      setError("Une erreur réseau est survenue. Réessayez.");
+    } finally {
+      setPending(false);
     }
-  }, [state.caseId, router]);
+  }
+
+  const state = { error, isDemo };
 
   return (
-    <form action={action} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
