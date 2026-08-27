@@ -31,12 +31,24 @@ export interface RenderOptions {
 }
 
 function invoiceLine(c: Partial<Case>): string {
-  const bits: string[] = [];
-  if (c.invoice_number) bits.push(`facture n° ${c.invoice_number}`);
+  // Always starts with "facture" so the sentence reads correctly even when the
+  // invoice number is missing (e.g. "la facture d'un montant de 700 €").
+  const bits: string[] = ["facture"];
+  if (c.invoice_number) bits.push(`n° ${c.invoice_number}`);
   const amount = c.remaining_amount ?? c.original_amount ?? null;
   if (amount !== null) bits.push(`d'un montant de ${formatEuro(amount)}`);
   if (c.due_date) bits.push(`échue le ${formatDateFr(c.due_date)}`);
   return bits.join(" ");
+}
+
+/** Creditor label (the freelancer ClaimGuard acts for). */
+function creditorName(c: Partial<Case>): string {
+  return c.payee_name ?? "notre client";
+}
+
+/** Intermediary intro: ClaimGuard clearly acts FOR the creditor. */
+function intermediaryIntro(c: Partial<Case>, service: string): string {
+  return `ClaimGuard assure, pour le compte de ${creditorName(c)}, le suivi administratif du règlement de la facture ci-dessous${service}.`;
 }
 
 function paymentBlock(c: Partial<Case>): string {
@@ -55,8 +67,14 @@ function greeting(c: Partial<Case>): string {
 }
 
 function signature(c: Partial<Case>): string {
-  const who = c.payee_name ?? "Le prestataire";
-  return `Cordialement,\n${who}\n\n— Message envoyé via ClaimGuard pour le compte de ${who}.`;
+  return [
+    "Vous pouvez répondre directement à cet email.",
+    "",
+    "Cordialement,",
+    "L'équipe ClaimGuard",
+    "",
+    `— ClaimGuard assure le suivi administratif amiable du règlement dû à ${creditorName(c)}, et ne perçoit aucun paiement : le règlement se fait directement auprès de ${creditorName(c)}.`,
+  ].join("\n");
 }
 
 /**
@@ -134,21 +152,19 @@ export function renderCaseEmail(
 
   if (kind === "first_contact") {
     return {
-      subject: `Règlement de la ${c.invoice_number ? `facture n° ${c.invoice_number}` : "facture"}${ref}`,
+      subject: `Suivi du règlement — ${c.invoice_number ? `facture n° ${c.invoice_number}` : "facture"}${ref}`,
       body: [
         greeting(c),
         "",
-        `Sauf erreur de notre part, la ${inv}${service} demeure impayée à ce jour.`,
+        intermediaryIntro(c, service),
         "",
-        "Pourriez-vous m'indiquer la date de règlement prévue, ou me préciser s'il manque un élément (bon de commande, attestation, etc.) pour procéder au paiement ?",
+        `Sauf erreur de notre part, cette ${inv} demeure impayée à ce jour.`,
+        "",
+        "Pourriez-vous nous indiquer la date de règlement prévue, ou nous préciser s'il manque un élément (bon de commande, attestation, etc.) pour procéder au paiement ?",
         paymentBlock(c),
         "",
-        "Je reste à votre disposition pour toute information complémentaire.",
-        "",
         signature(c),
-      ]
-        .filter((l) => l !== undefined)
-        .join("\n"),
+      ].join("\n"),
     };
   }
 
@@ -158,9 +174,11 @@ export function renderCaseEmail(
       body: [
         greeting(c),
         "",
-        `Malgré mes précédents messages, la ${inv}${service} reste impayée.`,
+        intermediaryIntro(c, service),
         "",
-        "Je vous remercie de bien vouloir procéder au règlement sous les meilleurs délais et de me communiquer la date de paiement.",
+        `Malgré nos précédents messages, cette ${inv} reste impayée.`,
+        "",
+        `Nous vous remercions de bien vouloir procéder au règlement, directement auprès de ${creditorName(c)}, sous les meilleurs délais, et de nous communiquer la date de paiement.`,
         paymentBlock(c),
         "",
         signature(c),
@@ -174,9 +192,11 @@ export function renderCaseEmail(
     body: [
       greeting(c),
       "",
-      `Je me permets de revenir vers vous au sujet de la ${inv}${service}, toujours en attente de règlement.`,
+      intermediaryIntro(c, service),
       "",
-      "Pourriez-vous m'indiquer la date de paiement prévue ?",
+      `Nous nous permettons de revenir vers vous au sujet de cette ${inv}, toujours en attente de règlement.`,
+      "",
+      "Pourriez-vous nous indiquer la date de paiement prévue ?",
       paymentBlock(c),
       "",
       signature(c),
