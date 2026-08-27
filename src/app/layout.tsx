@@ -13,18 +13,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const TITLE = "ClaimGuard — L'assistant de paiement des indépendants";
+const TITLE = "MyDueGuard — L'assistant de paiement des indépendants";
 const DESCRIPTION =
-  "Freelance, consultant, artisan ou prestataire : déposez votre facture impayée. ClaimGuard analyse votre dossier, contacte votre client, suit les échanges et vous accompagne automatiquement jusqu'à la résolution du paiement.";
+  "Freelance, consultant, artisan ou prestataire : déposez votre facture impayée. MyDueGuard analyse votre dossier, contacte votre client, suit les échanges et vous accompagne automatiquement jusqu'à la résolution du paiement.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.APP_URL),
   title: {
     default: TITLE,
-    template: "%s · ClaimGuard",
+    template: "%s · MyDueGuard",
   },
   description: DESCRIPTION,
-  applicationName: "ClaimGuard",
+  applicationName: "MyDueGuard",
   keywords: [
     "facture impayée",
     "relance client",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    siteName: "ClaimGuard",
+    siteName: "MyDueGuard",
     title: TITLE,
     description: DESCRIPTION,
     url: env.APP_URL,

@@ -27,7 +27,7 @@ export default async function BillingPage({
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Facturation</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Gérez votre formule et votre consommation ClaimGuard.
+        Gérez votre formule et votre consommation MyDueGuard.
       </p>
 
       {sp.success && (
@@ -129,8 +129,8 @@ export default async function BillingPage({
       </div>
 
       <p className="mt-8 rounded-lg border border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
-        Votre abonnement ClaimGuard rémunère le service de suivi. Il est
-        totalement distinct des montants de vos factures : ClaimGuard n&apos;encaisse
+        Votre abonnement MyDueGuard rémunère le service de suivi. Il est
+        totalement distinct des montants de vos factures : MyDueGuard n&apos;encaisse
         jamais les sommes que vos clients vous doivent.
       </p>
     </div>

@@ -7,20 +7,20 @@ export const metadata: Metadata = { title: "Support" };
 
 const FAQ = [
   {
-    q: "ClaimGuard est-il un huissier ou un cabinet d'avocats ?",
-    a: "Non. ClaimGuard assure un suivi administratif amiable de vos factures, en votre nom. Il n'encaisse jamais vos paiements et n'est ni huissier / commissaire de justice, ni cabinet d'avocats. Pour un conseil juridique, consultez un professionnel du droit.",
+    q: "MyDueGuard est-il un huissier ou un cabinet d'avocats ?",
+    a: "Non. MyDueGuard assure un suivi administratif amiable de vos factures, en votre nom. Il n'encaisse jamais vos paiements et n'est ni huissier / commissaire de justice, ni cabinet d'avocats. Pour un conseil juridique, consultez un professionnel du droit.",
   },
   {
     q: "Comment fonctionne l'analyse IA ?",
     a: "Elle lit vos documents pour en extraire les informations clés (numéro, montant, échéance), classe les réponses de vos clients et prépare des brouillons. L'IA n'invente jamais une donnée et ne décide jamais seule d'une action.",
   },
   {
-    q: "Comment ClaimGuard contacte-t-il mes clients ?",
-    a: "Sur la base du mandat que vous acceptez, ClaimGuard envoie des relances amiables en votre nom et suit les réponses. Vous pouvez suspendre l'automatisation d'un dossier à tout moment.",
+    q: "Comment MyDueGuard contacte-t-il mes clients ?",
+    a: "Sur la base du mandat que vous acceptez, MyDueGuard envoie des relances amiables en votre nom et suit les réponses. Vous pouvez suspendre l'automatisation d'un dossier à tout moment.",
   },
   {
     q: "Comment suis-je payé ?",
-    a: "Votre client vous règle directement sur votre propre compte bancaire. ClaimGuard ne perçoit et ne fait jamais transiter les sommes qui vous sont dues.",
+    a: "Votre client vous règle directement sur votre propre compte bancaire. MyDueGuard ne perçoit et ne fait jamais transiter les sommes qui vous sont dues.",
   },
   {
     q: "Mes documents restent-ils confidentiels ?",

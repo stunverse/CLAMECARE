@@ -41,7 +41,7 @@ export function NotificationsList({
       <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border py-16 text-center">
         <Bell className="size-7 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
-          Aucune notification pour l&apos;instant. ClaimGuard vous préviendra à
+          Aucune notification pour l&apos;instant. MyDueGuard vous préviendra à
           chaque étape.
         </p>
       </div>

@@ -63,7 +63,7 @@ export default async function AdminCaseDetailPage({
           {c.ai_summary && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Résumé ClaimGuard</CardTitle>
+                <CardTitle className="text-base">Résumé MyDueGuard</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">{c.ai_summary}</p>

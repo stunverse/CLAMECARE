@@ -58,7 +58,7 @@ export default async function AdminCasesPage({
     <div>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Dossiers</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Vue d&apos;ensemble et gestion de tous les dossiers ClaimGuard.
+        Vue d&apos;ensemble et gestion de tous les dossiers MyDueGuard.
       </p>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

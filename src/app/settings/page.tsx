@@ -94,7 +94,7 @@ export default async function SettingsPage() {
         <CardHeader>
           <CardTitle>Coordonnées de paiement</CardTitle>
           <CardDescription>
-            Communiquées à vos clients. ClaimGuard n&apos;encaisse jamais vos
+            Communiquées à vos clients. MyDueGuard n&apos;encaisse jamais vos
             paiements.
           </CardDescription>
         </CardHeader>
@@ -134,7 +134,7 @@ function SettingsShell({ children }: { children: React.ReactNode }) {
             <ShieldCheck className="size-4" />
           </span>
           <span className="font-semibold tracking-tight">
-            Claim<span className="text-brand">Guard</span>
+            MyDue<span className="text-brand">Guard</span>
           </span>
         </Link>
         <Link

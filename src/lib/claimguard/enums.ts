@@ -1,5 +1,5 @@
 /**
- * ClaimGuard domain enums — mirrors the Postgres enums in
+ * MyDueGuard domain enums — mirrors the Postgres enums in
  * supabase/migrations/0009_claimguard_cases.sql. French UI labels (target
  * market: independent trainers in France).
  */

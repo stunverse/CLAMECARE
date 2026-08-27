@@ -4,11 +4,11 @@
  * Computes what the CREANCIER (the freelancer) is legally owed on a late B2B
  * invoice: principal + late-payment penalties + the fixed €40 recovery
  * indemnity (art. D441-5 Code de commerce). This is the CREANCE side and is
- * kept strictly separate from ClaimGuard's own subscription billing — the two
+ * kept strictly separate from MyDueGuard's own subscription billing — the two
  * must never be mixed (§34). No AI: pure, auditable arithmetic.
  *
- * IMPORTANT: these are sums owed to the creditor, NOT "ClaimGuard fees", and
- * ClaimGuard never charges the debtor for its own service.
+ * IMPORTANT: these are sums owed to the creditor, NOT "MyDueGuard fees", and
+ * MyDueGuard never charges the debtor for its own service.
  */
 
 export interface DunningConfig {

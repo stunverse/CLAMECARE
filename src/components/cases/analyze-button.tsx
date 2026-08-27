@@ -42,7 +42,7 @@ export function AnalyzeButton({ caseId }: { caseId: string }) {
         )}
       </Button>
       <p className="text-xs text-muted-foreground">
-        ClaimGuard lit vos documents et complète les informations manquantes.
+        MyDueGuard lit vos documents et complète les informations manquantes.
         Vos saisies ne sont jamais écrasées.
       </p>
       {error && <p className="text-xs text-danger">{error}</p>}

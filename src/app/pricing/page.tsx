@@ -18,7 +18,7 @@ export default function PricingPage() {
               <ShieldCheck className="size-5" />
             </span>
             <span className="text-lg font-semibold tracking-tight">
-              Claim<span className="text-brand">Guard</span>
+              MyDue<span className="text-brand">Guard</span>
             </span>
           </Link>
           <Link
@@ -44,15 +44,15 @@ export default function PricingPage() {
         <PricingTable mode="marketing" stripeConfigured={isStripeConfigured} />
 
         <p className="mx-auto mt-10 max-w-3xl rounded-lg border border-border bg-muted/40 px-4 py-3 text-center text-xs text-muted-foreground">
-          L&apos;abonnement ClaimGuard rémunère le service de suivi. Il est
-          distinct des montants de vos factures : ClaimGuard n&apos;encaisse
+          L&apos;abonnement MyDueGuard rémunère le service de suivi. Il est
+          distinct des montants de vos factures : MyDueGuard n&apos;encaisse
           jamais les sommes que vos clients vous doivent.
         </p>
       </main>
 
       <footer className="border-t border-border">
         <div className="mx-auto w-full max-w-6xl px-6 py-6 text-sm text-muted-foreground">
-          © {new Date().getFullYear()} ClaimGuard. Suivi amiable, jamais
+          © {new Date().getFullYear()} MyDueGuard. Suivi amiable, jamais
           d&apos;encaissement.
         </div>
       </footer>

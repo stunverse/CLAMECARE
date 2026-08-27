@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { ClaimGuardOnboarding } from "@/components/onboarding/claimguard-onboarding";
+import { MyDueGuardOnboarding } from "@/components/onboarding/claimguard-onboarding";
 
-export const metadata: Metadata = { title: "Bienvenue sur ClaimGuard" };
+export const metadata: Metadata = { title: "Bienvenue sur MyDueGuard" };
 
 interface ProfileNames {
   first_name: string | null;
@@ -44,7 +44,7 @@ export default async function OnboardingPage() {
             <ShieldCheck className="size-5" />
           </span>
           <span className="text-lg font-semibold tracking-tight">
-            Claim<span className="text-brand">Guard</span>
+            MyDue<span className="text-brand">Guard</span>
           </span>
         </div>
 
@@ -53,10 +53,10 @@ export default async function OnboardingPage() {
         </h1>
         <p className="mt-1 mb-8 text-sm text-muted-foreground">
           Quelques informations pour préparer votre espace. Vous pourrez ensuite
-          confier votre première facture impayée à ClaimGuard.
+          confier votre première facture impayée à MyDueGuard.
         </p>
 
-        <ClaimGuardOnboarding firstName={firstName} lastName={lastName} />
+        <MyDueGuardOnboarding firstName={firstName} lastName={lastName} />
       </div>
     </div>
   );

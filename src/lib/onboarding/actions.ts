@@ -4,10 +4,10 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * ClaimGuard client onboarding (cahier des charges §4).
+ * MyDueGuard client onboarding (cahier des charges §4).
  *
  * Captures the freelancer's professional profile + their own payment
- * coordinates (never ClaimGuard's) and records the intervention mandate, then
+ * coordinates (never MyDueGuard's) and records the intervention mandate, then
  * sends them to their dashboard. Branchable: a no-op redirect in demo mode.
  */
 
@@ -34,12 +34,12 @@ export async function completeOnboarding(
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?redirectTo=/onboarding");
 
-  // The intervention mandate is required for ClaimGuard to act on the
+  // The intervention mandate is required for MyDueGuard to act on the
   // freelancer's behalf (amicable recovery for third party).
   if (formData.get("accept_mandate") !== "on") {
     return {
       error:
-        "Vous devez autoriser ClaimGuard à assurer le suivi amiable de vos factures pour continuer.",
+        "Vous devez autoriser MyDueGuard à assurer le suivi amiable de vos factures pour continuer.",
     };
   }
 

@@ -19,7 +19,7 @@ export default async function AdminLayout({
             <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <ShieldCheck className="size-5" />
             </span>
-            <span className="font-semibold tracking-tight">ClaimGuard</span>
+            <span className="font-semibold tracking-tight">MyDueGuard</span>
             <Badge variant="info">Admin</Badge>
             {isDemo && <Badge variant="warning">Demo data</Badge>}
           </div>

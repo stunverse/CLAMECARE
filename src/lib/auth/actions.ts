@@ -34,27 +34,27 @@ async function recordSignupConsents(userId: string) {
     {
       user_id: userId,
       consent_type: "terms_of_service" as const,
-      consent_text: "Acceptation des Conditions d'utilisation de ClaimGuard.",
+      consent_text: "Acceptation des Conditions d'utilisation de MyDueGuard.",
       accepted_at: now,
     },
     {
       user_id: userId,
       consent_type: "privacy_policy" as const,
-      consent_text: "Acceptation de la Politique de confidentialité de ClaimGuard.",
+      consent_text: "Acceptation de la Politique de confidentialité de MyDueGuard.",
       accepted_at: now,
     },
     {
       user_id: userId,
       consent_type: "legal_disclaimer" as const,
       consent_text:
-        "A compris que ClaimGuard assure un suivi administratif amiable, n'encaisse jamais les paiements et n'est ni huissier ni cabinet juridique.",
+        "A compris que MyDueGuard assure un suivi administratif amiable, n'encaisse jamais les paiements et n'est ni huissier ni cabinet juridique.",
       accepted_at: now,
     },
     {
       user_id: userId,
       consent_type: "sensitive_document_processing" as const,
       consent_text:
-        "Consentement au traitement par ClaimGuard des documents déposés (factures, justificatifs) pour le suivi amiable des paiements.",
+        "Consentement au traitement par MyDueGuard des documents déposés (factures, justificatifs) pour le suivi amiable des paiements.",
       accepted_at: now,
     },
   ];

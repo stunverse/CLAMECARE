@@ -41,14 +41,14 @@ function invoiceLine(c: Partial<Case>): string {
   return bits.join(" ");
 }
 
-/** Creditor label (the freelancer ClaimGuard acts for). */
+/** Creditor label (the freelancer MyDueGuard acts for). */
 function creditorName(c: Partial<Case>): string {
   return c.payee_name ?? "notre client";
 }
 
-/** Intermediary intro: ClaimGuard clearly acts FOR the creditor. */
+/** Intermediary intro: MyDueGuard clearly acts FOR the creditor. */
 function intermediaryIntro(c: Partial<Case>, service: string): string {
-  return `ClaimGuard assure, pour le compte de ${creditorName(c)}, le suivi administratif du règlement de la facture ci-dessous${service}.`;
+  return `MyDueGuard assure, pour le compte de ${creditorName(c)}, le suivi administratif du règlement de la facture ci-dessous${service}.`;
 }
 
 function paymentBlock(c: Partial<Case>): string {
@@ -71,9 +71,9 @@ function signature(c: Partial<Case>): string {
     "Vous pouvez répondre directement à cet email.",
     "",
     "Cordialement,",
-    "L'équipe ClaimGuard",
+    "L'équipe MyDueGuard",
     "",
-    `— ClaimGuard assure le suivi administratif amiable du règlement dû à ${creditorName(c)}, et ne perçoit aucun paiement : le règlement se fait directement auprès de ${creditorName(c)}.`,
+    `— MyDueGuard assure le suivi administratif amiable du règlement dû à ${creditorName(c)}, et ne perçoit aucun paiement : le règlement se fait directement auprès de ${creditorName(c)}.`,
   ].join("\n");
 }
 
@@ -116,7 +116,7 @@ function renderFormalNotice(
     body: [
       greeting(c),
       "",
-      `ClaimGuard intervient en qualité de mandataire de ${creditor} pour le suivi amiable du règlement de la créance ci-dessous.`,
+      `MyDueGuard intervient en qualité de mandataire de ${creditor} pour le suivi amiable du règlement de la créance ci-dessous.`,
       "",
       `Nous vous mettons en demeure, à l'amiable, de régler la ${invoiceLine(c)}${service}, restée impayée malgré nos précédentes relances.`,
       ...breakdown,

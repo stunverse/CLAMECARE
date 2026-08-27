@@ -21,41 +21,41 @@ export default function TermsPage() {
       <section className="space-y-3 text-sm leading-relaxed text-foreground/90">
         <H2>1. Acceptation</H2>
         <p>
-          En créant un compte ou en utilisant ClaimGuard, vous acceptez les
+          En créant un compte ou en utilisant MyDueGuard, vous acceptez les
           présentes Conditions d&apos;utilisation, la Politique de
           confidentialité et les Mentions &amp; avertissement.
         </p>
 
         <H2>2. Nature du service</H2>
         <p>
-          ClaimGuard est un assistant de <strong>suivi administratif amiable</strong>{" "}
+          MyDueGuard est un assistant de <strong>suivi administratif amiable</strong>{" "}
           des factures impayées, destiné aux travailleurs indépendants
           (freelances, consultants, prestataires, sous-traitants, etc.).
-          ClaimGuard agit <strong>au nom et pour le compte</strong> de
+          MyDueGuard agit <strong>au nom et pour le compte</strong> de
           l&apos;utilisateur, dans le cadre du mandat d&apos;intervention qu&apos;il
           accepte.
         </p>
         <p>
-          ClaimGuard <strong>n&apos;est ni un huissier / commissaire de justice,
+          MyDueGuard <strong>n&apos;est ni un huissier / commissaire de justice,
           ni une société de recouvrement judiciaire, ni un cabinet
           d&apos;avocats</strong>, et ne fournit pas de conseil juridique.
-          ClaimGuard n&apos;accomplit aucun acte d&apos;exécution forcée et
+          MyDueGuard n&apos;accomplit aucun acte d&apos;exécution forcée et
           n&apos;engage aucune procédure judiciaire : ces décisions
           appartiennent exclusivement à l&apos;utilisateur.
         </p>
 
-        <H2>3. ClaimGuard n&apos;encaisse jamais vos paiements</H2>
+        <H2>3. MyDueGuard n&apos;encaisse jamais vos paiements</H2>
         <p>
           Les sommes dues par votre client vous sont réglées{" "}
           <strong>directement, sur votre propre compte bancaire</strong>.
-          ClaimGuard ne perçoit, ne détient et ne fait jamais transiter les
+          MyDueGuard ne perçoit, ne détient et ne fait jamais transiter les
           montants de vos factures, et ne communique jamais d&apos;autre compte
           que le vôtre.
         </p>
 
         <H2>4. Mandat d&apos;intervention</H2>
         <p>
-          Vous autorisez ClaimGuard à effectuer, à l&apos;amiable et en votre
+          Vous autorisez MyDueGuard à effectuer, à l&apos;amiable et en votre
           nom, le suivi et la relance de vos factures auprès de vos clients
           (envoi d&apos;emails, relances, transmission de justificatifs). Vous
           pouvez suspendre ou retirer ce mandat à tout moment depuis votre
@@ -66,7 +66,7 @@ export default function TermsPage() {
         <p>
           Vous êtes responsable de l&apos;exactitude des informations et
           documents que vous déposez (factures, montants, coordonnées,
-          justificatifs). ClaimGuard s&apos;appuie sur ces éléments et ne les
+          justificatifs). MyDueGuard s&apos;appuie sur ces éléments et ne les
           invente jamais. Vous restez responsable de la relation commerciale
           avec vos clients et des suites que vous décidez de donner à un dossier.
         </p>
@@ -80,7 +80,7 @@ export default function TermsPage() {
 
         <H2>7. Abonnement</H2>
         <p>
-          L&apos;accès à ClaimGuard peut être payant selon la formule choisie.
+          L&apos;accès à MyDueGuard peut être payant selon la formule choisie.
           Les paiements de l&apos;abonnement sont <strong>strictement distincts</strong>{" "}
           des montants des factures que vous cherchez à recouvrer : ils ne se
           confondent jamais. Les conditions tarifaires sont présentées lors de
@@ -89,9 +89,9 @@ export default function TermsPage() {
 
         <H2>8. Limitation de responsabilité</H2>
         <p>
-          ClaimGuard fournit un outil d&apos;assistance et ne garantit aucun
+          MyDueGuard fournit un outil d&apos;assistance et ne garantit aucun
           résultat, notamment pas le paiement effectif d&apos;une facture. Dans
-          les limites permises par la loi, ClaimGuard ne saurait être tenu
+          les limites permises par la loi, MyDueGuard ne saurait être tenu
           responsable des décisions de vos clients ni des suites judiciaires que
           vous engageriez.
         </p>

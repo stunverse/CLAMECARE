@@ -1,7 +1,7 @@
 /**
  * Outbound compliance guard (cahier des charges §14/§40 + positioning rules).
  *
- * ClaimGuard does amicable recovery FOR the freelancer — it is never a
+ * MyDueGuard does amicable recovery FOR the freelancer — it is never a
  * commissaire de justice (huissier) nor a coercive collector. Its emails to the
  * debtor must never threaten seizure, invoke enforcement powers, or usurp the
  * attributes of a public officer. This deterministic check runs before ANY
@@ -32,15 +32,15 @@ interface Rule {
  * seizure and enforcement claims.
  */
 const RULES: Rule[] = [
-  { pattern: /\bhuissier(?:s)?\b/i, term: "huissier", reason: "ClaimGuard n'est pas huissier / commissaire de justice." },
+  { pattern: /\bhuissier(?:s)?\b/i, term: "huissier", reason: "MyDueGuard n'est pas huissier / commissaire de justice." },
   { pattern: /\bcommissaire(?:s)? de justice\b/i, term: "commissaire de justice", reason: "Ne pas invoquer un officier ministériel dans une relance amiable." },
   { pattern: /\bsaisie(?:s)?\b/i, term: "saisie", reason: "Menace d'exécution forcée — acte réservé au commissaire de justice." },
   { pattern: /\bsaisir\s+(?:vos|ses|les)\s+(?:comptes?|biens?|salaires?|avoirs?)\b/i, term: "saisir vos comptes/biens", reason: "Menace de saisie." },
   { pattern: /\bsommation(?:s)?\b/i, term: "sommation", reason: "Terme d'acte d'huissier." },
   { pattern: /au\s+nom\s+de\s+la\s+loi/i, term: "au nom de la loi", reason: "Usurpation d'autorité publique." },
-  { pattern: /recouvrement\s+forc[ée]/i, term: "recouvrement forcé", reason: "ClaimGuard fait du recouvrement amiable, pas forcé." },
+  { pattern: /recouvrement\s+forc[ée]/i, term: "recouvrement forcé", reason: "MyDueGuard fait du recouvrement amiable, pas forcé." },
   { pattern: /ex[ée]cution\s+forc[ée]e/i, term: "exécution forcée", reason: "Acte réservé au commissaire de justice." },
-  { pattern: /nous\s+(?:engageons|engagerons|lançons|lancerons|entamons|entamerons)\s+(?:une\s+)?(?:proc[ée]dure|poursuites?|action\s+en\s+justice)/i, term: "nous engageons une procédure", reason: "ClaimGuard ne lance aucune procédure : c'est au créancier de décider." },
+  { pattern: /nous\s+(?:engageons|engagerons|lançons|lancerons|entamons|entamerons)\s+(?:une\s+)?(?:proc[ée]dure|poursuites?|action\s+en\s+justice)/i, term: "nous engageons une procédure", reason: "MyDueGuard ne lance aucune procédure : c'est au créancier de décider." },
   { pattern: /avant\s+saisie/i, term: "avant saisie", reason: "Menace de saisie." },
   { pattern: /\bmise\s+en\s+demeure\s+d['’]huissier\b/i, term: "mise en demeure d'huissier", reason: "Ne pas se présenter comme huissier." },
   { pattern: /\bsomm(?:ons|é|er)\b/i, term: "sommer", reason: "Vocabulaire d'acte d'huissier." },

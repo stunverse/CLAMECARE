@@ -14,7 +14,7 @@ export default function AuthLayout({
           <ShieldCheck className="size-5" />
         </span>
         <span className="text-lg font-semibold tracking-tight">
-          Claim<span className="text-brand">Guard</span>
+          MyDue<span className="text-brand">Guard</span>
         </span>
       </Link>
 
@@ -31,8 +31,8 @@ export default function AuthLayout({
       </div>
 
       <p className="mt-6 max-w-md text-center text-xs text-muted-foreground">
-        ClaimGuard assure le suivi administratif de vos factures impayées.
-        ClaimGuard n&apos;encaisse jamais vos paiements : votre client vous
+        MyDueGuard assure le suivi administratif de vos factures impayées.
+        MyDueGuard n&apos;encaisse jamais vos paiements : votre client vous
         règle directement.
       </p>
     </div>

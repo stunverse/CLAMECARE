@@ -47,7 +47,7 @@ function Logo() {
         <ShieldCheck className="size-5" />
       </span>
       <span className="text-lg font-semibold tracking-tight">
-        Claim<span className="text-brand">Guard</span>
+        MyDue<span className="text-brand">Guard</span>
       </span>
     </Link>
   );
@@ -87,7 +87,7 @@ function SiteFooter() {
         <div className="space-y-1">
           <Logo />
           <p>
-            © {new Date().getFullYear()} ClaimGuard. ClaimGuard n&apos;encaisse
+            © {new Date().getFullYear()} MyDueGuard. MyDueGuard n&apos;encaisse
             jamais vos paiements.
           </p>
         </div>
@@ -119,10 +119,10 @@ function Hero() {
           L&apos;assistant de paiement des indépendants
         </span>
         <h1 className="mt-6 max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          Déposez votre facture impayée. ClaimGuard s&apos;occupe du reste.
+          Déposez votre facture impayée. MyDueGuard s&apos;occupe du reste.
         </h1>
         <p className="mt-5 max-w-2xl text-pretty text-lg text-muted-foreground">
-          Freelance, consultant, artisan ou prestataire : ClaimGuard analyse
+          Freelance, consultant, artisan ou prestataire : MyDueGuard analyse
           votre dossier, contacte votre client, suit les échanges et vous
           accompagne automatiquement jusqu&apos;à la résolution du paiement.
         </p>
@@ -166,18 +166,18 @@ const STEPS = [
   },
   {
     icon: Sparkles,
-    title: "ClaimGuard analyse",
+    title: "MyDueGuard analyse",
     body: "L'IA lit vos documents, vérifie la complétude du dossier et prépare le premier contact.",
   },
   {
     icon: Mail,
     title: "Votre client est contacté",
-    body: "ClaimGuard écrit à votre client, suit les réponses et relance automatiquement.",
+    body: "MyDueGuard écrit à votre client, suit les réponses et relance automatiquement.",
   },
   {
     icon: CheckCircle2,
     title: "Vous êtes payé, on clôture",
-    body: "Dès la promesse de paiement, ClaimGuard suit l'échéance jusqu'au règlement — sur votre compte.",
+    body: "Dès la promesse de paiement, MyDueGuard suit l'échéance jusqu'au règlement — sur votre compte.",
   },
 ];
 
@@ -222,7 +222,7 @@ const HELPS = [
 function HelpsWith() {
   return (
     <Section
-      title="Ce que ClaimGuard prend en charge"
+      title="Ce que MyDueGuard prend en charge"
       subtitle="Le suivi administratif de vos paiements en attente, de bout en bout."
       muted
     >
@@ -290,7 +290,7 @@ const REASONS = [
   {
     icon: CalendarClock,
     title: "Suivi des promesses",
-    body: "Une date de paiement annoncée ? ClaimGuard la détecte et vérifie l'échéance.",
+    body: "Une date de paiement annoncée ? MyDueGuard la détecte et vérifie l'échéance.",
   },
   {
     icon: Bell,
@@ -312,7 +312,7 @@ const REASONS = [
 function WhyChoose() {
   return (
     <Section
-      title="Pourquoi ClaimGuard"
+      title="Pourquoi MyDueGuard"
       subtitle="Un vrai système automatisé, pas un simple chatbot."
       muted
     >
@@ -404,7 +404,7 @@ function FinalCta() {
           Prêt à confier votre première facture ?
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-primary-foreground/80">
-          Déposez votre facture impayée et laissez ClaimGuard gérer le suivi
+          Déposez votre facture impayée et laissez MyDueGuard gérer le suivi
           jusqu&apos;au règlement.
         </p>
         <Link
@@ -418,7 +418,7 @@ function FinalCta() {
           <ArrowRight className="size-4" />
         </Link>
         <p className="mx-auto mt-6 max-w-2xl text-sm text-primary-foreground/80">
-          ClaimGuard assure le suivi administratif de vos factures. ClaimGuard
+          MyDueGuard assure le suivi administratif de vos factures. MyDueGuard
           n&apos;encaisse jamais vos paiements et n&apos;est ni un huissier ni un
           cabinet juridique.
         </p>

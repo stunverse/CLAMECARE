@@ -61,7 +61,7 @@ export default async function DossiersPage({
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Mes dossiers</h1>
           <p className="text-sm text-muted-foreground">
-            Déposez votre facture, ClaimGuard s&apos;occupe du suivi.
+            Déposez votre facture, MyDueGuard s&apos;occupe du suivi.
             {isDemo && " · données de démonstration"}
           </p>
         </div>
@@ -70,7 +70,7 @@ export default async function DossiersPage({
           className={cn(buttonVariants({ variant: "brand" }), "shadow-sm")}
         >
           <Plus className="size-4" />
-          Confier une facture à ClaimGuard
+          Confier une facture à MyDueGuard
         </Link>
       </div>
 
@@ -82,7 +82,7 @@ export default async function DossiersPage({
             </span>
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-brand">
-                Prochaine action ClaimGuard
+                Prochaine action MyDueGuard
               </p>
               {nextAction ? (
                 <>
@@ -149,7 +149,7 @@ export default async function DossiersPage({
           <div>
             <p className="font-medium">Aucun dossier pour l&apos;instant</p>
             <p className="text-sm text-muted-foreground">
-              Déposez une facture impayée, ClaimGuard s&apos;occupe du reste.
+              Déposez une facture impayée, MyDueGuard s&apos;occupe du reste.
             </p>
           </div>
           <Link

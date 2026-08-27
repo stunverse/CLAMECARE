@@ -21,8 +21,8 @@ export default function DisclaimerPage() {
       <section className="space-y-3 text-sm leading-relaxed text-foreground/90">
         <div className="rounded-lg border border-warning/30 bg-warning/10 p-4 text-foreground/90">
           <p>
-            ClaimGuard assure un <strong>suivi administratif amiable</strong> de
-            vos factures impayées, en votre nom. ClaimGuard{" "}
+            MyDueGuard assure un <strong>suivi administratif amiable</strong> de
+            vos factures impayées, en votre nom. MyDueGuard{" "}
             <strong>n&apos;encaisse jamais vos paiements</strong> et n&apos;est{" "}
             <strong>ni huissier / commissaire de justice, ni société de
             recouvrement judiciaire, ni cabinet d&apos;avocats</strong>.
@@ -31,24 +31,24 @@ export default function DisclaimerPage() {
 
         <H2>Recouvrement amiable uniquement</H2>
         <p>
-          ClaimGuard intervient exclusivement dans le cadre du{" "}
+          MyDueGuard intervient exclusivement dans le cadre du{" "}
           <strong>recouvrement amiable</strong> : analyse du dossier, prise de
           contact, relances, transmission de justificatifs, suivi des promesses
-          de paiement. ClaimGuard n&apos;accomplit aucun acte réservé au
+          de paiement. MyDueGuard n&apos;accomplit aucun acte réservé au
           commissaire de justice (signification, saisie, exécution forcée) et
           n&apos;engage aucune procédure judiciaire.
         </p>
 
         <H2>Aucune garantie de résultat</H2>
         <p>
-          ClaimGuard ne garantit pas le paiement effectif d&apos;une facture. Le
-          règlement dépend de votre client. ClaimGuard met en œuvre des moyens
+          MyDueGuard ne garantit pas le paiement effectif d&apos;une facture. Le
+          règlement dépend de votre client. MyDueGuard met en œuvre des moyens
           de suivi et de relance, sans obligation de résultat.
         </p>
 
         <H2>Pas de conseil juridique</H2>
         <p>
-          Les informations et documents fournis par ClaimGuard (y compris une
+          Les informations et documents fournis par MyDueGuard (y compris une
           éventuelle mise en demeure amiable ou un décompte de sommes dues) ont
           une valeur <strong>informative et administrative</strong>. Ils ne
           constituent pas un conseil juridique. Pour une analyse juridique,
@@ -61,14 +61,14 @@ export default function DisclaimerPage() {
         <p>
           Les décisions relatives à un dossier (poursuivre, transiger, saisir la
           justice) vous appartiennent. Les sommes dues vous sont réglées{" "}
-          <strong>directement sur votre compte</strong> ; ClaimGuard ne perçoit
+          <strong>directement sur votre compte</strong> ; MyDueGuard ne perçoit
           jamais ces montants.
         </p>
 
         <H2>Vérification</H2>
         <p>
           Relisez toujours les informations et documents avant leur envoi ou
-          leur utilisation. ClaimGuard s&apos;appuie uniquement sur les données
+          leur utilisation. MyDueGuard s&apos;appuie uniquement sur les données
           que vous fournissez et ne les invente jamais.
         </p>
       </section>

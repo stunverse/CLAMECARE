@@ -3,8 +3,8 @@ import { formatDateTimeFr, formatDateFr } from "@/lib/cases/format";
 import type { Case } from "@/lib/claimguard/types";
 
 /**
- * "Prochaine action ClaimGuard" (cahier des charges §44) — the single upcoming
- * automated action, so the client feels ClaimGuard is actively working. Read
+ * "Prochaine action MyDueGuard" (cahier des charges §44) — the single upcoming
+ * automated action, so the client feels MyDueGuard is actively working. Read
  * from the pending workflow queue first (source of truth), falling back to the
  * soonest announced payment date.
  */

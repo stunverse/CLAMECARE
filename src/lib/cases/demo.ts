@@ -1,7 +1,7 @@
 import type { Case } from "@/lib/claimguard/types";
 
 /**
- * Demo cases shown when Supabase is not configured, so the whole ClaimGuard
+ * Demo cases shown when Supabase is not configured, so the whole MyDueGuard
  * flow stays fully clickable in placeholder mode (no keys required).
  * These are illustrative only and never persisted.
  */

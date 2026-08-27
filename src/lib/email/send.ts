@@ -37,14 +37,14 @@ export function notificationEmailHtml(
   actionUrl?: string,
 ): string {
   const link = actionUrl
-    ? `<p style="margin-top:16px"><a href="${env.APP_URL}${actionUrl}" style="background:#2563eb;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;display:inline-block">Ouvrir dans ClaimGuard</a></p>`
+    ? `<p style="margin-top:16px"><a href="${env.APP_URL}${actionUrl}" style="background:#2563eb;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;display:inline-block">Ouvrir dans MyDueGuard</a></p>`
     : "";
   return `<div style="font-family:system-ui,Arial,sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#0f1b2d">
-    <p style="font-weight:600;font-size:18px">ClaimGuard</p>
+    <p style="font-weight:600;font-size:18px">MyDueGuard</p>
     <h1 style="font-size:18px">${title}</h1>
     <p style="color:#5b6b80">${message}</p>
     ${link}
     <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0" />
-    <p style="font-size:12px;color:#94a3b8">ClaimGuard assure le suivi administratif de vos factures. ClaimGuard n'encaisse jamais vos paiements.</p>
+    <p style="font-size:12px;color:#94a3b8">MyDueGuard assure le suivi administratif de vos factures. MyDueGuard n'encaisse jamais vos paiements.</p>
   </div>`;
 }

@@ -1,5 +1,5 @@
 /**
- * French / EUR formatting helpers for ClaimGuard. Kept separate from the
+ * French / EUR formatting helpers for MyDueGuard. Kept separate from the
  * existing USD helpers in @/lib/format so the ClaimCare side is untouched.
  */
 

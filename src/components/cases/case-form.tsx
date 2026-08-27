@@ -227,7 +227,7 @@ export function CaseForm({
         <CardContent className="space-y-4">
           <p className="rounded-lg bg-accent/50 px-3 py-2 text-xs text-muted-foreground">
             Votre client vous règle <strong>directement</strong> sur votre
-            compte. ClaimGuard ne perçoit jamais votre argent et ne communique
+            compte. MyDueGuard ne perçoit jamais votre argent et ne communique
             jamais d&apos;autre compte que le vôtre.
           </p>
           <div className="grid gap-4 sm:grid-cols-2">

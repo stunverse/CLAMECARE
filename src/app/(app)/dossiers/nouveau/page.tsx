@@ -28,7 +28,7 @@ export default async function NewCasePage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Nouveau dossier</h1>
         <p className="text-sm text-muted-foreground">
-          Renseignez la facture impayée. ClaimGuard analyse, contacte votre
+          Renseignez la facture impayée. MyDueGuard analyse, contacte votre
           client et gère les relances jusqu&apos;au paiement — sur votre compte.
         </p>
       </div>

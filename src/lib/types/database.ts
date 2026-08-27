@@ -61,7 +61,7 @@ export interface Profile {
   legal_disclaimer_accepted_at: string | null;
   terms_accepted_at: string | null;
   privacy_accepted_at: string | null;
-  // ClaimGuard professional profile (migration 0009)
+  // MyDueGuard professional profile (migration 0009)
   business_name: string | null;
   siret: string | null;
   address: string | null;

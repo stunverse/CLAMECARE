@@ -14,7 +14,7 @@ import type { Case } from "@/lib/claimguard/types";
  *
  * All amounts/dates/states are handled deterministically here — the AI is
  * only invoked later (Priority 3) to help *extract* fields from documents.
- * ClaimGuard never collects money: `payee_name`/`iban`/`bic` are the CLIENT's
+ * MyDueGuard never collects money: `payee_name`/`iban`/`bic` are the CLIENT's
  * own coordinates, stored only to communicate them to the debtor.
  */
 

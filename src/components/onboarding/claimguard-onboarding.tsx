@@ -55,7 +55,7 @@ function Field({
   );
 }
 
-export function ClaimGuardOnboarding({
+export function MyDueGuardOnboarding({
   firstName,
   lastName,
 }: {
@@ -120,7 +120,7 @@ export function ClaimGuardOnboarding({
         <CardContent className="space-y-4">
           <p className="rounded-lg bg-accent/50 px-3 py-2 text-xs text-muted-foreground">
             Ces coordonnées servent uniquement à indiquer à vos clients où vous
-            régler. ClaimGuard n&apos;encaisse jamais vos paiements.
+            régler. MyDueGuard n&apos;encaisse jamais vos paiements.
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field
@@ -152,9 +152,9 @@ export function ClaimGuardOnboarding({
               className="mt-1 size-4 shrink-0 rounded border-border"
             />
             <span className="text-muted-foreground">
-              J&apos;autorise ClaimGuard à assurer, <strong>en mon nom et à
+              J&apos;autorise MyDueGuard à assurer, <strong>en mon nom et à
               l&apos;amiable</strong>, le suivi et la relance de mes factures
-              impayées auprès de mes clients. ClaimGuard n&apos;encaisse jamais
+              impayées auprès de mes clients. MyDueGuard n&apos;encaisse jamais
               les sommes dues et n&apos;engage aucune procédure judiciaire sans
               ma décision.
             </span>

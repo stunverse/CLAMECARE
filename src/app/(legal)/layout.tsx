@@ -15,7 +15,7 @@ export default function LegalLayout({
               <ShieldCheck className="size-4" />
             </span>
             <span className="font-semibold tracking-tight">
-              Claim<span className="text-brand">Guard</span>
+              MyDue<span className="text-brand">Guard</span>
             </span>
           </Link>
           <Link
@@ -34,7 +34,7 @@ export default function LegalLayout({
       <footer className="border-t border-border">
         <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-2 px-6 py-6 text-sm text-muted-foreground">
           <p>
-            © {new Date().getFullYear()} ClaimGuard. Suivi amiable, jamais
+            © {new Date().getFullYear()} MyDueGuard. Suivi amiable, jamais
             d&apos;encaissement.
           </p>
           <nav className="flex gap-4">

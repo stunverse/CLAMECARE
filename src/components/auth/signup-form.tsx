@@ -85,10 +85,10 @@ export function SignupForm() {
           <Link href="/privacy" className="text-brand hover:underline">
             Politique de confidentialité
           </Link>{" "}
-          et le traitement par ClaimGuard des documents que je dépose.
+          et le traitement par MyDueGuard des documents que je dépose.
         </ConsentCheckbox>
         <ConsentCheckbox name="accept_disclaimer">
-          Je comprends que ClaimGuard assure un{" "}
+          Je comprends que MyDueGuard assure un{" "}
           <Link href="/disclaimer" className="text-brand hover:underline">
             suivi administratif amiable
           </Link>

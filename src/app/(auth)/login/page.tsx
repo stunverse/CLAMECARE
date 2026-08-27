@@ -36,7 +36,7 @@ export default async function LoginPage({
     <Card>
       <CardHeader>
         <CardTitle className="text-xl">Bon retour</CardTitle>
-        <CardDescription>Connectez-vous à votre espace ClaimGuard.</CardDescription>
+        <CardDescription>Connectez-vous à votre espace MyDueGuard.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && <FormMessage error={error} />}

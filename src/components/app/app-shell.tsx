@@ -15,7 +15,7 @@ function Logo() {
         <ShieldCheck className="size-5" />
       </span>
       <span className="font-semibold tracking-tight">
-        Claim<span className="text-brand">Guard</span>
+        MyDue<span className="text-brand">Guard</span>
       </span>
     </Link>
   );

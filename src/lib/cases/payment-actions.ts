@@ -39,7 +39,7 @@ async function cancelPendingJobs(caseId: string, reason: string): Promise<void> 
 
 /**
  * Confirm a payment received by the CLIENT on their own account (§18).
- * ClaimGuard never handles the money — this only records the client's
+ * MyDueGuard never handles the money — this only records the client's
  * attestation, updates the remaining amount, and moves the case forward.
  */
 export async function confirmPayment(
