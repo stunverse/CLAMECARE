@@ -260,7 +260,7 @@ function renderPage({
                 <div className="border-t border-border pt-4">
                   <CaseDocumentUploader
                     caseId={c.id}
-                    userId={user.id}
+                    userId={user?.id ?? ""}
                     bucket={bucket}
                   />
                 </div>
@@ -280,9 +280,9 @@ function renderPage({
                 <div className="border-t border-border pt-4">
                   <CaseCompose
                     caseId={c.id}
-                    to={draftReady.to}
-                    initialSubject={draftReady.subject}
-                    initialBody={draftReady.body}
+                    to={draftReady?.to ?? null}
+                    initialSubject={draftReady?.subject ?? ""}
+                    initialBody={draftReady?.body ?? ""}
                     kindLabel={kindLabel}
                     emailConfigured={isEmailConfigured}
                   />
