@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
 import { isSupabaseConfigured } from "@/lib/env";
+import { BrandLogo } from "@/components/brand-logo";
 
 export default function AuthLayout({
   children,
@@ -9,13 +9,8 @@ export default function AuthLayout({
 }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center bg-secondary/40 px-4 py-12">
-      <Link href="/" className="mb-6 flex items-center gap-2">
-        <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <ShieldCheck className="size-5" />
-        </span>
-        <span className="text-lg font-semibold tracking-tight">
-          MyDue<span className="text-brand">Guard</span>
-        </span>
+      <Link href="/" className="mb-6 flex items-center">
+        <BrandLogo className="h-16" />
       </Link>
 
       <div className="w-full max-w-md space-y-4">

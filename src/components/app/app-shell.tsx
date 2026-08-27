@@ -2,21 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, Plus, ShieldCheck } from "lucide-react";
+import { Menu, X, Plus } from "lucide-react";
 import { AppNav } from "@/components/app/app-nav";
 import { NotificationBell } from "@/components/app/notification-bell";
+import { BrandLogo } from "@/components/brand-logo";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 function Logo() {
   return (
-    <Link href="/dossiers" className="flex items-center gap-2">
-      <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <ShieldCheck className="size-5" />
-      </span>
-      <span className="font-semibold tracking-tight">
-        MyDue<span className="text-brand">Guard</span>
-      </span>
+    <Link href="/dossiers" className="flex items-center">
+      <BrandLogo className="h-10" />
     </Link>
   );
 }

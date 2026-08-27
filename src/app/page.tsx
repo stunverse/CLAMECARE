@@ -18,6 +18,7 @@ import {
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PLANS } from "@/lib/billing/plans";
+import { BrandLogo } from "@/components/brand-logo";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -42,13 +43,8 @@ export default function Home() {
 
 function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2">
-      <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <ShieldCheck className="size-5" />
-      </span>
-      <span className="text-lg font-semibold tracking-tight">
-        MyDue<span className="text-brand">Guard</span>
-      </span>
+    <Link href="/" className="flex items-center">
+      <BrandLogo className="h-11" />
     </Link>
   );
 }
