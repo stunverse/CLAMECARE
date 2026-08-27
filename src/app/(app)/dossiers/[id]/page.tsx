@@ -15,7 +15,10 @@ import { AnalyzeButton } from "@/components/cases/analyze-button";
 import { CasePayment } from "@/components/cases/case-payment";
 import { CaseEmails } from "@/components/cases/case-emails";
 import { CaseCompose } from "@/components/cases/case-compose";
-import { draftCaseEmail } from "@/lib/cases/email-actions";
+import {
+  renderCaseEmail,
+  kindForReminder,
+} from "@/lib/claimguard/email/templates";
 import { isEmailConfigured } from "@/lib/env";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -85,8 +88,17 @@ export default async function CaseDetailPage({
     hasInvoiceDocument: documents.some((d) => d.document_category === "invoice"),
   });
 
-  const draft = !isDemo ? await draftCaseEmail(c.id) : null;
-  const draftReady = draft && !("error" in draft) ? draft : null;
+  // Render the outbound draft inline (pure template) instead of calling a
+  // server action during render.
+  const draftKind = kindForReminder(c.reminder_count);
+  const rendered = renderCaseEmail(draftKind, c);
+  const draftReady = !isDemo
+    ? {
+        subject: rendered.subject,
+        body: rendered.body,
+        to: c.debtor_accounting_email || c.debtor_email || null,
+      }
+    : null;
   const kindLabel =
     c.reminder_count > 0 ? "Envoyer une relance" : "Contacter le client";
 
