@@ -33,6 +33,12 @@ import {
   CASE_RISK_LABELS,
 } from "@/lib/claimguard/enums";
 import { formatEuro, formatDateFr } from "@/lib/cases/format";
+import type {
+  Case,
+  CaseDocument,
+  CaseTimelineEntry,
+  EmailMessage,
+} from "@/lib/claimguard/types";
 
 export async function generateMetadata({
   params,
@@ -59,49 +65,101 @@ export default async function CaseDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const detail = await getCase(id);
-  if (!detail) notFound();
 
-  const { case: c, documents, timeline, messages, isDemo } = detail;
+  // TEMP DIAGNOSTIC: surface the real error on screen (prod otherwise redacts).
+  try {
+    const detail = await getCase(id);
+    if (!detail) notFound();
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = supabase
-    ? await supabase.auth.getUser()
-    : { data: { user: null } };
-  const bucket = env.STORAGE_BUCKET_CLAIM_DOCUMENTS || DEFAULT_BUCKET;
+    const { case: c, documents, timeline, messages, isDemo } = detail;
 
-  const completeness = computeCompleteness({
-    debtor_name: c.debtor_name,
-    debtor_email: c.debtor_email,
-    debtor_accounting_email: c.debtor_accounting_email,
-    invoice_number: c.invoice_number,
-    invoice_date: c.invoice_date,
-    due_date: c.due_date,
-    original_amount: c.original_amount,
-    amount_ht: c.amount_ht,
-    service_description: c.service_description,
-    payee_name: c.payee_name,
-    iban: c.iban,
-    documentCount: documents.length,
-    hasInvoiceDocument: documents.some((d) => d.document_category === "invoice"),
-  });
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+    const bucket = env.STORAGE_BUCKET_CLAIM_DOCUMENTS || DEFAULT_BUCKET;
 
-  // Render the outbound draft inline (pure template) instead of calling a
-  // server action during render.
-  const draftKind = kindForReminder(c.reminder_count);
-  const rendered = renderCaseEmail(draftKind, c);
-  const draftReady = !isDemo
-    ? {
-        subject: rendered.subject,
-        body: rendered.body,
-        to: c.debtor_accounting_email || c.debtor_email || null,
-      }
-    : null;
-  const kindLabel =
-    c.reminder_count > 0 ? "Envoyer une relance" : "Contacter le client";
+    const completeness = computeCompleteness({
+      debtor_name: c.debtor_name,
+      debtor_email: c.debtor_email,
+      debtor_accounting_email: c.debtor_accounting_email,
+      invoice_number: c.invoice_number,
+      invoice_date: c.invoice_date,
+      due_date: c.due_date,
+      original_amount: c.original_amount,
+      amount_ht: c.amount_ht,
+      service_description: c.service_description,
+      payee_name: c.payee_name,
+      iban: c.iban,
+      documentCount: documents.length,
+      hasInvoiceDocument: documents.some(
+        (d) => d.document_category === "invoice",
+      ),
+    });
 
+    const draftKind = kindForReminder(c.reminder_count);
+    const rendered = renderCaseEmail(draftKind, c);
+    const draftReady = !isDemo
+      ? {
+          subject: rendered.subject,
+          body: rendered.body,
+          to: c.debtor_accounting_email || c.debtor_email || null,
+        }
+      : null;
+    const kindLabel =
+      c.reminder_count > 0 ? "Envoyer une relance" : "Contacter le client";
+
+    return renderPage({
+      c,
+      documents,
+      timeline,
+      messages,
+      isDemo,
+      user,
+      bucket,
+      completeness,
+      draftReady,
+      kindLabel,
+    });
+  } catch (err) {
+    const e = err as { digest?: string; message?: string; stack?: string };
+    if (typeof e?.digest === "string" && e.digest.startsWith("NEXT")) throw err;
+    return (
+      <div className="mx-auto w-full max-w-3xl px-4 py-8">
+        <h1 className="mb-2 text-lg font-bold text-danger">
+          Diagnostic — erreur de rendu du dossier
+        </h1>
+        <pre className="overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-muted/40 p-3 text-xs">
+          {String(e?.stack || e?.message || err)}
+        </pre>
+      </div>
+    );
+  }
+}
+
+function renderPage({
+  c,
+  documents,
+  timeline,
+  messages,
+  isDemo,
+  user,
+  bucket,
+  completeness,
+  draftReady,
+  kindLabel,
+}: {
+  c: Case;
+  documents: CaseDocument[];
+  timeline: CaseTimelineEntry[];
+  messages: EmailMessage[];
+  isDemo: boolean;
+  user: { id: string } | null;
+  bucket: string;
+  completeness: ReturnType<typeof computeCompleteness>;
+  draftReady: { subject: string; body: string; to: string | null } | null;
+  kindLabel: string;
+}) {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
       <Link
