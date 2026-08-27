@@ -18,8 +18,6 @@ import type { Case } from "@/lib/claimguard/types";
  * own coordinates, stored only to communicate them to the debtor.
  */
 
-export type { CaseFormInput };
-
 export interface CaseActionResult {
   error?: string;
   caseId?: string;
