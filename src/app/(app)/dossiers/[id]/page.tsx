@@ -162,6 +162,9 @@ function renderPage({
 }) {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
+      <p className="mb-4 rounded bg-amber-500/20 px-3 py-1 text-xs">
+        DIAG v2 — enfants clients désactivés
+      </p>
       <Link
         href="/dossiers"
         className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -253,7 +256,7 @@ function renderPage({
             </CardHeader>
             <CardContent className="space-y-4">
               <CaseDocuments documents={documents} />
-              {user && (
+              {false && user && (
                 <div className="border-t border-border pt-4">
                   <CaseDocumentUploader
                     caseId={c.id}
@@ -273,7 +276,7 @@ function renderPage({
             </CardHeader>
             <CardContent className="space-y-4">
               <CaseEmails messages={messages} />
-              {draftReady && user && (
+              {false && draftReady && user && (
                 <div className="border-t border-border pt-4">
                   <CaseCompose
                     caseId={c.id}
@@ -305,7 +308,7 @@ function renderPage({
             </CardHeader>
             <CardContent className="space-y-4">
               <CaseCompleteness result={completeness} />
-              {user && !isDemo && <AnalyzeButton caseId={c.id} />}
+              {false && user && !isDemo && <AnalyzeButton caseId={c.id} />}
             </CardContent>
           </Card>
 
@@ -340,7 +343,7 @@ function renderPage({
             </CardContent>
           </Card>
 
-          {user && !isDemo && (
+          {false && user && !isDemo && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Paiement</CardTitle>
