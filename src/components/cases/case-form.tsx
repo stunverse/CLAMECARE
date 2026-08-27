@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, FileText, Landmark } from "lucide-react";
+import { Building2, FileText, Landmark, CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CaseDocumentUploader } from "@/components/cases/case-document-uploader";
 
 function Field({
   name,
@@ -42,11 +43,18 @@ function Field({
   );
 }
 
-export function CaseForm() {
+export function CaseForm({
+  userId,
+  bucket,
+}: {
+  userId: string | null;
+  bucket: string;
+}) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDemo, setIsDemo] = useState(false);
+  const [createdCaseId, setCreatedCaseId] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,7 +73,8 @@ export function CaseForm() {
         isDemo?: boolean;
       };
       if (data.caseId && !data.isDemo) {
-        router.push(`/dossiers/${data.caseId}`);
+        // Move to step 2 (attach the invoice) instead of leaving immediately.
+        setCreatedCaseId(data.caseId);
         return;
       }
       if (data.isDemo) setIsDemo(true);
@@ -79,6 +88,53 @@ export function CaseForm() {
 
   const state = { error, isDemo };
 
+  // Step 2 — the dossier exists: attach the invoice and any supporting docs.
+  if (createdCaseId) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+          <CheckCircle2 className="size-4" />
+          Dossier créé. Ajoutez maintenant votre facture.
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <FileText className="size-4 text-brand" />
+              Ajoutez votre facture et vos justificatifs
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {userId ? (
+              <CaseDocumentUploader
+                caseId={createdCaseId}
+                userId={userId}
+                bucket={bucket}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Connectez Supabase pour joindre des documents.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">
+            Vous pourrez aussi en ajouter plus tard depuis le dossier.
+          </p>
+          <Button
+            type="button"
+            variant="brand"
+            onClick={() => router.push(`/dossiers/${createdCaseId}`)}
+          >
+            Terminer
+            <ArrowRight className="size-4" />
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 1 — the invoice information.
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
@@ -207,12 +263,12 @@ export function CaseForm() {
 
       <div className="flex items-center justify-end gap-3">
         <Button type="submit" variant="brand" disabled={pending}>
-          {pending ? "Création…" : "Créer le dossier"}
+          {pending ? "Création…" : "Continuer"}
+          {!pending && <ArrowRight className="size-4" />}
         </Button>
       </div>
       <p className="text-center text-xs text-muted-foreground">
-        Vous pourrez compléter les informations et joindre vos documents à
-        l&apos;étape suivante.
+        Étape suivante : joindre votre facture.
       </p>
     </form>
   );
