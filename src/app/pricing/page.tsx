@@ -14,7 +14,7 @@ export default function PricingPage() {
       <header className="border-b border-border">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center">
-            <BrandLogo className="h-12" />
+            <BrandLogo className="text-2xl" />
           </Link>
           <Link
             href="/login"

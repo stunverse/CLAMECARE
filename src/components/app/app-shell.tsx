@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 function Logo() {
   return (
     <Link href="/dossiers" className="flex items-center">
-      <BrandLogo className="h-14" />
+      <BrandLogo className="text-2xl" />
     </Link>
   );
 }

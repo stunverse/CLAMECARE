@@ -130,7 +130,7 @@ function SettingsShell({ children }: { children: React.ReactNode }) {
     <div className="mx-auto w-full max-w-2xl px-4 py-10">
       <header className="mb-6 flex items-center justify-between">
         <Link href="/" className="flex items-center">
-          <BrandLogo className="h-11" />
+          <BrandLogo className="text-xl" />
         </Link>
         <Link
           href="/dossiers"

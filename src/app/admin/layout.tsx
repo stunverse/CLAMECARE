@@ -17,7 +17,7 @@ export default async function AdminLayout({
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 md:px-6">
           <div className="flex items-center gap-2">
-            <BrandLogo className="h-11" />
+            <BrandLogo className="text-xl" />
             <Badge variant="info">Admin</Badge>
             {isDemo && <Badge variant="warning">Demo data</Badge>}
           </div>

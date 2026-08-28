@@ -40,7 +40,7 @@ export default async function OnboardingPage() {
     <div className="min-h-screen bg-secondary/30">
       <div className="mx-auto w-full max-w-3xl px-4 py-10 md:px-6">
         <div className="mb-8 flex items-center">
-          <BrandLogo className="h-16" />
+          <BrandLogo className="text-3xl" />
         </div>
 
         <h1 className="text-2xl font-bold tracking-tight">
