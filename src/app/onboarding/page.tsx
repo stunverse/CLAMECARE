@@ -9,6 +9,7 @@ export const metadata: Metadata = { title: "Bienvenue sur MyDueGuard" };
 interface ProfileNames {
   first_name: string | null;
   last_name: string | null;
+  terms_accepted_at: string | null;
 }
 
 export default async function OnboardingPage() {
@@ -16,6 +17,7 @@ export default async function OnboardingPage() {
 
   let firstName: string | undefined;
   let lastName: string | undefined;
+  let needsConsent = false;
 
   if (supabase) {
     const {
@@ -25,15 +27,22 @@ export default async function OnboardingPage() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("first_name, last_name")
+      .select("first_name, last_name, terms_accepted_at")
       .eq("id", user.id)
       .maybeSingle<ProfileNames>();
+    const meta = user.user_metadata ?? {};
     firstName =
-      profile?.first_name ??
-      (user.user_metadata?.first_name as string | undefined);
+      profile?.first_name ||
+      (meta.first_name as string | undefined) ||
+      (meta.given_name as string | undefined) ||
+      (typeof meta.name === "string" ? meta.name.split(" ")[0] : undefined);
     lastName =
-      profile?.last_name ??
-      (user.user_metadata?.last_name as string | undefined);
+      profile?.last_name ||
+      (meta.last_name as string | undefined) ||
+      (meta.family_name as string | undefined);
+    // Accounts that never went through the signup checkboxes (Google) still
+    // need to accept the legal consents here.
+    needsConsent = !profile?.terms_accepted_at;
   }
 
   return (
@@ -51,7 +60,11 @@ export default async function OnboardingPage() {
           confier votre première facture impayée à MyDueGuard.
         </p>
 
-        <MyDueGuardOnboarding firstName={firstName} lastName={lastName} />
+        <MyDueGuardOnboarding
+          firstName={firstName}
+          lastName={lastName}
+          needsConsent={needsConsent}
+        />
       </div>
     </div>
   );

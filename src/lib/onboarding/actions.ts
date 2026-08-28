@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { recordUserConsents } from "@/lib/legal/consents";
 
 /**
  * MyDueGuard client onboarding (cahier des charges §4).
@@ -41,6 +42,29 @@ export async function completeOnboarding(
       error:
         "Vous devez autoriser MyDueGuard à assurer le suivi amiable de vos factures pour continuer.",
     };
+  }
+
+  // Accounts that never saw the signup checkboxes (Google sign-in) accept the
+  // mandatory legal consents here. We detect this via the profile: if the terms
+  // were never stamped, the consent checkboxes are shown and required.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("terms_accepted_at")
+    .eq("id", user.id)
+    .maybeSingle<{ terms_accepted_at: string | null }>();
+
+  if (!profile?.terms_accepted_at) {
+    const acceptedAll =
+      formData.get("accept_terms") === "on" &&
+      formData.get("accept_privacy") === "on" &&
+      formData.get("accept_disclaimer") === "on";
+    if (!acceptedAll) {
+      return {
+        error:
+          "Vous devez accepter les Conditions, la Politique de confidentialité et les mentions pour continuer.",
+      };
+    }
+    await recordUserConsents(user.id);
   }
 
   const { error } = await supabase

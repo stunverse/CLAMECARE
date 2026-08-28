@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { Building2, Landmark, ShieldCheck } from "lucide-react";
+import { Building2, Landmark, ScrollText, ShieldCheck } from "lucide-react";
 import {
   completeOnboarding,
   type OnboardingState,
@@ -58,9 +58,11 @@ function Field({
 export function MyDueGuardOnboarding({
   firstName,
   lastName,
+  needsConsent = false,
 }: {
   firstName?: string;
   lastName?: string;
+  needsConsent?: boolean;
 }) {
   const [state, action, pending] = useActionState<OnboardingState, FormData>(
     completeOnboarding,
@@ -137,6 +139,75 @@ export function MyDueGuardOnboarding({
         </CardContent>
       </Card>
 
+      {needsConsent && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ScrollText className="size-4 text-brand" />
+              Consentements
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <label className="flex items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                name="accept_terms"
+                className="mt-1 size-4 shrink-0 rounded border-border"
+              />
+              <span className="text-muted-foreground">
+                J&apos;accepte les{" "}
+                <Link
+                  href="/terms"
+                  target="_blank"
+                  className="font-medium text-brand hover:underline"
+                >
+                  Conditions d&apos;utilisation
+                </Link>{" "}
+                de MyDueGuard.
+              </span>
+            </label>
+            <label className="flex items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                name="accept_privacy"
+                className="mt-1 size-4 shrink-0 rounded border-border"
+              />
+              <span className="text-muted-foreground">
+                J&apos;accepte la{" "}
+                <Link
+                  href="/privacy"
+                  target="_blank"
+                  className="font-medium text-brand hover:underline"
+                >
+                  Politique de confidentialité
+                </Link>{" "}
+                et le traitement de mes documents pour le suivi amiable.
+              </span>
+            </label>
+            <label className="flex items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                name="accept_disclaimer"
+                className="mt-1 size-4 shrink-0 rounded border-border"
+              />
+              <span className="text-muted-foreground">
+                J&apos;ai compris que MyDueGuard assure un suivi{" "}
+                <strong>amiable</strong>, n&apos;encaisse jamais les paiements
+                et n&apos;est ni huissier ni cabinet juridique (
+                <Link
+                  href="/disclaimer"
+                  target="_blank"
+                  className="font-medium text-brand hover:underline"
+                >
+                  mentions
+                </Link>
+                ).
+              </span>
+            </label>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -169,12 +240,16 @@ export function MyDueGuardOnboarding({
       )}
 
       <div className="flex items-center justify-between">
-        <Link
-          href="/dossiers"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          Passer pour l&apos;instant
-        </Link>
+        {needsConsent ? (
+          <span />
+        ) : (
+          <Link
+            href="/dossiers"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Passer pour l&apos;instant
+          </Link>
+        )}
         <Button type="submit" variant="brand" disabled={pending}>
           {pending ? "Enregistrement…" : "Accéder à mon espace"}
         </Button>
