@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ShieldCheck } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { createClient } from "@/lib/supabase/server";
 import {
   Card,
@@ -129,13 +129,8 @@ function SettingsShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10">
       <header className="mb-6 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <ShieldCheck className="size-4" />
-          </span>
-          <span className="font-semibold tracking-tight">
-            MyDue<span className="text-brand">Guard</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <BrandLogo className="h-11" />
         </Link>
         <Link
           href="/dossiers"

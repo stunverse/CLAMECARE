@@ -44,7 +44,7 @@ export default function Home() {
 function Logo() {
   return (
     <Link href="/" className="flex items-center">
-      <BrandLogo className="h-11" />
+      <BrandLogo className="h-14" />
     </Link>
   );
 }

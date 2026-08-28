@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ShieldCheck, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { getAdminContext } from "@/lib/admin/guard";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { Badge } from "@/components/ui/badge";
@@ -16,10 +17,7 @@ export default async function AdminLayout({
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 md:px-6">
           <div className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <ShieldCheck className="size-5" />
-            </span>
-            <span className="font-semibold tracking-tight">MyDueGuard</span>
+            <BrandLogo className="h-11" />
             <Badge variant="info">Admin</Badge>
             {isDemo && <Badge variant="warning">Demo data</Badge>}
           </div>

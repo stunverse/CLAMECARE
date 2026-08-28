@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { PricingTable } from "@/components/billing/pricing-table";
 import { buttonVariants } from "@/components/ui/button";
 import { isStripeConfigured } from "@/lib/env";
@@ -13,13 +13,8 @@ export default function PricingPage() {
     <div className="flex flex-1 flex-col">
       <header className="border-b border-border">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <ShieldCheck className="size-5" />
-            </span>
-            <span className="text-lg font-semibold tracking-tight">
-              MyDue<span className="text-brand">Guard</span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <BrandLogo className="h-12" />
           </Link>
           <Link
             href="/login"

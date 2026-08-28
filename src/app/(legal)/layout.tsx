@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 
 export default function LegalLayout({
   children,
@@ -10,13 +10,8 @@ export default function LegalLayout({
     <div className="flex flex-1 flex-col">
       <header className="border-b border-border">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <ShieldCheck className="size-4" />
-            </span>
-            <span className="font-semibold tracking-tight">
-              MyDue<span className="text-brand">Guard</span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <BrandLogo className="h-11" />
           </Link>
           <Link
             href="/"

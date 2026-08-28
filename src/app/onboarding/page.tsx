@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { BrandLogo } from "@/components/brand-logo";
 import { MyDueGuardOnboarding } from "@/components/onboarding/claimguard-onboarding";
 
 export const metadata: Metadata = { title: "Bienvenue sur MyDueGuard" };
@@ -39,13 +39,8 @@ export default async function OnboardingPage() {
   return (
     <div className="min-h-screen bg-secondary/30">
       <div className="mx-auto w-full max-w-3xl px-4 py-10 md:px-6">
-        <div className="mb-8 flex items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <ShieldCheck className="size-5" />
-          </span>
-          <span className="text-lg font-semibold tracking-tight">
-            MyDue<span className="text-brand">Guard</span>
-          </span>
+        <div className="mb-8 flex items-center">
+          <BrandLogo className="h-16" />
         </div>
 
         <h1 className="text-2xl font-bold tracking-tight">
