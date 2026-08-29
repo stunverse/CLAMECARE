@@ -139,7 +139,7 @@ export default async function BillingPage({
         <h2 className="mb-4 text-lg font-semibold">Formules</h2>
         <PricingTable
           mode="manage"
-          currentPlan={billing.plan}
+          currentPlan={hasActiveSub ? billing.plan : undefined}
           stripeConfigured={billing.stripeConfigured}
         />
       </div>
