@@ -7,6 +7,10 @@ import {
   deriveTotal,
   type CaseFormInput,
 } from "@/lib/cases/form";
+import {
+  scheduleFirstContact,
+  startCaseAutomation,
+} from "@/lib/claimguard/workflow/engine";
 import type { Case } from "@/lib/claimguard/types";
 
 /**
@@ -83,6 +87,12 @@ export async function createCase(
 
   const organizationId = await upsertOrganization(supabase, user.id, input);
 
+  // Fully automated flow: a case with a client email to write to starts as
+  // `ready_to_contact` so the first email fires automatically — no manual click.
+  // Without an email address we can't send, so it stays a draft.
+  const canContact = Boolean(input.debtor_accounting_email || input.debtor_email);
+  const initialStatus = canContact ? "ready_to_contact" : "draft";
+
   const { data, error } = await supabase
     .from("cases")
     .insert({
@@ -103,11 +113,11 @@ export async function createCase(
       payee_name: input.payee_name,
       iban: input.iban,
       bic: input.bic,
-      status: "draft",
+      status: initialStatus,
       completeness_score: score,
     })
-    .select("id, case_reference")
-    .single<Pick<Case, "id" | "case_reference">>();
+    .select("*")
+    .single<Case>();
 
   if (error || !data) {
     return { error: error?.message ?? "Impossible de créer le dossier." };
@@ -119,7 +129,7 @@ export async function createCase(
     event_type: "case_created",
     title: "Dossier créé",
     description: `Dossier ${data.case_reference} créé.`,
-    new_status: "draft",
+    new_status: initialStatus,
     source: "client",
   });
   await supabase.from("audit_logs").insert({
@@ -129,6 +139,18 @@ export async function createCase(
     source: "client",
     metadata: { completeness_score: score },
   });
+
+  // Trigger the automated first contact immediately (best-effort), and also
+  // queue it so the hourly cron guarantees delivery even if the inline attempt
+  // fails. Both are idempotent — whichever sends first wins, the other no-ops.
+  if (canContact && data.automation_enabled) {
+    await scheduleFirstContact(supabase, data);
+    try {
+      await startCaseAutomation(supabase, data);
+    } catch {
+      // Swallow — the queued job + cron will deliver it.
+    }
+  }
 
   return { caseId: data.id };
 }

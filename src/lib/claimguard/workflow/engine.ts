@@ -109,23 +109,20 @@ function automationBlocked(c: Case): boolean {
   );
 }
 
-async function handleFirstContact(
+/**
+ * Send the first contact for a case that is exactly `ready_to_contact`, then
+ * schedule the first reminder. Shared by the workflow job and the immediate
+ * trigger at case creation. Returns the send result (blocked/error surfaced).
+ */
+async function runFirstContact(
   supabase: SupabaseClient,
-  job: WorkflowJob,
-): Promise<void> {
-  const c = await loadCase(supabase, job.case_id);
-  if (!c) return;
-  // Idempotent: only act if still exactly ready_to_contact.
-  if (automationBlocked(c) || c.status !== "ready_to_contact") return;
-
+  c: Case,
+): Promise<{ blocked?: boolean; error?: string }> {
   const res = await performCaseSend(supabase, c, {
     kind: "first_contact",
     actor: "automation",
   });
-  // A compliance hold is a terminal, non-retryable outcome (case is now in
-  // human review) — do not throw, or the job would retry indefinitely.
-  if (res.blocked) return;
-  if (res.error) throw new Error(res.error);
+  if (res.blocked || res.error) return res;
 
   // Schedule the first reminder from now.
   const config = await loadRemindersConfig(supabase);
@@ -139,6 +136,37 @@ async function handleFirstContact(
       payload: { index: 0 },
     });
   }
+  return res;
+}
+
+/**
+ * Kick off automation the moment a case is created ready to contact: send the
+ * first email now (no manual click) and let the reminder chain follow. Safe to
+ * call alongside the queued `send_first_contact` job — whichever runs first
+ * advances the status, and the other becomes a no-op.
+ */
+export async function startCaseAutomation(
+  supabase: SupabaseClient,
+  caseRow: Case,
+): Promise<void> {
+  if (automationBlocked(caseRow) || caseRow.status !== "ready_to_contact") return;
+  await runFirstContact(supabase, caseRow);
+}
+
+async function handleFirstContact(
+  supabase: SupabaseClient,
+  job: WorkflowJob,
+): Promise<void> {
+  const c = await loadCase(supabase, job.case_id);
+  if (!c) return;
+  // Idempotent: only act if still exactly ready_to_contact.
+  if (automationBlocked(c) || c.status !== "ready_to_contact") return;
+
+  const res = await runFirstContact(supabase, c);
+  // A compliance hold is a terminal, non-retryable outcome (case is now in
+  // human review) — do not throw, or the job would retry indefinitely.
+  if (res.blocked) return;
+  if (res.error) throw new Error(res.error);
 }
 
 async function handleReminder(
