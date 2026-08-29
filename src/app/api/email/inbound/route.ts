@@ -50,6 +50,75 @@ function verifySvix(
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+/** First value that is a non-empty (non-whitespace) string. */
+function firstNonEmpty(...vals: any[]): string | null {
+  for (const v of vals) {
+    if (typeof v === "string" && v.trim()) return v;
+  }
+  return null;
+}
+
+/** One address from a string or an object ({email|address|value}). */
+function addr(v: any): string | null {
+  if (!v) return null;
+  if (typeof v === "string") return v;
+  if (typeof v === "object") return v.email ?? v.address ?? v.value ?? null;
+  return null;
+}
+
+/** A recipient/sender field: string, object, or array of either. */
+function addrList(v: any): string | null {
+  if (Array.isArray(v)) {
+    const joined = v.map(addr).filter(Boolean).join(", ");
+    return joined || null;
+  }
+  return addr(v);
+}
+
+/** Convert an HTML body to readable plain text. */
+function stripHtml(html: string | null): string | null {
+  if (!html) return null;
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|tr|li|h[1-6])>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&quot;/gi, '"')
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+/** Drop the quoted original below common reply separators. */
+function stripQuoted(text: string | null): string | null {
+  if (!text) return text;
+  const markers = [
+    /^\s*On .+ wrote:\s*$/im,
+    /^\s*Le .+ a écrit\s*:\s*$/im,
+    /^\s*-{2,}\s*(Original Message|Message d'origine)\s*-{2,}/im,
+    /^\s*De\s*:.+$/im,
+  ];
+  let cut = text.length;
+  for (const re of markers) {
+    const m = text.match(re);
+    if (m && m.index !== undefined && m.index < cut) cut = m.index;
+  }
+  const body = text
+    .slice(0, cut)
+    .split("\n")
+    .filter((line) => !/^\s*>/.test(line))
+    .join("\n")
+    .trim();
+  return body || text.trim();
+}
+
 function pickEmail(payload: any): {
   to: string | null;
   from: string | null;
@@ -58,19 +127,23 @@ function pickEmail(payload: any): {
   externalId: string | null;
 } {
   const d = payload?.data ?? payload ?? {};
-  const toRaw = d.to ?? d.To ?? d.recipient ?? null;
-  const to = Array.isArray(toRaw) ? toRaw.join(", ") : toRaw;
-  const fromRaw = d.from ?? d.From ?? d.sender ?? null;
-  const from =
-    typeof fromRaw === "object" && fromRaw
-      ? (fromRaw.email ?? fromRaw.address ?? null)
-      : fromRaw;
+  const html = stripHtml(
+    firstNonEmpty(d.html, d.Html, d.body_html, d["body-html"]),
+  );
+  const rawText = firstNonEmpty(
+    d.text,
+    d.plain,
+    d["body-plain"],
+    d.Text,
+    d.body,
+    html,
+  );
   return {
-    to: to ?? null,
-    from: from ?? null,
-    subject: d.subject ?? d.Subject ?? null,
-    text: d.text ?? d.plain ?? d["body-plain"] ?? d.html ?? null,
-    externalId: d.email_id ?? d.id ?? payload?.id ?? null,
+    to: addrList(d.to ?? d.To ?? d.recipient),
+    from: addrList(d.from ?? d.From ?? d.sender),
+    subject: firstNonEmpty(d.subject, d.Subject),
+    text: stripQuoted(rawText),
+    externalId: firstNonEmpty(d.email_id, d.id, payload?.id),
   };
 }
 
