@@ -147,6 +147,41 @@ function pickEmail(payload: any): {
   };
 }
 
+const DEBUG_BUCKET = "claim-documents";
+const DEBUG_PATH = "debug/last-inbound.json";
+
+/**
+ * Diagnostic: return the last raw inbound payload we captured, so we can see
+ * exactly what Resend sends. Protected by CRON_SECRET: `?key=<secret>&debug=1`.
+ */
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  if (!searchParams.get("debug")) {
+    return NextResponse.json({ ok: true, hint: "POST inbound webhook here." });
+  }
+  if (!env.CRON_SECRET || searchParams.get("key") !== env.CRON_SECRET) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const admin = createAdminClient();
+  if (!admin) {
+    return NextResponse.json({ error: "no admin client" }, { status: 400 });
+  }
+  const { data, error } = await admin.storage
+    .from(DEBUG_BUCKET)
+    .download(DEBUG_PATH);
+  if (error || !data) {
+    return NextResponse.json(
+      { error: "no capture yet", detail: error?.message ?? null },
+      { status: 404 },
+    );
+  }
+  const text = await data.text();
+  return new NextResponse(text, {
+    status: 200,
+    headers: { "content-type": "application/json; charset=utf-8" },
+  });
+}
+
 export async function POST(req: Request) {
   const rawBody = await req.text();
 
@@ -167,6 +202,18 @@ export async function POST(req: Request) {
   if (!admin) {
     // Accept so the provider doesn't retry forever; nothing to persist.
     return NextResponse.json({ ok: true, stored: false });
+  }
+
+  // Best-effort capture of the raw payload for diagnostics (never blocks).
+  try {
+    await admin.storage
+      .from(DEBUG_BUCKET)
+      .upload(DEBUG_PATH, new Blob([rawBody], { type: "application/json" }), {
+        upsert: true,
+        contentType: "application/json",
+      });
+  } catch {
+    // ignore capture failures
   }
 
   const email = pickEmail(payload);
