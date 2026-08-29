@@ -87,6 +87,29 @@ export async function GET(request: Request) {
   if (!env.CRON_SECRET || key !== env.CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // Diagnostic mode: report which env vars the running deployment actually sees
+  // (values are never returned — only present/absent). Use ?check=1.
+  if (searchParams.get("check")) {
+    const names = [
+      "STRIPE_SECRET_KEY",
+      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+      "STRIPE_WEBHOOK_SECRET",
+      "NEXT_PUBLIC_APP_URL",
+      ...PLANS.flatMap((p) => {
+        const up = p.id.toUpperCase();
+        return [`STRIPE_PRICE_${up}_MONTHLY`, `STRIPE_PRICE_${up}_YEARLY`];
+      }),
+      ...ADDONS.map((a) => `STRIPE_PRICE_ADDON_${a.id.toUpperCase()}`),
+    ];
+    const present: Record<string, boolean> = {};
+    for (const n of names) present[n] = Boolean(process.env[n]);
+    return NextResponse.json(
+      { mode: "check", present },
+      { status: 200 },
+    );
+  }
+
   const s = stripe;
   if (!s) {
     return NextResponse.json(
