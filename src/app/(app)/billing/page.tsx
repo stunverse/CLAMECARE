@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CheckCircle2, Sparkles } from "lucide-react";
 import { getBillingData } from "@/lib/billing/data";
 import { PLAN_BY_ID } from "@/lib/billing/plans";
@@ -18,37 +17,50 @@ export const metadata: Metadata = { title: "Facturation" };
 export default async function BillingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string; addon?: string; welcome?: string }>;
+  searchParams: Promise<{
+    success?: string;
+    addon?: string;
+    welcome?: string;
+    subscribe?: string;
+  }>;
 }) {
   const sp = await searchParams;
   const billing = await getBillingData();
   const plan = PLAN_BY_ID[billing.plan];
+  const hasActiveSub =
+    billing.subscription?.status === "active" ||
+    billing.subscription?.status === "trialing";
+  const needsPlan = !hasActiveSub;
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
       <h1 className="mb-1 text-2xl font-bold tracking-tight">
-        {sp.welcome ? "Choisissez votre formule" : "Facturation"}
+        {needsPlan ? "Choisissez votre formule" : "Facturation"}
       </h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        {sp.welcome
-          ? "Votre espace est prêt. Sélectionnez la formule adaptée à votre volume de dossiers — vous pourrez en changer ou résilier à tout moment."
+        {needsPlan
+          ? "Un abonnement est nécessaire pour utiliser MyDueGuard. Sélectionnez la formule adaptée à votre volume de dossiers — vous pourrez en changer ou résilier à tout moment."
           : "Gérez votre formule et votre consommation MyDueGuard."}
       </p>
 
-      {sp.welcome && (
+      {sp.subscribe && needsPlan && (
+        <div className="mb-6 flex items-start gap-2 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm">
+          <Sparkles className="mt-0.5 size-4 shrink-0 text-warning" />
+          <span>
+            Pour accéder à vos dossiers et aux relances, choisissez une formule
+            ci-dessous. Votre abonnement rémunère le service de suivi ; il est
+            distinct des montants que vos clients vous doivent.
+          </span>
+        </div>
+      )}
+
+      {sp.welcome && needsPlan && !sp.subscribe && (
         <div className="mb-6 flex items-start gap-2 rounded-lg border border-brand/30 bg-brand/5 px-4 py-3 text-sm">
           <Sparkles className="mt-0.5 size-4 shrink-0 text-brand" />
           <span>
-            Bienvenue sur MyDueGuard ! Vous démarrez sur la formule gratuite.
-            Choisissez une formule payante ci-dessous pour suivre davantage de
-            dossiers, ou{" "}
-            <Link
-              href="/dossiers"
-              className="font-medium text-brand hover:underline"
-            >
-              continuez avec la formule gratuite
-            </Link>
-            .
+            Bienvenue sur MyDueGuard ! Dernière étape : choisissez la formule
+            qui vous convient ci-dessous pour activer votre espace et commencer
+            à suivre vos impayés.
           </span>
         </div>
       )}
@@ -71,26 +83,33 @@ export default async function BillingPage({
         <Card>
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle className="text-base">Formule actuelle</CardTitle>
-            <Badge variant="info">{SUBSCRIPTION_PLAN_LABELS[billing.plan]}</Badge>
+            <Badge variant={hasActiveSub ? "info" : "warning"}>
+              {hasActiveSub
+                ? SUBSCRIPTION_PLAN_LABELS[billing.plan]
+                : "Aucun abonnement"}
+            </Badge>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">{plan.tagline}</p>
-            {billing.subscription?.current_period_end && (
-              <p className="text-sm">
-                Renouvellement le{" "}
-                <span className="font-medium">
-                  {formatDateFr(billing.subscription.current_period_end)}
-                </span>
-                {billing.subscription.cancel_at_period_end &&
-                  " · résiliation en fin de période"}
-              </p>
-            )}
-            {billing.subscription ? (
-              <ManageBillingButton />
+            {hasActiveSub ? (
+              <>
+                <p className="text-sm text-muted-foreground">{plan.tagline}</p>
+                {billing.subscription?.current_period_end && (
+                  <p className="text-sm">
+                    Renouvellement le{" "}
+                    <span className="font-medium">
+                      {formatDateFr(billing.subscription.current_period_end)}
+                    </span>
+                    {billing.subscription.cancel_at_period_end &&
+                      " · résiliation en fin de période"}
+                  </p>
+                )}
+                <ManageBillingButton />
+              </>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Vous êtes sur la formule gratuite. Choisissez une formule
-                ci-dessous pour débloquer plus de dossiers.
+                Vous n&apos;avez pas encore d&apos;abonnement actif. Choisissez
+                une formule ci-dessous pour accéder à MyDueGuard et suivre vos
+                factures impayées.
               </p>
             )}
           </CardContent>

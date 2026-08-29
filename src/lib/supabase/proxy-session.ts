@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { env, isSupabaseConfigured } from "@/lib/env";
+import { env, isSupabaseConfigured, isStripeConfigured } from "@/lib/env";
 
 /** Route prefixes that require an authenticated session. */
 const PROTECTED_PREFIXES = [
@@ -18,10 +18,35 @@ const PROTECTED_PREFIXES = [
   "/admin",
 ];
 
-function isProtected(pathname: string): boolean {
-  return PROTECTED_PREFIXES.some(
+/**
+ * Route prefixes that require an ACTIVE PAID subscription (the actual app
+ * usage). Excludes /billing, /settings, /onboarding and /admin so a subscriber-
+ * less user can still reach the subscription page, manage their account, finish
+ * onboarding, and staff can administer.
+ */
+const PAID_PREFIXES = [
+  "/dashboard",
+  "/dossiers",
+  "/clients",
+  "/notifications",
+  "/claims",
+  "/packet",
+  "/library",
+  "/support",
+];
+
+function matchesPrefix(pathname: string, prefixes: string[]): boolean {
+  return prefixes.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   );
+}
+
+function isProtected(pathname: string): boolean {
+  return matchesPrefix(pathname, PROTECTED_PREFIXES);
+}
+
+function requiresSubscription(pathname: string): boolean {
+  return matchesPrefix(pathname, PAID_PREFIXES);
 }
 
 /**
@@ -66,6 +91,37 @@ export async function updateSession(request: NextRequest) {
     url.pathname = "/login";
     url.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(url);
+  }
+
+  // Paywall: MyDueGuard has no free plan — an active paid subscription is
+  // required to use the app. Enforced only once Stripe is configured, so the
+  // app stays usable before billing is wired. Staff (non-"user" roles) and the
+  // billing/settings/onboarding pages are exempt.
+  if (user && isStripeConfigured && requiresSubscription(pathname)) {
+    const [{ data: profile }, { data: sub }] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle<{ role: string | null }>(),
+      supabase
+        .from("subscriptions")
+        .select("status")
+        .eq("user_id", user.id)
+        .maybeSingle<{ status: string | null }>(),
+    ]);
+
+    const isStaff = Boolean(profile?.role && profile.role !== "user");
+    const hasActiveSub =
+      sub?.status === "active" || sub?.status === "trialing";
+
+    if (!isStaff && !hasActiveSub) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/billing";
+      url.search = "";
+      url.searchParams.set("subscribe", "1");
+      return NextResponse.redirect(url);
+    }
   }
 
   return response;
