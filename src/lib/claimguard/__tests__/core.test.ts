@@ -140,6 +140,25 @@ describe("inbound classification (heuristic, offline)", () => {
     expect(r.promise?.promised_date).toBe("2026-09-10");
   });
 
+  it("detects a worded payment date without a year (nearest future)", () => {
+    const r = heuristicClassify(
+      "Re: facture",
+      "Bonjour, je vous règle la facture le 15 septembre. Cordialement",
+    );
+    expect(r.category).toBe("payment_date_given");
+    expect(r.promise?.promised_date).toMatch(/^\d{4}-09-15$/);
+    expect(r.confidence).toBeGreaterThanOrEqual(0.6);
+  });
+
+  it("detects a numeric payment date without a year", () => {
+    const r = heuristicClassify(
+      "Re: facture",
+      "Le règlement sera effectué le 20/12.",
+    );
+    expect(r.category).toBe("payment_date_given");
+    expect(r.promise?.promised_date).toMatch(/^\d{4}-12-20$/);
+  });
+
   it("detects a dispute", () => {
     const r = heuristicClassify("Contestation", "Nous contestons ce montant.");
     expect(r.category).toBe("dispute");

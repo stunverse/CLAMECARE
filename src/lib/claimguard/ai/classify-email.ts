@@ -36,7 +36,7 @@ const KEYWORDS: { category: EmailCategory; res: RegExp[] }[] = [
       /\béchéance\s+de paiement/i,
       /\bsera (payé|réglé)/i,
       // Conjugated payment verbs (réglerons, paierons, verserons…) + a date.
-      /\b(r[ée]gl|pai|vers)\w*\b[^.]*\b(le|au|avant le|pour le|d'ici le)\s+\d{1,2}[/.\-]\d/i,
+      /\b(r[éèe]gl|pai|vers)\w*\b[^.]*\b(le|au|avant le|pour le|d'ici le)\s+\d{1,2}[/.\-]\d/i,
     ],
   },
   { category: "invoice_not_received", res: [/\bpas re[çc]u.*facture/i, /\bfacture\s+non re[çc]ue/i, /\bnous n'avons pas.*facture/i] },
@@ -51,39 +51,69 @@ const KEYWORDS: { category: EmailCategory; res: RegExp[] }[] = [
   { category: "request_information", res: [/\bpourriez-vous.*pr[ée]ciser/i, /\bmerci de.*transmettre/i, /\bpouvez-vous nous/i] },
 ];
 
-function toIsoDate(raw: string): string | null {
-  const s = raw.trim();
-  const fr = s.match(/\b(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{2,4})\b/);
-  if (fr) {
-    const [, d, m, yRaw] = fr;
-    const y = yRaw.length === 2 ? `20${yRaw}` : yRaw;
-    if (Number(m) > 12) return null;
-    return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
-  }
-  return null;
-}
-
 const MONTHS: Record<string, string> = {
   janvier: "01", février: "02", fevrier: "02", mars: "03", avril: "04",
   mai: "05", juin: "06", juillet: "07", août: "08", aout: "08",
   septembre: "09", octobre: "10", novembre: "11", décembre: "12", decembre: "12",
 };
 
-function extractPromiseDate(text: string): string | null {
-  const numeric = text.match(
-    /\b(?:le|au|avant le|pour le|d'ici le)\s+(\d{1,2}[/.\-]\d{1,2}[/.\-]\d{2,4})/i,
+/**
+ * Resolve a day+month (no year) to the nearest FUTURE ISO date — deterministic
+ * given `now`. A client who says "le 15 septembre" means the next 15 September.
+ */
+function isoWithInferredYear(
+  day: number,
+  month: number,
+  now = new Date(),
+): string {
+  const y = now.getUTCFullYear();
+  const candidate = Date.UTC(y, month - 1, day);
+  const today = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
   );
-  if (numeric) return toIsoDate(numeric[1]);
+  const year = candidate < today ? y + 1 : y;
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function extractPromiseDate(text: string): string | null {
+  // Numeric dd/mm(/yyyy) — year optional (inferred when absent).
+  const numeric = text.match(
+    /\b(?:le|au|avant le|pour le|d'ici(?: le)?|d'ici)\s+(\d{1,2})[/.\-](\d{1,2})(?:[/.\-](\d{2,4}))?/i,
+  );
+  if (numeric) {
+    const [, dStr, mStr, yRaw] = numeric;
+    const d = Number(dStr);
+    const m = Number(mStr);
+    if (m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+      if (yRaw) {
+        const y = yRaw.length === 2 ? `20${yRaw}` : yRaw;
+        return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      }
+      return isoWithInferredYear(d, m);
+    }
+  }
+  // Worded "(le) 15 septembre (2026)" — year optional (inferred when absent).
   const worded = text.match(
-    /\b(\d{1,2})\s+(janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre)\s+(\d{4})/i,
+    /\b(\d{1,2})\s+(janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre)(?:\s+(\d{4}))?/i,
   );
   if (worded) {
-    const [, d, mName, y] = worded;
+    const [, dStr, mName, y] = worded;
     const m = MONTHS[mName.toLowerCase()];
-    if (m) return `${y}-${m}-${d.padStart(2, "0")}`;
+    const d = Number(dStr);
+    if (m && d >= 1 && d <= 31) {
+      return y
+        ? `${y}-${m}-${String(d).padStart(2, "0")}`
+        : isoWithInferredYear(d, Number(m));
+    }
   }
   return null;
 }
+
+/** Any wording that signals an intent to pay (used with a detected date). */
+const PAYMENT_INTENT_RE =
+  /\b(r[éèe]gl|pai|vers|virement|acquitt|mandat|paiement)\w*/i;
 
 export function heuristicClassify(
   subject: string,
@@ -97,13 +127,29 @@ export function heuristicClassify(
       break;
     }
   }
+
+  // Fallback: an intent to pay together with a concrete date is a payment
+  // announcement, even when phrased in words ("je vous règle le 15 septembre").
+  const detectedDate = extractPromiseDate(text);
+  if (
+    (category === "unknown" || category === "accounting_processing") &&
+    detectedDate &&
+    PAYMENT_INTENT_RE.test(text)
+  ) {
+    category = "payment_date_given";
+  }
+
   const promiseDate =
-    category === "payment_date_given" ? extractPromiseDate(text) : null;
+    category === "payment_date_given" ? detectedDate : null;
   const summary = body.replace(/\s+/g, " ").trim().slice(0, 200);
+
+  // A detected payment date is high signal → 0.6 (clears the review threshold).
+  const confidence =
+    category === "unknown" ? 0.2 : promiseDate ? 0.6 : 0.55;
 
   return {
     category,
-    confidence: category === "unknown" ? 0.2 : 0.55,
+    confidence,
     summary,
     promise: promiseDate ? { promised_date: promiseDate, amount: null } : null,
     source: "heuristic",
