@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle2, Sparkles } from "lucide-react";
 import { getBillingData } from "@/lib/billing/data";
 import { PLAN_BY_ID } from "@/lib/billing/plans";
 import { PricingTable } from "@/components/billing/pricing-table";
@@ -17,7 +18,7 @@ export const metadata: Metadata = { title: "Facturation" };
 export default async function BillingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string; addon?: string }>;
+  searchParams: Promise<{ success?: string; addon?: string; welcome?: string }>;
 }) {
   const sp = await searchParams;
   const billing = await getBillingData();
@@ -25,10 +26,32 @@ export default async function BillingPage({
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Facturation</h1>
+      <h1 className="mb-1 text-2xl font-bold tracking-tight">
+        {sp.welcome ? "Choisissez votre formule" : "Facturation"}
+      </h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Gérez votre formule et votre consommation MyDueGuard.
+        {sp.welcome
+          ? "Votre espace est prêt. Sélectionnez la formule adaptée à votre volume de dossiers — vous pourrez en changer ou résilier à tout moment."
+          : "Gérez votre formule et votre consommation MyDueGuard."}
       </p>
+
+      {sp.welcome && (
+        <div className="mb-6 flex items-start gap-2 rounded-lg border border-brand/30 bg-brand/5 px-4 py-3 text-sm">
+          <Sparkles className="mt-0.5 size-4 shrink-0 text-brand" />
+          <span>
+            Bienvenue sur MyDueGuard ! Vous démarrez sur la formule gratuite.
+            Choisissez une formule payante ci-dessous pour suivre davantage de
+            dossiers, ou{" "}
+            <Link
+              href="/dossiers"
+              className="font-medium text-brand hover:underline"
+            >
+              continuez avec la formule gratuite
+            </Link>
+            .
+          </span>
+        </div>
+      )}
 
       {sp.success && (
         <div className="mb-6 flex items-center gap-2 rounded-lg border border-success/40 bg-success/10 px-4 py-3 text-sm">

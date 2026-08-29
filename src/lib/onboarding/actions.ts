@@ -85,5 +85,7 @@ export async function completeOnboarding(
 
   if (error) return { error: error.message };
 
-  redirect("/dossiers");
+  // Send the freelancer straight to the subscription page so they can pick the
+  // formula that fits before starting to use MyDueGuard.
+  redirect("/billing?welcome=1");
 }
