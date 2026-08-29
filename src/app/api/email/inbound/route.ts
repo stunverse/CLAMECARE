@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { env } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { processInboundEmail } from "@/lib/claimguard/email/inbound";
+import { fetchInboundEmail } from "@/lib/claimguard/email/receive-raw";
 
 export const runtime = "nodejs";
 
@@ -218,13 +219,21 @@ export async function POST(req: Request) {
 
   const email = pickEmail(payload);
 
-  // TEMP diagnostic: if we still can't find a body, surface the raw payload
-  // shape inside the stored message so it's visible in the case thread. This
-  // only triggers when extraction fails, so it disappears once fixed.
+  // Resend Inbound sends only the envelope in the webhook — fetch the body from
+  // the Receiving API using the email_id when the payload has no inline body.
+  let fetchDebug = "";
+  if ((!email.text || !email.text.trim()) && email.externalId) {
+    const fetched = await fetchInboundEmail(email.externalId);
+    fetchDebug = fetched.debug;
+    const body = fetched.text ?? stripHtml(fetched.html);
+    if (body && body.trim()) email.text = stripQuoted(body);
+  }
+
+  // If we still have no body, surface a compact diagnostic in the stored
+  // message so the failure is visible. Disappears once extraction works.
   if (!email.text || !email.text.trim()) {
     const d = (payload as any)?.data ?? payload ?? {};
-    const keys = Object.keys(d).join(", ");
-    email.text = `[[INBOUND DEBUG]] data keys: ${keys}\n\n${JSON.stringify(payload).slice(0, 3000)}`;
+    email.text = `[[INBOUND DEBUG]] fetch: ${fetchDebug || "n/a"} | keys: ${Object.keys(d).join(", ")}`;
   }
 
   const result = await processInboundEmail(admin, email);
