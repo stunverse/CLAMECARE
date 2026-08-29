@@ -217,6 +217,16 @@ export async function POST(req: Request) {
   }
 
   const email = pickEmail(payload);
+
+  // TEMP diagnostic: if we still can't find a body, surface the raw payload
+  // shape inside the stored message so it's visible in the case thread. This
+  // only triggers when extraction fails, so it disappears once fixed.
+  if (!email.text || !email.text.trim()) {
+    const d = (payload as any)?.data ?? payload ?? {};
+    const keys = Object.keys(d).join(", ");
+    email.text = `[[INBOUND DEBUG]] data keys: ${keys}\n\n${JSON.stringify(payload).slice(0, 3000)}`;
+  }
+
   const result = await processInboundEmail(admin, email);
 
   // Always 200 for handled-but-unrouted so the provider doesn't hammer retries.
