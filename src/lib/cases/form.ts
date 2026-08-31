@@ -10,6 +10,8 @@ export interface CaseFormInput {
   debtor_email: string | null;
   debtor_accounting_email: string | null;
   debtor_contact_name: string | null;
+  debtor_phone: string | null;
+  payer_phone: string | null;
   // Invoice
   invoice_number: string | null;
   invoice_date: string | null;
@@ -45,6 +47,8 @@ export function parseCaseForm(formData: FormData): CaseFormInput {
     debtor_email: clean(formData.get("debtor_email")),
     debtor_accounting_email: clean(formData.get("debtor_accounting_email")),
     debtor_contact_name: clean(formData.get("debtor_contact_name")),
+    debtor_phone: clean(formData.get("debtor_phone")),
+    payer_phone: clean(formData.get("payer_phone")),
     invoice_number: clean(formData.get("invoice_number")),
     invoice_date: clean(formData.get("invoice_date")),
     due_date: clean(formData.get("due_date")),

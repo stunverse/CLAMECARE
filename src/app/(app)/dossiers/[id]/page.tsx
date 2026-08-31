@@ -312,7 +312,12 @@ function renderPage({
                   label="Comptabilité"
                   value={c.debtor_accounting_email}
                 />
+                <InfoRow label="Téléphone" value={c.debtor_phone} />
                 <InfoRow label="Contact" value={c.debtor_contact_name} />
+                <InfoRow
+                  label="Tél. règlement"
+                  value={c.payer_phone}
+                />
                 <InfoRow
                   label="Niveau de risque"
                   value={CASE_RISK_LABELS[c.risk_level]}

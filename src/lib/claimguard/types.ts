@@ -47,6 +47,8 @@ export interface Case {
   debtor_accounting_email: string | null;
   debtor_contact_name: string | null;
   debtor_contact_email: string | null;
+  debtor_phone: string | null;
+  payer_phone: string | null;
 
   invoice_number: string | null;
   invoice_date: string | null;

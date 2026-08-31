@@ -166,11 +166,25 @@ export function CaseForm({
             placeholder="compta@client.fr"
             hint="Utilisé en priorité pour les relances."
           />
+          <Field
+            name="debtor_phone"
+            label="Téléphone du client (facultatif)"
+            type="tel"
+            placeholder="01 23 45 67 89"
+            hint="Numéro général de l'entreprise cliente."
+          />
+          <Field
+            name="debtor_contact_name"
+            label="Personne en charge (facultatif)"
+            placeholder="Ex. Service comptabilité"
+          />
           <div className="sm:col-span-2">
             <Field
-              name="debtor_contact_name"
-              label="Personne en charge (facultatif)"
-              placeholder="Ex. Service comptabilité"
+              name="payer_phone"
+              label="Téléphone de la personne à contacter pour le règlement (facultatif)"
+              type="tel"
+              placeholder="06 12 34 56 78"
+              hint="Utile en cas de revue humaine : la personne qui doit régler l'impayé."
             />
           </div>
         </CardContent>
