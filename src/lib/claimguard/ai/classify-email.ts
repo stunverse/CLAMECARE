@@ -187,11 +187,11 @@ export async function classifyEmail(
       ? (p.category as EmailCategory)
       : heuristic.category;
 
-    // Ground the promised date: keep it only if present in the email text.
-    let promisedDate: string | null = null;
-    if (typeof p.promised_date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(p.promised_date)) {
-      promisedDate = p.promised_date;
-    }
+    // The promised date is derived DETERMINISTICALLY from the email text, never
+    // taken from the model. This guarantees the AI can't invent a year that
+    // isn't written ("20 septembre" → the nearest FUTURE 20 September), which is
+    // the whole point of "the AI classifies, the code decides the facts".
+    const promisedDate = extractPromiseDate(`${subject}\n${body}`);
     const amount =
       typeof p.promised_amount === "number" && Number.isFinite(p.promised_amount)
         ? p.promised_amount
