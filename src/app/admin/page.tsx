@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { getAdminContext } from "@/lib/admin/guard";
 import { getAdminMetrics } from "@/lib/admin/metrics";
 import { AdminMetricCard } from "@/components/admin/admin-metric-card";
-import { formatCurrency } from "@/lib/format";
+import { formatEuro } from "@/lib/cases/format";
 
-export const metadata: Metadata = { title: "Admin · Overview" };
+export const metadata: Metadata = { title: "Admin · Vue d'ensemble" };
 
 export default async function AdminOverviewPage() {
   const { supabase } = await getAdminContext();
@@ -12,27 +12,27 @@ export default async function AdminOverviewPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Overview</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Vue d&apos;ensemble</h1>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <AdminMetricCard label="Total users" value={m.totalUsers} />
-        <AdminMetricCard label="Paid users" value={m.paidUsers} />
+        <AdminMetricCard label="Utilisateurs" value={m.totalUsers} />
+        <AdminMetricCard label="Abonnés payants" value={m.paidUsers} />
         <AdminMetricCard
-          label="Estimated MRR"
-          value={formatCurrency(m.mrr)}
-          hint="Active subscriptions × monthly price"
+          label="MRR estimé"
+          value={formatEuro(m.mrr)}
+          hint="Abonnements actifs × prix mensuel"
         />
-        <AdminMetricCard label="Claims created" value={m.claimsCreated} />
-        <AdminMetricCard label="Documents uploaded" value={m.documentsUploaded} />
-        <AdminMetricCard label="Letters generated" value={m.lettersGenerated} />
-        <AdminMetricCard label="AI analyses run" value={m.aiAnalyses} />
         <AdminMetricCard
-          label="Conversion"
-          value={
-            m.totalUsers > 0
-              ? `${Math.round((m.paidUsers / m.totalUsers) * 100)}%`
-              : "—"
-          }
-          hint="Paid / total users"
+          label="Montant recouvré"
+          value={formatEuro(m.amountRecovered)}
+          hint="Dossiers réglés / clôturés"
+        />
+        <AdminMetricCard label="Dossiers créés" value={m.casesCreated} />
+        <AdminMetricCard label="Documents déposés" value={m.documentsUploaded} />
+        <AdminMetricCard label="Emails envoyés" value={m.emailsSent} />
+        <AdminMetricCard
+          label="À examiner"
+          value={m.toReview}
+          hint="Dossiers en attente d'intervention humaine"
         />
       </div>
     </div>

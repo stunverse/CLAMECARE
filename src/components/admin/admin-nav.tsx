@@ -5,18 +5,12 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
-  { label: "Overview", href: "/admin" },
+  { label: "Vue d'ensemble", href: "/admin" },
   { label: "Dossiers", href: "/admin/cases" },
   { label: "À examiner", href: "/admin/review" },
   { label: "Analytics", href: "/admin/analytics" },
   { label: "Automatisations", href: "/admin/automations" },
-  { label: "Users", href: "/admin/users" },
-  { label: "Claims", href: "/admin/claims" },
-  { label: "Library", href: "/admin/library" },
-  { label: "Knowledge base", href: "/admin/knowledge-base" },
-  { label: "Companies", href: "/admin/insurance-companies" },
-  { label: "State regulations", href: "/admin/state-regulations" },
-  { label: "Expert reviews", href: "/admin/expert-reviews" },
+  { label: "Utilisateurs", href: "/admin/users" },
   { label: "Support", href: "/admin/support" },
 ];
 

@@ -5,20 +5,22 @@ import type { SubscriptionPlan } from "@/lib/types/enums";
 export interface AdminMetrics {
   totalUsers: number;
   paidUsers: number;
-  claimsCreated: number;
+  casesCreated: number;
   documentsUploaded: number;
-  lettersGenerated: number;
-  aiAnalyses: number;
+  emailsSent: number;
+  toReview: number;
+  amountRecovered: number;
   mrr: number;
 }
 
 const DEMO_METRICS: AdminMetrics = {
   totalUsers: 128,
   paidUsers: 34,
-  claimsCreated: 211,
+  casesCreated: 211,
   documentsUploaded: 642,
-  lettersGenerated: 173,
-  aiAnalyses: 256,
+  emailsSent: 894,
+  toReview: 12,
+  amountRecovered: 148200,
   mrr: 3920,
 };
 
@@ -32,32 +34,41 @@ export async function getAdminMetrics(
 
   const [
     totalUsers,
-    claimsCreated,
+    casesCreated,
     documentsUploaded,
-    lettersGenerated,
-    aiAnalyses,
+    emailsSent,
+    toReview,
+    { data: paidCases },
     { data: subs },
   ] = await Promise.all([
     count(
       supabase.from("profiles").select("id", { count: "exact", head: true }),
     ),
-    count(supabase.from("claims").select("id", { count: "exact", head: true })),
+    count(supabase.from("cases").select("id", { count: "exact", head: true })),
     count(
       supabase
-        .from("claim_documents")
+        .from("case_documents")
         .select("id", { count: "exact", head: true }),
     ),
     count(
       supabase
-        .from("generated_documents")
-        .select("id", { count: "exact", head: true }),
-    ),
-    count(
-      supabase
-        .from("usage_events")
+        .from("email_messages")
         .select("id", { count: "exact", head: true })
-        .eq("event_type", "ai_analysis"),
+        .eq("direction", "outbound"),
     ),
+    count(
+      supabase
+        .from("cases")
+        .select("id", { count: "exact", head: true })
+        .or(
+          "human_review_required.eq.true,status.eq.disputed,status.eq.human_review_required",
+        ),
+    ),
+    supabase
+      .from("cases")
+      .select("original_amount, status")
+      .in("status", ["paid", "closed"])
+      .returns<{ original_amount: number | null; status: string }[]>(),
     supabase
       .from("subscriptions")
       .select("plan_name, status")
@@ -70,14 +81,19 @@ export async function getAdminMetrics(
     (sum, s) => sum + (s.plan_name ? PLAN_BY_ID[s.plan_name].priceMonthly : 0),
     0,
   );
+  const amountRecovered = (paidCases ?? []).reduce(
+    (sum, c) => sum + (c.original_amount ?? 0),
+    0,
+  );
 
   return {
     totalUsers,
     paidUsers: activeSubs.length,
-    claimsCreated,
+    casesCreated,
     documentsUploaded,
-    lettersGenerated,
-    aiAnalyses,
+    emailsSent,
+    toReview,
+    amountRecovered,
     mrr,
   };
 }

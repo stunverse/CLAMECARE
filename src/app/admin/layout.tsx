@@ -19,14 +19,14 @@ export default async function AdminLayout({
           <div className="flex items-center gap-2">
             <BrandLogo className="text-xl" />
             <Badge variant="info">Admin</Badge>
-            {isDemo && <Badge variant="warning">Demo data</Badge>}
+            {isDemo && <Badge variant="warning">Données démo</Badge>}
           </div>
           <Link
-            href="/dashboard"
+            href="/dossiers"
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="size-4" />
-            Back to app
+            Retour à l&apos;application
           </Link>
         </div>
         <AdminNav />
