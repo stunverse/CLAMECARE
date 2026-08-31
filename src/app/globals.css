@@ -162,3 +162,155 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ============================================================================
+   Futuristic landing ("mdg-" utilities, self-contained, theme-independent)
+   ========================================================================== */
+:root {
+  --mdg-navy-950: #05070f;
+  --mdg-navy-900: #0a1120;
+  --mdg-navy-800: #0f1c38;
+  --mdg-blue: #3b82f6;
+  --mdg-cyan: #22d3ee;
+  --mdg-violet: #8b5cf6;
+}
+
+.mdg-dark {
+  background-color: var(--mdg-navy-950);
+  color: #e7eefc;
+}
+
+.mdg-hero {
+  background:
+    radial-gradient(1100px 560px at 50% -12%, rgba(59, 130, 246, 0.28), transparent 62%),
+    radial-gradient(820px 480px at 86% 8%, rgba(34, 211, 238, 0.16), transparent 60%),
+    radial-gradient(820px 520px at 8% 26%, rgba(139, 92, 246, 0.18), transparent 60%),
+    var(--mdg-navy-950);
+}
+
+/* Animated aurora blobs */
+.mdg-aurora {
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 120%;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.7;
+}
+.mdg-aurora::before,
+.mdg-aurora::after {
+  content: "";
+  position: absolute;
+  width: 42vw;
+  height: 42vw;
+  max-width: 640px;
+  max-height: 640px;
+  border-radius: 50%;
+}
+.mdg-aurora::before {
+  left: 6%;
+  top: 4%;
+  background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.55), transparent 60%);
+  animation: mdg-drift 18s ease-in-out infinite;
+}
+.mdg-aurora::after {
+  right: 4%;
+  top: 0;
+  background: radial-gradient(circle at 60% 40%, rgba(34, 211, 238, 0.45), transparent 60%);
+  animation: mdg-drift 22s ease-in-out infinite reverse;
+}
+@keyframes mdg-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(6%, 8%) scale(1.12); }
+  66% { transform: translate(-5%, 4%) scale(0.95); }
+}
+
+/* Tech grid overlay */
+.mdg-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.09) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse 78% 62% at 50% 0%, #000 38%, transparent 100%);
+  mask-image: radial-gradient(ellipse 78% 62% at 50% 0%, #000 38%, transparent 100%);
+}
+
+.mdg-text-gradient {
+  background: linear-gradient(100deg, #ffffff 8%, #bfdbfe 38%, #67e8f9 66%, #c4b5fd 96%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.mdg-glass {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+}
+.mdg-glass:hover {
+  border-color: rgba(59, 130, 246, 0.55);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15), 0 24px 70px -28px rgba(59, 130, 246, 0.5);
+  transform: translateY(-3px);
+}
+
+.mdg-ring { box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.35), 0 30px 80px -30px rgba(59, 130, 246, 0.6); }
+.mdg-glow { box-shadow: 0 0 44px -8px rgba(59, 130, 246, 0.65); }
+
+/* Shimmering CTA sweep */
+.mdg-cta { position: relative; overflow: hidden; }
+.mdg-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-18deg);
+  animation: mdg-sweep 3.6s ease-in-out infinite;
+}
+@keyframes mdg-sweep {
+  0% { left: -60%; }
+  55%, 100% { left: 130%; }
+}
+
+/* Scroll reveal */
+.mdg-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: opacity, transform;
+}
+.mdg-reveal.is-visible { opacity: 1; transform: none; }
+
+@keyframes mdg-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.mdg-float { animation: mdg-float 7s ease-in-out infinite; }
+
+@keyframes mdg-pulse-node {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.55); }
+  50% { box-shadow: 0 0 0 9px rgba(59, 130, 246, 0); }
+}
+.mdg-node { animation: mdg-pulse-node 2.4s ease-in-out infinite; }
+
+@keyframes mdg-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.mdg-rise { animation: mdg-rise 0.6s ease-out both; }
+
+@keyframes mdg-flow { to { stroke-dashoffset: -400; } }
+.mdg-flow-line { stroke-dasharray: 7 9; animation: mdg-flow 12s linear infinite; }
+
+.mdg-marquee { animation: mdg-marquee 26s linear infinite; }
+@keyframes mdg-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .mdg-aurora::before, .mdg-aurora::after, .mdg-float, .mdg-node,
+  .mdg-flow-line, .mdg-cta::after, .mdg-rise, .mdg-marquee { animation: none !important; }
+  .mdg-reveal { opacity: 1; transform: none; }
+}
