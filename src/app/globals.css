@@ -314,3 +314,9 @@ body {
   .mdg-flow-line, .mdg-cta::after, .mdg-rise, .mdg-marquee { animation: none !important; }
   .mdg-reveal { opacity: 1; transform: none; }
 }
+
+/* Wordmark "MyDue" turns light on dark landing surfaces for contrast. */
+.mdg-dark .mdg-wm-main {
+  color: #ffffff;
+  text-shadow: 0 1px 10px rgba(59, 130, 246, 0.35);
+}

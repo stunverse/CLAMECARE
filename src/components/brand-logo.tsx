@@ -22,7 +22,7 @@ export function BrandLogo({ className }: { className?: string }) {
     >
       <BrandSymbol className="mb-[0.1em] h-[1.55em] w-[1.55em] drop-shadow-[0_3px_5px_rgba(30,58,138,0.5)]" />
       <span className="inline-flex items-baseline leading-none">
-        <span className="text-foreground [text-shadow:0_1px_0_rgba(255,255,255,0.55),0_2px_3px_rgba(10,37,64,0.28)]">
+        <span className="mdg-wm-main text-foreground [text-shadow:0_1px_0_rgba(255,255,255,0.55),0_2px_3px_rgba(10,37,64,0.28)]">
           MyDue
         </span>
         <span className="bg-gradient-to-br from-brand to-sky-400 bg-clip-text text-transparent drop-shadow-[0_1px_2px_rgba(37,99,235,0.4)]">
