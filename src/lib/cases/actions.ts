@@ -142,19 +142,47 @@ export async function createCase(
     metadata: { completeness_score: score },
   });
 
-  // Trigger the automated first contact immediately (best-effort), and also
-  // queue it so the hourly cron guarantees delivery even if the inline attempt
-  // fails. Both are idempotent — whichever sends first wins, the other no-ops.
-  if (canContact && data.automation_enabled) {
-    await scheduleFirstContact(supabase, data);
+  // NB: the first contact is NOT sent here. The creation wizard lets the user
+  // attach the invoice first (step 2); the send is triggered on "Terminer" via
+  // finalizeCaseCreation. The case simply waits in `ready_to_contact`.
+  return { caseId: data.id };
+}
+
+/**
+ * Finalize case creation once the user has attached the invoice (wizard step 2)
+ * and clicked "Terminer": trigger the automated first contact and the reminder
+ * chain. Idempotent — a second call is a no-op once the case has been contacted.
+ */
+export async function finalizeCaseCreation(
+  caseId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createClient();
+  if (!supabase) return { ok: true };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Vous devez être connecté." };
+
+  const { data: c } = await supabase
+    .from("cases")
+    .select("*")
+    .eq("id", caseId)
+    .maybeSingle<Case>();
+  if (!c) return { ok: false, error: "Dossier introuvable." };
+
+  const canContact = Boolean(c.debtor_accounting_email || c.debtor_email);
+  if (canContact && c.automation_enabled && c.status === "ready_to_contact") {
+    // Queue it (cron guarantees delivery) and try to send immediately.
+    await scheduleFirstContact(supabase, c);
     try {
-      await startCaseAutomation(supabase, data);
+      await startCaseAutomation(supabase, c);
     } catch {
       // Swallow — the queued job + cron will deliver it.
     }
   }
 
-  return { caseId: data.id };
+  return { ok: true };
 }
 
 /* ----------------------------- form actions ------------------------------ */

@@ -55,6 +55,23 @@ export function CaseForm({
   const [error, setError] = useState<string | null>(null);
   const [isDemo, setIsDemo] = useState(false);
   const [createdCaseId, setCreatedCaseId] = useState<string | null>(null);
+  const [finishing, setFinishing] = useState(false);
+
+  async function handleFinish() {
+    if (!createdCaseId) return;
+    setFinishing(true);
+    try {
+      // Attach done → now trigger the automated first contact.
+      await fetch("/api/cases/finalize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ caseId: createdCaseId }),
+      });
+    } catch {
+      // The case still exists; the cron will pick up the first contact.
+    }
+    router.push(`/dossiers/${createdCaseId}`);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -117,17 +134,19 @@ export function CaseForm({
             )}
           </CardContent>
         </Card>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            Vous pourrez aussi en ajouter plus tard depuis le dossier.
+            En terminant, MyDueGuard enverra automatiquement le premier message
+            à votre client.
           </p>
           <Button
             type="button"
             variant="brand"
-            onClick={() => router.push(`/dossiers/${createdCaseId}`)}
+            onClick={handleFinish}
+            disabled={finishing}
           >
-            Terminer
-            <ArrowRight className="size-4" />
+            {finishing ? "Envoi en cours…" : "Terminer et contacter"}
+            {!finishing && <ArrowRight className="size-4" />}
           </Button>
         </div>
       </div>
